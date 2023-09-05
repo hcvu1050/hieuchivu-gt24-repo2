@@ -22,7 +22,7 @@ hieuchivu-gt24-repo2/
 │
 ├── docs                         # Project documentation.
 │
-├── models                       # Trained and serialized models.
+├── trained_models               # Trained and serialized models.
 │
 ├── notebooks                    # Jupyter notebooks.
 │
