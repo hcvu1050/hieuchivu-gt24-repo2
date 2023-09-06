@@ -1,7 +1,11 @@
 """
-used to gather the data. 
-If you need to create backups, protect private information, 
-or create a metadata catalog, it is best to do it here.
+Used to gather the data from MITRE ATT&CK. It extracts the following pandas DataFrames and save as csv files in "data/interim"
+
+technique_df.csv: list of all Techniques
+techniques_mitigations_df.csv: list of all Mitigations for each Techniques
+groups_df.csv: list of all Groups
+groups_techniques_df.csv: list of all Techniques used by each Group
+groups_software_df.csv: list of all Software used by each Group
 """
 
 ### 2023-09-06 default code, update later
@@ -47,8 +51,8 @@ import sys
 import os
 # Get the root directory of the project
 root_folder = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
-mitre_attck_file_path = os.path.join(root_folder, 'data', 'enterprise-attack.json')
-data_dir = os.path.join(root_folder, 'data')
+mitre_attck_file_path = os.path.join(root_folder, 'data/raw', 'enterprise-attack.json')
+target_path = os.path.join(root_folder, 'data/interim')
 
 def save_df_to_csv (path, filename: str, df: pd.DataFrame ):
     """save pandas DataFrame as csv file within specified path
@@ -79,11 +83,11 @@ def batch_save_df_to_csv (file_name_dfs: dict, path):
     for key in file_name_dfs.keys():
         print (key, ".csv", sep = '')
 
-def data_collect(file_path = mitre_attck_file_path):
+def data_collect_local(file_path = mitre_attck_file_path):
     """
     v1.0
     
-    Reads 'enterprise-attack.json' from `path`.
+    Reads local file 'enterprise-attack.json' from `path` (default = "data/raw").
     Returns the following DataFrames:
         techniques_df, \n
         techniques_mitigations_df, \n
@@ -93,7 +97,7 @@ def data_collect(file_path = mitre_attck_file_path):
     """
     
     attackdata = MemoryStore ()
-    attackdata.load_from_file (file_path )
+    attackdata.load_from_file (file_path)
     techniques_data = stixToDf.techniquesToDf(attackdata, "enterprise-attack")
     groups_data = stixToDf.groupsToDf (attackdata)
     
@@ -106,11 +110,12 @@ def data_collect(file_path = mitre_attck_file_path):
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
 
 
-def data_collect_and_save(data_dir = data_dir):
+
+
+def data_collect_and_save(target_path = target_path):
     """
     v1.0
-    
-    save the following DataFrames as csv in specifed path:
+    save the following DataFrames as csv in specifed path (default = "data/interim"):
         techniques_df, \n
         techniques_mitigations_df, \n
         groups_df, \n
@@ -118,7 +123,7 @@ def data_collect_and_save(data_dir = data_dir):
         groups_software_df\n
     
     """
-    techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = data_collect()
+    techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = data_collect_local()
     
     dfs = {
     "techniques_df" : techniques_df,
@@ -127,7 +132,7 @@ def data_collect_and_save(data_dir = data_dir):
     "groups_techniques_df" : groups_techniques_df,
     "groups_software_df" : groups_software_df,
     }
-    batch_save_df_to_csv (dfs, data_dir)
+    batch_save_df_to_csv (dfs, target_path)
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
     
     
