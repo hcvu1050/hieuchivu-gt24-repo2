@@ -111,11 +111,6 @@ def _combine_features (object: str, dfs: dict):
         )
     return object_features
 
-def debug_combine_features ():
-    filtered_dfs = _filter_rename_columns()
-    group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
-    
-
 def clean_data(target_path = TARGET_PATH):
     filtered_dfs = _filter_rename_columns()
     group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
