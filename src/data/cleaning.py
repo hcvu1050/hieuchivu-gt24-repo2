@@ -14,7 +14,7 @@ mitigations_df          = pd.readcsv (os.path.join (root_folder,'data/interim', 
 groups_df               = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_df.csv'))
 groups_techniques_df    = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_techniques_df.csv'))
 groups_software_df      = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_software_df.csv'))
-
+dfs = 
 selected_column_names = {
     # names of the selected columns in the collected data that will be used for training processes
     'techniques_df' : ['ID', 'platforms'],
@@ -24,4 +24,4 @@ selected_column_names = {
     'groups_software_df' : ['source ID', 'target ID']
 }
 
-def 
+def clean_data ()

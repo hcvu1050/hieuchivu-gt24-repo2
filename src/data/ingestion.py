@@ -49,9 +49,9 @@ import pandas as pd
 
 import os
 # Get the root directory of the project
-root_folder = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
-mitre_attck_file_path = os.path.join(root_folder, 'data/raw', 'enterprise-attack.json')
-target_path = os.path.join(root_folder, 'data/interim')
+ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
+MITRE_ATTCK_FILE_PATH = os.path.join(ROOT_FOLDER, 'data/raw', 'enterprise-attack.json')
+TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
 def _save_df_to_csv (path, filename: str, df: pd.DataFrame ):
     """save pandas DataFrame as csv file within specified path
@@ -82,7 +82,7 @@ def _batch_save_df_to_csv (file_name_dfs: dict, path):
     for key in file_name_dfs.keys():
         print (key, ".csv", sep = '')
 
-def read_data_local(file_path = mitre_attck_file_path):
+def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     """
     v1.0
     
@@ -108,7 +108,7 @@ def read_data_local(file_path = mitre_attck_file_path):
         
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
 
-def collect_data(target_path = target_path):
+def collect_data(target_path = TARGET_PATH):
     """
     v1.0
     save the following DataFrames as csv in specifed path (default = "data/interim"):
