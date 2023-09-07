@@ -9,15 +9,13 @@ ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 
 # path to get cleaned data
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
+TECHNIQUE_FEATURES_PATH = os.path.join (ROOT_FOLDER, 'cleaned_technique_features_df.csv')
+GROUP_FEATURES_PATH = os.path.join (ROOT_FOLDER, 'cleaned_group_features_df.csv')
 # path to save the built-feature data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
 TARGET_PREFIX = 'cleaned_'
 
-
-def _get_cleaned_filenames():
-    csv_files = [filename for filename in os.listdir(SOURCE_PATH) if filename.startswith(TARGET_PREFIX) and filename.endswith('.csv')]
-    return csv_files
 
 def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ','):
     # get the columns that will not change
@@ -46,13 +44,19 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
     return df_onehot
 
 
-def func():
-    csv_filenames = _get_cleaned_filenames()
+def build_features():
+    technique_features_df = pd.read_csv (TECHNIQUE_FEATURES_PATH)
+    group_features_df = pd.read_csv (GROUP_FEATURES_PATH)
+    
+    onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
+                                                         ID = 'technique_ID', 
+                                                         feature_names= ['platforms', 'mitigation_ID'])
+    onehot_group_features_df = _onehot_encode_features (group_features_df,
+                                                     ID = 'group_ID', 
+                                                     feature_names= ['software_ID'])
+    dfs = {
+        'onehot_technique_features_df' : onehot_technique_features_df,
+        'onehot_group_features_df': onehot_group_features_df
+    }
     
     
-    df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_techniques_df.csv'))
-    df_oh = _onehot_encode_features (df, ID = 'technique_ID', feature_names = ['platforms'])
-    return df_oh
-    
-
-

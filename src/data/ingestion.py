@@ -46,47 +46,12 @@ groups_software_df.csv: list of all Software used by each Group
 from stix2 import MemoryStore
 import mitreattack.attackToExcel.stixToDf as stixToDf
 import pandas as pd
-
+from . import utils
 import os
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 MITRE_ATTCK_FILE_PATH = os.path.join(ROOT_FOLDER, 'data/raw', 'enterprise-attack.json')
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
-
-def _save_df_to_csv (path, filename: str, df: pd.DataFrame ):
-    """save pandas DataFrame as csv file within specified path
-
-    Args:
-        path (string)
-        df (pandas DataFrame)
-    """
-    if not filename.endswith (".csv"): filename+= ".csv"
-    
-    os.makedirs (path, exist_ok= True)
-    output_file = os.path.join(path, filename)
-    df.to_csv (output_file, index= False)
-    
-def _batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
-    """
-    Saves the DataFrames stored in a dict as csv file. 
-    file_name_dfs: key = filenames, value = DataFrame
-    
-    """
-    for key in file_name_dfs.keys():
-        os.makedirs (target_path, exist_ok = True)
-        
-        filename = prefix + key
-        if not filename.endswith (".csv"): filename+= ".csv"
-        output_file = os.path.join(target_path, filename)
-        
-        df = file_name_dfs[key]
-        df.to_csv (output_file, index = False)
-    
-    print ("Finished: files saved to", target_path)
-    
-    for key in file_name_dfs.keys():
-        print ("\t", prefix + key, ".csv", sep = '')
-
 
 def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     """
@@ -134,7 +99,7 @@ def collect_data(target_path = TARGET_PATH):
     "groups_techniques_df" : groups_techniques_df,
     "groups_software_df" : groups_software_df,
     }
-    _batch_save_df_to_csv (dfs, target_path, prefix = 'collected_')
+    utils.batch_save_df_to_csv (dfs, target_path, prefix = 'collected_')
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
     
     

@@ -12,6 +12,7 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
 
 import os
 import pandas as pd
+from . import utils
 ### CONFIGURATION ###
 
 # Get the root directory of the project
@@ -47,26 +48,6 @@ FILTER_COLUMN_RENAME = {
 
 ### END OF CONFIGURATION ###
 
-def _batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
-    """
-    Saves the DataFrames stored in a dict as csv file. 
-    file_name_dfs: key = filenames, value = DataFrame
-    
-    """
-    for key in file_name_dfs.keys():
-        os.makedirs (target_path, exist_ok = True)
-        
-        filename = prefix + key
-        if not filename.endswith (".csv"): filename+= ".csv"
-        output_file = os.path.join(target_path, filename)
-        
-        df = file_name_dfs[key]
-        df.to_csv (output_file, index = False)
-    
-    print ("Finished: files saved to", target_path)
-    
-    for key in file_name_dfs.keys():
-        print ("\t", prefix + key, ".csv", sep = '')
 
 def _filter_rename_columns ():
     """
@@ -129,4 +110,4 @@ def clean_data(target_path = TARGET_PATH):
         'group_features_df' : group_features_df ,
         'target_groups_techniques' : target_groups_techniques_df
     }
-    _batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
+    utils.batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
