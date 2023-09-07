@@ -53,7 +53,7 @@ root_folder = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 mitre_attck_file_path = os.path.join(root_folder, 'data/raw', 'enterprise-attack.json')
 target_path = os.path.join(root_folder, 'data/interim')
 
-def save_df_to_csv (path, filename: str, df: pd.DataFrame ):
+def _save_df_to_csv (path, filename: str, df: pd.DataFrame ):
     """save pandas DataFrame as csv file within specified path
 
     Args:
@@ -66,12 +66,12 @@ def save_df_to_csv (path, filename: str, df: pd.DataFrame ):
     output_file = os.path.join(path, filename)
     df.to_csv (output_file, index= False)
     
-def batch_save_df_to_csv (file_name_dfs: dict, path):
+def _batch_save_df_to_csv (file_name_dfs: dict, path):
     """
     save the DataFrames stored in a dict as csv file. The filenames are the keys in the dict
     """
     for key in file_name_dfs.keys():
-        save_df_to_csv (
+        _save_df_to_csv (
             path = path,
             filename = key,
             df = file_name_dfs[key]
@@ -82,7 +82,7 @@ def batch_save_df_to_csv (file_name_dfs: dict, path):
     for key in file_name_dfs.keys():
         print (key, ".csv", sep = '')
 
-def data_collect_local(file_path = mitre_attck_file_path):
+def read_data_local(file_path = mitre_attck_file_path):
     """
     v1.0
     
@@ -108,7 +108,7 @@ def data_collect_local(file_path = mitre_attck_file_path):
         
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
 
-def data_collect_and_save(target_path = target_path):
+def collect_data(target_path = target_path):
     """
     v1.0
     save the following DataFrames as csv in specifed path (default = "data/interim"):
@@ -119,7 +119,7 @@ def data_collect_and_save(target_path = target_path):
         groups_software_df\n
     
     """
-    techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = data_collect_local()
+    techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = read_data_local()
     
     dfs = {
     "collected_techniques_df" : techniques_df,
@@ -128,7 +128,7 @@ def data_collect_and_save(target_path = target_path):
     "collected_groups_techniques_df" : groups_techniques_df,
     "collected_groups_software_df" : groups_software_df,
     }
-    batch_save_df_to_csv (dfs, target_path)
+    _batch_save_df_to_csv (dfs, target_path)
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
     
     
