@@ -71,16 +71,19 @@ def _batch_save_df_to_csv (file_name_dfs: dict, path):
     save the DataFrames stored in a dict as csv file. The filenames are the keys in the dict
     """
     for key in file_name_dfs.keys():
-        _save_df_to_csv (
-            path = path,
-            filename = key,
-            df = file_name_dfs[key]
-        )
+        os.makedirs (path, exist_ok = True)
+        
+        filename = key
+        if not filename.endswith (".csv"): filename+= ".csv"
+        output_file = os.path.join(path, filename)
+        
+        df = file_name_dfs[key]
+        df.to_csv (output_file, index = False)
     
-    print ("files saved to", path)
+    print ("Finished: files saved to", path)
     
     for key in file_name_dfs.keys():
-        print (key, ".csv", sep = '')
+        print ("\t", key, ".csv", sep = '')
 
 def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     """
