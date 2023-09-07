@@ -1,5 +1,9 @@
 """
 used to clean the data by reducing outliers/noise, handling missing values, etc.
+1. Read collected files from data/interim
+2. Filter the important columns
+3. Rename the columns
+4. Export to data/interim
 """
 
 import os
