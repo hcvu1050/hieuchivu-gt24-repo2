@@ -47,7 +47,6 @@ from stix2 import MemoryStore
 import mitreattack.attackToExcel.stixToDf as stixToDf
 import pandas as pd
 
-import sys
 import os
 # Get the root directory of the project
 root_folder = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
