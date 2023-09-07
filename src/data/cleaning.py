@@ -4,9 +4,9 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
 2. Filter the important columns
 3. Rename the columns
 4. Merge the tables into 3 main tables
-    a. Technique features
-    b. Group features
-    c. Target Group-Technique
+    (a). Group-Technique interaction matrix
+    (b). Technique features,
+    (c). Group features,
 5. Export to data/interim
 """
 
@@ -43,7 +43,7 @@ FILTER_COLUMN_RENAME = {
     'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', 'technique_ID']), 
     'groups_df' :                   (groups_df,                 ['ID'],                         ['group_ID']),
     'groups_software_df' :          (groups_software_df,        ['source ID', 'target ID'],     ['group_ID', 'software_ID']),
-    'target_groups_techniques_df':  (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
+    'groups_techniques_df':         (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
 }
 
 ### END OF CONFIGURATION ###
@@ -64,9 +64,21 @@ def _filter_rename_columns ():
         res_dfs[key] = df
     return res_dfs
 
+def _make_interaction_matrix (user_IDs_df = groups_df, item_IDs_df = techniques_df, positive_cases = groups_techniques_df):
+    group_technique_interactions = pd.merge (user_IDs_df, item_IDs_df, how = 'cross')
+    positive_cases ['target'] = 1
+    group_technique_interaction_matrix = pd.merge (
+        left = group_technique_interactions,
+        right = positive_cases, 
+        on = ['group_ID', 'technique_ID'], 
+        how = 'left'
+    )
+    group_technique_interaction_matrix['target'].fillna (0, inplace= True)
+    return group_technique_interaction_matrix
+
 def _combine_features (object: str, dfs: dict):
     """Combines features of Group or Technique based of the tables of features stored in dfs. 
-    The features are merged with the list of object IDs (group_ID or technique_ID)
+    The features are merged with the list of object IDs (group_ID or technique_ID).
 
     Args:
         object (str): "group" or "technique"
@@ -103,12 +115,16 @@ def clean_data(target_path = TARGET_PATH):
     filtered_dfs = _filter_rename_columns()
     group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
     technique_features_df = _combine_features (object= 'technique', dfs = filtered_dfs)
-    target_groups_techniques_df = filtered_dfs['target_groups_techniques_df']
+    interaction_matrix = _make_interaction_matrix(
+        user_IDs_df= filtered_dfs['groups_df'],
+        item_IDs_df= filtered_dfs['techniques_df'],
+        positive_cases= filtered_dfs['groups_techniques_df']
+    )
     
     res_dfs = {
         'technique_features_df' : technique_features_df,
         'group_features_df' : group_features_df ,
-        'target_groups_techniques' : target_groups_techniques_df
+        'interaction_matrix' : interaction_matrix,
     }
     utils.batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
     return res_dfs
