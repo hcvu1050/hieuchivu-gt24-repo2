@@ -111,3 +111,4 @@ def clean_data(target_path = TARGET_PATH):
         'target_groups_techniques' : target_groups_techniques_df
     }
     utils.batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
+    return res_dfs

@@ -4,13 +4,12 @@
 """
 import os
 import pandas as pd
-
+from . import utils
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 
 # path to get cleaned data
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
-TECHNIQUE_FEATURES_PATH = os.path.join (ROOT_FOLDER, 'cleaned_technique_features_df.csv')
-GROUP_FEATURES_PATH = os.path.join (ROOT_FOLDER, 'cleaned_group_features_df.csv')
+
 # path to save the built-feature data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
@@ -44,9 +43,9 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
     return df_onehot
 
 
-def build_features():
-    technique_features_df = pd.read_csv (TECHNIQUE_FEATURES_PATH)
-    group_features_df = pd.read_csv (GROUP_FEATURES_PATH)
+def build_features(target_path = TARGET_PATH):
+    technique_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_technique_features_df.csv'))
+    group_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_group_features_df.csv'))
     
     onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
                                                          ID = 'technique_ID', 
@@ -58,5 +57,5 @@ def build_features():
         'onehot_technique_features_df' : onehot_technique_features_df,
         'onehot_group_features_df': onehot_group_features_df
     }
-    
-    
+    utils.batch_save_df_to_csv (dfs, target_path, prefix= 'onehot_')
+    return dfs

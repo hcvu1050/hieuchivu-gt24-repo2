@@ -100,6 +100,6 @@ def collect_data(target_path = TARGET_PATH):
     "groups_software_df" : groups_software_df,
     }
     utils.batch_save_df_to_csv (dfs, target_path, prefix = 'collected_')
-    return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
+    return dfs
     
     
