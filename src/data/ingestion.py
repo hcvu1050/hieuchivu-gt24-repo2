@@ -108,9 +108,6 @@ def data_collect_local(file_path = mitre_attck_file_path):
         
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
 
-
-
-
 def data_collect_and_save(target_path = target_path):
     """
     v1.0
@@ -125,11 +122,11 @@ def data_collect_and_save(target_path = target_path):
     techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = data_collect_local()
     
     dfs = {
-    "techniques_df" : techniques_df,
-    "techniques_mitigations_df" : techniques_mitigations_df,
-    "groups_df": groups_df,
-    "groups_techniques_df" : groups_techniques_df,
-    "groups_software_df" : groups_software_df,
+    "collected_techniques_df" : techniques_df,
+    "collected_techniques_mitigations_df" : techniques_mitigations_df,
+    "collected_groups_df": groups_df,
+    "collected_groups_techniques_df" : groups_techniques_df,
+    "collected_groups_software_df" : groups_software_df,
     }
     batch_save_df_to_csv (dfs, target_path)
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
