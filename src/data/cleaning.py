@@ -14,6 +14,7 @@ techniques_mitigations_df          = pd.readcsv (os.path.join (root_folder,'data
 groups_df               = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_df.csv'))
 groups_techniques_df    = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_techniques_df.csv'))
 groups_software_df      = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_software_df.csv'))
+
 DFS = {
     'techniques_df' : techniques_df,
     'techniques_mitigations_df' : techniques_mitigations_df,
@@ -22,13 +23,17 @@ DFS = {
     'groups_software_df' : groups_software_df,
     }
 
-SELECTED_COLUMN_NAMES = {
-    # names of the selected columns in the collected data that will be used for training processes
-    'techniques_df' : ['ID', 'platforms'],
-    'techniques_mitigation_df': ['source ID', 'target ID'], 
-    'groups_df' : ['ID'],
-    'groups_techniques_df': ['source ID', 'target ID'],
-    'groups_software_df' : ['source ID', 'target ID']
+SELECTED_COLUMN_NAMES_RENAME = {
+    """
+    each table is assigned with a tuple including:
+        (1) a list of columns in the table that are used for training
+        (2) a list of names for re-naming columns in (1) for clarity
+    """
+    'techniques_df' :           (['ID', 'platforms'],           ['technique_ID', 'platforms']), #only names for platforms, no IDs
+    'techniques_mitigation_df': (['source ID', 'target ID'],    ['mitigation_ID', 'technique_ID']), 
+    'groups_df' :               (['ID'],                        ['group_ID']),
+    'groups_techniques_df':     (['source ID', 'target ID'],    ['group_ID', 'technique_ID']),
+    'groups_software_df' :      (['source ID', 'target ID'],    ['group_ID', 'software_ID'])
 }
 
 def _batch_save_df_to_csv (file_name_dfs: dict, path):
@@ -49,7 +54,6 @@ def _batch_save_df_to_csv (file_name_dfs: dict, path):
     
     for key in file_name_dfs.keys():
         print ("\t", key, ".csv", sep = '')
-
 
 def clean_data ():
     """
