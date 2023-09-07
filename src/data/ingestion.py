@@ -122,9 +122,9 @@ def collect_data(target_path = TARGET_PATH):
         techniques_mitigations_df, \n
         groups_df, \n
         groups_techniques_df, \n
-        groups_software_df\n
-    
+        groups_software_df\n    
     """
+    
     techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = read_data_local()
     
     dfs = {
