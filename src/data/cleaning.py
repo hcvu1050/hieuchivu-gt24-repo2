@@ -10,14 +10,17 @@ import os
 import pandas as pd
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
+
+# path to get collected data
+SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the cleaned data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
-techniques_df           = pd.read_csv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_techniques_df.csv'))
-techniques_mitigations_df          = pd.read_csv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_techniques_mitigations_df.csv'))
-groups_df               = pd.read_csv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_groups_df.csv'))
-groups_techniques_df    = pd.read_csv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_groups_techniques_df.csv'))
-groups_software_df      = pd.read_csv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_groups_software_df.csv'))
+techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
+techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
+groups_df                   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
+groups_techniques_df        = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_techniques_df.csv'))
+groups_software_df          = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_software_df.csv'))
 
 DFS = {
     'techniques_df' : techniques_df,
