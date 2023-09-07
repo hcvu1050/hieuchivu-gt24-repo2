@@ -54,8 +54,8 @@ def build_features(target_path = TARGET_PATH):
                                                      ID = 'group_ID', 
                                                      feature_names= ['software_ID'])
     dfs = {
-        'onehot_technique_features_df' : onehot_technique_features_df,
-        'onehot_group_features_df': onehot_group_features_df
+        'technique_features_df' : onehot_technique_features_df,
+        'group_features_df': onehot_group_features_df
     }
     utils.batch_save_df_to_csv (dfs, target_path, prefix= 'onehot_')
     return dfs
