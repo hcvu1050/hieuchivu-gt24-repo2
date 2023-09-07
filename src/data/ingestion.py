@@ -66,24 +66,27 @@ def _save_df_to_csv (path, filename: str, df: pd.DataFrame ):
     output_file = os.path.join(path, filename)
     df.to_csv (output_file, index= False)
     
-def _batch_save_df_to_csv (file_name_dfs: dict, path):
+def _batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
     """
-    save the DataFrames stored in a dict as csv file. The filenames are the keys in the dict
+    Saves the DataFrames stored in a dict as csv file. 
+    file_name_dfs: key = filenames, value = DataFrame
+    
     """
     for key in file_name_dfs.keys():
-        os.makedirs (path, exist_ok = True)
+        os.makedirs (target_path, exist_ok = True)
         
-        filename = key
+        filename = prefix + key
         if not filename.endswith (".csv"): filename+= ".csv"
-        output_file = os.path.join(path, filename)
+        output_file = os.path.join(target_path, filename)
         
         df = file_name_dfs[key]
         df.to_csv (output_file, index = False)
     
-    print ("Finished: files saved to", path)
+    print ("Finished: files saved to", target_path)
     
     for key in file_name_dfs.keys():
-        print ("\t", key, ".csv", sep = '')
+        print ("\t", prefix + key, ".csv", sep = '')
+
 
 def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     """
@@ -125,13 +128,13 @@ def collect_data(target_path = TARGET_PATH):
     techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = read_data_local()
     
     dfs = {
-    "collected_techniques_df" : techniques_df,
-    "collected_techniques_mitigations_df" : techniques_mitigations_df,
-    "collected_groups_df": groups_df,
-    "collected_groups_techniques_df" : groups_techniques_df,
-    "collected_groups_software_df" : groups_software_df,
+    "techniques_df" : techniques_df,
+    "techniques_mitigations_df" : techniques_mitigations_df,
+    "groups_df": groups_df,
+    "groups_techniques_df" : groups_techniques_df,
+    "groups_software_df" : groups_software_df,
     }
-    _batch_save_df_to_csv (dfs, target_path)
+    _batch_save_df_to_csv (dfs, target_path, prefix = 'collected_')
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
     
     

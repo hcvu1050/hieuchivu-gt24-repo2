@@ -5,15 +5,15 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
 import os
 import pandas as pd
 # Get the root directory of the project
-root_folder = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
+ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 # path to save the cleaned data
-target_path = os.path.join(root_folder, 'data/interim')
+TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
-techniques_df           = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_techniques_df.csv'))
-techniques_mitigations_df          = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_mitigations_df.csv'))
-groups_df               = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_df.csv'))
-groups_techniques_df    = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_techniques_df.csv'))
-groups_software_df      = pd.readcsv (os.path.join (root_folder,'data/interim', 'collected_groups_software_df.csv'))
+techniques_df           = pd.readcsv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_techniques_df.csv'))
+techniques_mitigations_df          = pd.readcsv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_mitigations_df.csv'))
+groups_df               = pd.readcsv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_groups_df.csv'))
+groups_techniques_df    = pd.readcsv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_groups_techniques_df.csv'))
+groups_software_df      = pd.readcsv (os.path.join (ROOT_FOLDER,'data/interim', 'collected_groups_software_df.csv'))
 
 DFS = {
     'techniques_df' : techniques_df,
@@ -23,7 +23,7 @@ DFS = {
     'groups_software_df' : groups_software_df,
     }
 
-SELECTED_COLUMN_NAMES_RENAME = {
+FILTER_COLUMN_RENAME = {
     """
     each table is assigned with a tuple including:
         (1) a list of columns in the table that are used for training
@@ -36,26 +36,45 @@ SELECTED_COLUMN_NAMES_RENAME = {
     'groups_software_df' :      (['source ID', 'target ID'],    ['group_ID', 'software_ID'])
 }
 
-def _batch_save_df_to_csv (file_name_dfs: dict, path):
+def _batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
     """
-    save the DataFrames stored in a dict as csv file. The filenames are the keys in the dict
+    Saves the DataFrames stored in a dict as csv file. 
+    file_name_dfs: key = filenames, value = DataFrame
+    
     """
     for key in file_name_dfs.keys():
-        os.makedirs (path, exist_ok = True)
+        os.makedirs (target_path, exist_ok = True)
         
-        filename = key
+        filename = prefix + key
         if not filename.endswith (".csv"): filename+= ".csv"
-        output_file = os.path.join(path, filename)
+        output_file = os.path.join(target_path, filename)
         
         df = file_name_dfs[key]
         df.to_csv (output_file, index = False)
     
-    print ("Finished: files saved to", path)
+    print ("Finished: files saved to", target_path)
     
     for key in file_name_dfs.keys():
-        print ("\t", key, ".csv", sep = '')
+        print ("\t", prefix + key, ".csv", sep = '')
 
-def clean_data ():
+def clean_data (target_path = TARGET_PATH):
     """
-    filter the selected collumns for the collected data
+    Filters the selected columns for the collected data, then re-name them
     """    
+    for key in DFS.keys():
+        # 1- Filter the columns
+        df = DFS[key]
+        df = df[FILTER_COLUMN_RENAME[key][0]]
+        # 2- Rename the columns
+        df.columns = FILTER_COLUMN_RENAME[key][1]
+        
+        DFS[key] = df
+    
+    dfs = {
+    "techniques_df" : techniques_df,
+    "techniques_mitigations_df" : techniques_mitigations_df,
+    "groups_df": groups_df,
+    "groups_techniques_df" : groups_techniques_df,
+    "groups_software_df" : groups_software_df,
+    }
+    _batch_save_df_to_csv (dfs, target_path, prefix =  'cleaned_')
