@@ -84,7 +84,8 @@ def _filter_rename_columns ():
     return res_dfs
 
 def _combine_features (object: str, dfs: dict):
-    """Combines features of Group or Technique based of the tables of features stored in dfs
+    """Combines features of Group or Technique based of the tables of features stored in dfs. 
+    The features are merged with the list of object IDs (group_ID or technique_ID)
 
     Args:
         object (str): "group" or "technique"
@@ -100,8 +101,8 @@ def _combine_features (object: str, dfs: dict):
         technique_IDs = dfs['techniques_df']
         object_features = technique_IDs
         id_name = 'technique_ID'
-    # print (dfs.keys())
-    # print ([key for key in dfs.keys() if key.startswith (object)])
+    
+    # The features are merged with the list of object IDs (group_ID or technique_ID)
     for key in [key for key in dfs.keys() if key.startswith (object)]:
         object_features = pd.merge (
             left = object_features,
@@ -112,14 +113,20 @@ def _combine_features (object: str, dfs: dict):
     return object_features
 
 def clean_data(target_path = TARGET_PATH):
+    """Filters the columns needed for training, then combines all features of a object group into one table.\n
+    Returns 3 tables:\n
+    a. Technique features\n
+    b. Group features\n
+    c. Target Group-Technique\n
+    """
     filtered_dfs = _filter_rename_columns()
     group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
     technique_features_df = _combine_features (object= 'technique', dfs = filtered_dfs)
     target_groups_techniques_df = filtered_dfs['target_groups_techniques_df']
     
     res_dfs = {
-        'group_features_df' : group_features_df ,
         'technique_features_df' : technique_features_df,
+        'group_features_df' : group_features_df ,
         'target_groups_techniques' : target_groups_techniques_df
     }
     _batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
