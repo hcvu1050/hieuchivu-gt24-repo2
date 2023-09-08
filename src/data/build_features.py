@@ -1,5 +1,7 @@
 """
-
+last update: 2023-09-08
+Used to engineer the features, including 
+(1) One-hot encoding features
 
 """
 import os
@@ -16,11 +18,15 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 TARGET_PREFIX = 'cleaned_'
 
 
-def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ','):
+def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+    """Build one-hot encoded features in table `df` for the columns indicated by `feature_names`.\n
+    Work for 2 cases\n
+    (1): Single-valued strings (e.g.: "MacOS" , "Windows")
+    (2): Multiple-valued strings (e.g.: "MacOS, Windows"). The default char that separates the values is `,`
+    """
     # get the columns that will not change
     constant_names = [col for col in df.columns if col not in feature_names]
     constant_cols = df[constant_names]
-
 
     df_onehot = constant_cols
     for feature_name in feature_names:
@@ -29,17 +35,18 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
         # single valued feature 
         if not multi_valued:
             feature_onehot = pd.get_dummies (df[feature_name], dtype = float)
+        # multiple valued feature
         else: 
             feature_onehot = df[feature_name].str.replace (r',\s*', ',', regex = True)
             feature_onehot = feature_onehot.str.get_dummies (sep = ',')
-            
+        
+        # combine the one-hot encoded features with the constant columns
         df_onehot = pd.concat (
             [df_onehot, feature_onehot],
             axis = 1
         )
         df_onehot = df_onehot.groupby(ID).max().reset_index()
             
-    # multiple valued feature
     return df_onehot
 
 
