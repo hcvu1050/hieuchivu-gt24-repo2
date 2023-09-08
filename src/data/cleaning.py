@@ -3,7 +3,7 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
 1. Reads collected files from data/interim
 2. Filters the comlumns needed for training
 3. Rename the columns
-4. Merge the tables into 3 main tables
+4. Main Function clean_data: Merge the tables into 3 main tables
     (a). Group-Technique interaction matrix
     (b). Technique features
     (c). Group features

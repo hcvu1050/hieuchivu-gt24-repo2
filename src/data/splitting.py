@@ -12,7 +12,7 @@ TARGET_PREFIX = 'splitted_'
 
 RANDOM_STATE = 13
 
-def data_split (df: pd.DataFrame, train_size, test_size, save_as_csv = True):
+def split_data (df: pd.DataFrame, train_size, test_size, save_as_csv = True):
     train_df, test_df = train_test_split(df, train_size = train_size, random_state=RANDOM_STATE)
     cv_df, test_df = train_test_split(df, test_size= test_size, random_state= RANDOM_STATE)
     if save_as_csv:
