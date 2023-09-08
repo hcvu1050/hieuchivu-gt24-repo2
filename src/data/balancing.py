@@ -13,7 +13,6 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 TARGET_PREFIX = 'balanced_'
 
 RANDOM_STATE = 13
-interaction_matrix_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_interaction_matrix.csv'))
 
 def naive_random_oversampling (df: pd.DataFrame, save_as_csv = True):
     prefix = 'naive_random_oversampled_'
