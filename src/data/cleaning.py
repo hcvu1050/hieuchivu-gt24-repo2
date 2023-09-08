@@ -44,7 +44,8 @@ FILTER_COLUMN_RENAME = {
     'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', 'technique_ID']), 
     'groups_df' :                   (groups_df,                 ['ID'],                         ['group_ID']),
     'groups_software_df' :          (groups_software_df,        ['source ID', 'target ID'],     ['group_ID', 'software_ID']),
-    'groups_techniques_df':         (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
+    'im_positive_cases_df':         (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
+    #im = interation matrix
 }
 
 ### END OF CONFIGURATION ###
@@ -128,7 +129,7 @@ def clean_data(target_path = TARGET_PATH):
     interaction_matrix = _make_interaction_matrix(
         user_IDs_df= filtered_dfs['groups_df'],
         item_IDs_df= filtered_dfs['techniques_df'],
-        positive_cases= filtered_dfs['groups_techniques_df']
+        positive_cases= filtered_dfs['im_positive_cases_df']
     )
     
     res_dfs = {
