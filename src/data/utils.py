@@ -1,4 +1,15 @@
 import os
+import pandas as pd
+
+def save_df_to_csv (df: pd.DataFrame, target_path, filename, prefix = ''):
+    os.makedirs (target_path, exist_ok = True)
+    filename = prefix + filename
+    
+    if not filename.endswith (".csv"): filename+= ".csv"
+    output_file = os.path.join(target_path, filename)
+    df.to_csv (output_file, index = False)
+    print ("Finished: files saved to", target_path)
+    print ("\t", filename, sep = '')
 
 def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
     """
