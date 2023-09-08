@@ -1,12 +1,12 @@
 """
 used to clean the data by reducing outliers/noise, handling missing values, etc.
-1. Read collected files from data/interim
-2. Filter the important columns
+1. Reads collected files from data/interim
+2. Filters the comlumns needed for training
 3. Rename the columns
 4. Merge the tables into 3 main tables
     (a). Group-Technique interaction matrix
-    (b). Technique features,
-    (c). Group features,
+    (b). Technique features
+    (c). Group features
 5. Export to data/interim
 """
 
@@ -17,12 +17,12 @@ from . import utils
 
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
-
 # path to get collected data
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the cleaned data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
+# Get the collected tables
 techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
 techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
 groups_df                   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
@@ -31,7 +31,8 @@ groups_software_df          = pd.read_csv (os.path.join (SOURCE_PATH, 'collected
 
 
 """
-FILTER_COLUMN_RENAME: key = filename for a table, value = tuple
+FILTER_COLUMN_RENAME: used to filter the columns needed for training from the collected table
+key = filename for a table, value = tuple
 each table is assigned with a tuple including:
     (1) the dataframe 
     (2) a list of columns in the table that are used for training
@@ -51,6 +52,7 @@ FILTER_COLUMN_RENAME = {
 
 def _filter_rename_columns ():
     """
+    Based on FILTER_COLUMN_RENAME:\n
     Filters the selected columns for the collected data, then re-name them
     """
     res_dfs = {}
@@ -64,7 +66,12 @@ def _filter_rename_columns ():
         res_dfs[key] = df
     return res_dfs
 
-def _make_interaction_matrix (user_IDs_df = groups_df, item_IDs_df = techniques_df, positive_cases = groups_techniques_df):
+def _make_interaction_matrix (user_IDs_df = groups_df, 
+                              item_IDs_df = techniques_df, 
+                              positive_cases = groups_techniques_df) -> pd.DataFrame():
+    """Creates an interaction matrix (all possible combination) between users and items based on the IDs.
+
+    """
     group_technique_interactions = pd.merge (user_IDs_df, item_IDs_df, how = 'cross')
     positive_cases ['target'] = 1
     group_technique_interaction_matrix = pd.merge (
@@ -76,13 +83,16 @@ def _make_interaction_matrix (user_IDs_df = groups_df, item_IDs_df = techniques_
     group_technique_interaction_matrix['target'].fillna (0, inplace= True)
     return group_technique_interaction_matrix
 
-def _combine_features (object: str, dfs: dict):
-    """Combines features of Group or Technique based of the tables of features stored in dfs. 
-    The features are merged with the list of object IDs (group_ID or technique_ID).
+def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
+    """Combines the features of the object (Group or Technique) based of the tables of features stored in dfs. 
+    The features are merged based on the list of object IDs (group_ID or technique_ID).
 
     Args:
         object (str): "group" or "technique"
-        dfs (dict): dfs stores the filtered columns in collected tables
+        dfs (dict): dfs stores the filtered tables for the object
+
+    Returns:
+        pd.DataFrame: Return the merged table of the object
     """
     object_features = pd.DataFrame()
     id_name = ''
