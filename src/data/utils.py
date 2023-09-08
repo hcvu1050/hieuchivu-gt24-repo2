@@ -2,9 +2,11 @@ import os
 
 def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
     """
-    Saves the DataFrames stored in a dict as csv file. 
-    file_name_dfs: key = filenames, value = DataFrame
-    
+    Saves the DataFrames stored in a dict as csv file. \n
+    file_name_dfs: \n
+        key: filename\n
+        value = DataFrame\n
+    prefix: a string added before filename
     """
     for key in file_name_dfs.keys():
         os.makedirs (target_path, exist_ok = True)
