@@ -66,6 +66,3 @@ def split_data_by_group (df: pd.DataFrame, ratio: list, save_as_csv = True):
         }
         utils.batch_save_df_to_csv (dfs, target_path = TARGET_PATH , prefix= 'splitted_by_group_')
     return train_df, cv_df, test_df
-
-    
-    
