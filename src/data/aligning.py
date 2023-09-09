@@ -11,8 +11,8 @@ TARGET_PREFIX = 'splitted_'
 
 RANDOM_STATE = 13
 
-def align_data(input_df: pd.DataFrame, target_df: pd.DataFrame, object: str, save_to_csv: True):
-    """ Aligns the instances in input_df so that they match with their corresponding targets in target_df.
+def align_data(feature_df: pd.DataFrame, target_df: pd.DataFrame, object: str, save_to_csv = True):
+    """ Aligns the instances in feature_df so that they match with their corresponding targets in target_df.
     The main purpose of the function is for the input features (group features and technique features)
     Args:
         object (str): "group" or "technique"
@@ -25,7 +25,7 @@ def align_data(input_df: pd.DataFrame, target_df: pd.DataFrame, object: str, sav
     elif object == 'technique':
         id_name = 'technique_ID'
         filename = 'technique_features'
-    df_aligned = pd.merge(left = input_df, right= target_df, on = id_name, how = 'right')
+    df_aligned = pd.merge(left = feature_df, right= target_df, on = id_name, how = 'right')
     
     # remove unecessary columns after merging
     if object == 'group':

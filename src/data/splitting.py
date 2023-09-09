@@ -16,7 +16,7 @@ ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the built-feature data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
-TARGET_PREFIX = 'splitted_'
+TARGET_PREFIX = 'split_'
 
 RANDOM_STATE = 13
 
@@ -64,5 +64,5 @@ def split_data_by_group (df: pd.DataFrame, ratio: list, save_as_csv = True):
             'cv_df': cv_df,
             'test_df': test_df
         }
-        utils.batch_save_df_to_csv (dfs, target_path = TARGET_PATH , prefix= 'splitted_by_group_')
+        utils.batch_save_df_to_csv (dfs, target_path = TARGET_PATH , prefix= 'split_by_group_')
     return train_df, cv_df, test_df
