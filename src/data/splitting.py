@@ -1,3 +1,11 @@
+"""
+last update: 2023-09-09
+- used to split the dataset into train, cross-validation, and test set. The ratio of the sets are defined by the users
+- Currently there are two ways to split the dataset:
+	1. Split the dataset randomly into train, cross-validation, and test set
+	2. Split the dataset by randomly split the Groups. Then, based on the split Groups, build the train, cross-validation, and test set. 
+        With this process, data from a Group and be only from either train, or cross-validation, or test set.
+"""
 import os
 import pandas as pd
 from . import utils
