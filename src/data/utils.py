@@ -31,8 +31,7 @@ def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix =''):
         
         df = file_name_dfs[key]
         df.to_csv (output_file, index = False)
+        print ("Saved:\t",  filename, ".csv", sep = '')
     
     print ("Finished: files saved to", target_path)
     
-    for key in file_name_dfs.keys():
-        print ("\t",  filename, ".csv", sep = '')

@@ -48,7 +48,7 @@ def split_data_by_group (df: pd.DataFrame, ratio: list, save_as_csv = True):
     train_size, cv_size, test_size =  ratio [0], ratio[1], ratio[2]
     group_IDs = df['group_ID'].unique()
     # split train ids
-    train_IDs, test_IDs = train_test_split (group_IDs.unique(), train_size=train_size, random_state=RANDOM_STATE)
+    train_IDs, test_IDs = train_test_split (group_IDs, train_size=train_size, random_state=RANDOM_STATE)
     # relative ratio for cv_size/ test_size
     rel_cv_size = cv_size / (cv_size + test_size)
     rel_test_size = 1 - rel_cv_size    
