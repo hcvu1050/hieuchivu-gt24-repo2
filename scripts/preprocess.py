@@ -21,14 +21,14 @@ def main():
     train_target_df, cv_target_df, test_target_df = split_data_by_group (interaction_matrix, ratio= TRAIN_CV_TEST_RATIO)
     
     # aligining: train input
-    balanced_train_df = naive_random_oversampling (train_target_df)
+    balanced_train_target_df = naive_random_oversampling (train_target_df)
     train_technique_input = align_input_to_target ( feature_df= technique_features,
                                                    object= 'technique',
-                                                   target_df= balanced_train_df,
+                                                   target_df= balanced_train_target_df,
                                                    from_set = 'train')
     train_group_input = align_input_to_target ( feature_df= group_features,
                                                    object= 'group',
-                                                   target_df= balanced_train_df,
+                                                   target_df= balanced_train_target_df,
                                                    from_set = 'train')
     
     
