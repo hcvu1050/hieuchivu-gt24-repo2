@@ -155,9 +155,9 @@ def clean_data(target_path = TARGET_PATH):
     )
     
     res_dfs = {
-        'technique_features_df' : technique_features_df,
-        'group_features_df' : group_features_df ,
-        'interaction_matrix' : interaction_matrix,
+        'X_technique' : technique_features_df,
+        'X_group' : group_features_df ,
+        'y' : interaction_matrix,
     }
-    utils.batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
+    utils.batch_save_df_to_csv (res_dfs, target_path, postfix = 'cleaned', output_list_file= 'cleaned')
     return technique_features_df, group_features_df, interaction_matrix

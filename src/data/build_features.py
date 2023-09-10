@@ -15,7 +15,6 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the built-feature data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
-TARGET_PREFIX = 'cleaned_'
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 
 def _get_data():
@@ -66,8 +65,8 @@ def build_features(target_path = TARGET_PATH):
                                                      ID = 'group_ID', 
                                                      feature_names= ['software_ID'])
     dfs = {
-        'technique_features_df' : onehot_technique_features_df,
-        'group_features_df': onehot_group_features_df
+        'X_technique' : onehot_technique_features_df,
+        'X_group': onehot_group_features_df
     }
-    utils.batch_save_df_to_csv (dfs, target_path, prefix= 'onehot_')
+    utils.batch_save_df_to_csv (dfs, target_path, postfix = 'onehot')
     return onehot_technique_features_df, onehot_group_features_df
