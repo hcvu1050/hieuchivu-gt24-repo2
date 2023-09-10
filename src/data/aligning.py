@@ -26,13 +26,13 @@ def align_input_to_target(feature_df: pd.DataFrame, object: str, target_df: pd.D
     id_name = ''
     filename = ''
     if from_set in ('train', 'cv','test'):
-        filename = from_set
+        filename = from_set + '_'
     if object == 'group':
         id_name = 'group_ID'
-        filename += 'group_input'
+        filename += 'group_input_'
     elif object == 'technique':
         id_name = 'technique_ID'
-        filename != 'technique_input'
+        filename += 'technique_input_'
     df_aligned = pd.merge(left = feature_df, right= target_df, on = id_name, how = 'right')
     
     # remove unecessary columns after merging
