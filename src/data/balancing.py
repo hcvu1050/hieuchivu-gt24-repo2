@@ -11,10 +11,11 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the built-feature data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 TARGET_PREFIX = 'balanced_'
-
+PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 RANDOM_STATE = 13
 
 def naive_random_oversampling (df: pd.DataFrame, save_as_csv = True):
+    print (PROCESS_RUNNING_MSG)
     prefix = 'naive_random_oversampled_'
     X = df[['group_ID','technique_ID']]
     y = df[['target']]

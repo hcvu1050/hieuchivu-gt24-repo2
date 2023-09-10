@@ -21,7 +21,7 @@ ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the cleaned data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
-
+PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 # Get the collected tables
 # techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
 # techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
@@ -142,7 +142,7 @@ def clean_data(target_path = TARGET_PATH):
     b. Group features\n
     c. Target Group-Technique\n
     """
-    print ('cleaning.py')
+    print (PROCESS_RUNNING_MSG)
     data_and_setting = _get_data()
     filtered_dfs = _filter_rename_columns(data_and_setting)
     
@@ -160,4 +160,4 @@ def clean_data(target_path = TARGET_PATH):
         'interaction_matrix' : interaction_matrix,
     }
     utils.batch_save_df_to_csv (res_dfs, target_path,prefix= 'cleaned_')
-    return res_dfs
+    return technique_features_df, group_features_df, interaction_matrix

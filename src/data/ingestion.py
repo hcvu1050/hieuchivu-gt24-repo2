@@ -53,7 +53,7 @@ import os
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 MITRE_ATTCK_FILE_PATH = os.path.join(ROOT_FOLDER, 'data/raw', 'enterprise-attack.json')
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
-
+PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     """
     v1.0
@@ -91,7 +91,7 @@ def collect_data(target_path = TARGET_PATH):
         groups_techniques_df, \n
         groups_software_df\n    
     """
-    print ('ingestion.py')
+    print (PROCESS_RUNNING_MSG)
     techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = read_data_local()
     
     dfs = {

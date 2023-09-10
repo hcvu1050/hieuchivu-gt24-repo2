@@ -16,6 +16,7 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
 TARGET_PREFIX = 'cleaned_'
+PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 
 def _get_data():
     technique_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_technique_features_df.csv'))
@@ -55,6 +56,7 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
 
 
 def build_features(target_path = TARGET_PATH):
+    print (PROCESS_RUNNING_MSG)
     technique_features_df, group_features_df = _get_data()
     
     onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
@@ -68,4 +70,4 @@ def build_features(target_path = TARGET_PATH):
         'group_features_df': onehot_group_features_df
     }
     utils.batch_save_df_to_csv (dfs, target_path, prefix= 'onehot_')
-    return dfs
+    return onehot_technique_features_df, onehot_group_features_df

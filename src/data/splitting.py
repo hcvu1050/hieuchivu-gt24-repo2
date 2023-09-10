@@ -19,14 +19,15 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 TARGET_PREFIX = 'split_'
 
 RANDOM_STATE = 13
+PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 
-def split_data (df: pd.DataFrame, ratio: list, save_as_csv = True):
+def split_data (target_df: pd.DataFrame, ratio: list, save_as_csv = True):
     """ Splits data randomly based on ratio.
     # Future task: ratio should be added up to 1
     """
     train_size, cv_size, test_size =  ratio [0], ratio[1], ratio[2]
     # split train set
-    train_df, test_df = train_test_split(df, train_size = train_size, random_state=RANDOM_STATE)
+    train_df, test_df = train_test_split(target_df, train_size = train_size, random_state=RANDOM_STATE)
     # relative ratio for cv_size/ test_size
     rel_cv_size = cv_size / (cv_size + test_size)
     rel_test_size = 1 - rel_cv_size
@@ -42,11 +43,13 @@ def split_data (df: pd.DataFrame, ratio: list, save_as_csv = True):
     
     return train_df, cv_df, test_df
 
-def split_data_by_group (df: pd.DataFrame, ratio: list, save_as_csv = True):
+### MAIN FUNCTION ###
+def split_data_by_group (target_df: pd.DataFrame, ratio: list, save_as_csv = True):
     """ Splits data by group randomly so that: data of a group ONLY belong to either train set, or cv set, or test set.
     """
+    print (PROCESS_RUNNING_MSG)
     train_size, cv_size, test_size =  ratio [0], ratio[1], ratio[2]
-    group_IDs = df['group_ID'].unique()
+    group_IDs = target_df['group_ID'].unique()
     # split train ids
     train_IDs, test_IDs = train_test_split (group_IDs, train_size=train_size, random_state=RANDOM_STATE)
     # relative ratio for cv_size/ test_size
@@ -55,14 +58,14 @@ def split_data_by_group (df: pd.DataFrame, ratio: list, save_as_csv = True):
     # split cv and test ids
     cv_IDs, test_IDs = train_test_split (test_IDs, test_size= rel_test_size, random_state= RANDOM_STATE)
     # build train, cv, and test sets based on splitted ids
-    train_df   = df[df['group_ID'].isin(train_IDs)]
-    cv_df      = df[df['group_ID'].isin(cv_IDs)]
-    test_df    = df[df['group_ID'].isin(test_IDs)]
+    train_df   = target_df[target_df['group_ID'].isin(train_IDs)]
+    cv_df      = target_df[target_df['group_ID'].isin(cv_IDs)]
+    test_df    = target_df[target_df['group_ID'].isin(test_IDs)]
     if save_as_csv:
         dfs = {
-            'train_df': train_df,
-            'cv_df': cv_df,
-            'test_df': test_df
+            'target_train_df': train_df,
+            'target_cv_df': cv_df,
+            'target_test_df': test_df
         }
         utils.batch_save_df_to_csv (dfs, target_path = TARGET_PATH , prefix= 'split_by_group_')
     return train_df, cv_df, test_df
