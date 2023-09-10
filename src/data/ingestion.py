@@ -80,6 +80,7 @@ def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
         
     return techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df
 
+### MAIN FUNCTION ###
 def collect_data(target_path = TARGET_PATH):
     """
     v1.0
@@ -90,7 +91,7 @@ def collect_data(target_path = TARGET_PATH):
         groups_techniques_df, \n
         groups_software_df\n    
     """
-    
+    print ('ingestion.py')
     techniques_df, techniques_mitigations_df, groups_df, groups_techniques_df, groups_software_df = read_data_local()
     
     dfs = {

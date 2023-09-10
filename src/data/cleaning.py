@@ -23,22 +23,40 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
 # Get the collected tables
-techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
-techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
-groups_df                   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
-groups_techniques_df        = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_techniques_df.csv'))
-groups_software_df          = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_software_df.csv'))
+# techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
+# techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
+# groups_df                   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
+# groups_techniques_df        = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_techniques_df.csv'))
+# groups_software_df          = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_software_df.csv'))
 
+# data_and_setting = {
+#     'techniques_df' :               (techniques_df,             ['ID'],                         ['technique_ID']), 
+#     'techniques_platforms_df' :     (techniques_df,             ['ID', 'platforms'],            ['technique_ID', 'platforms']), #only names for platforms, no IDs
+#     'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', 'technique_ID']), 
+#     'groups_df' :                   (groups_df,                 ['ID'],                         ['group_ID']),
+#     'groups_software_df' :          (groups_software_df,        ['source ID', 'target ID'],     ['group_ID', 'software_ID']),
+#     'im_positive_cases_df':         (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
+#     #im = interation matrix
+# }
 
-"""
-FILTER_COLUMN_RENAME: used to filter the columns needed for training from the collected table
-key = filename for a table, value = tuple
-each table is assigned with a tuple including:
-    (1) the dataframe 
-    (2) a list of columns in the table that are used for training
-    (3) a list of names for re-naming columns in (1) for clarity
-"""
-FILTER_COLUMN_RENAME = {
+### END OF CONFIGURATION ###
+def _get_data():
+    """Get the collected tables and make settings for filtering and renaming columns
+    
+    data_and_setting is used to filter the columns needed for training from the collected tables
+    key = filename for a table, value = tuple
+    each table is assigned with a tuple including:
+        (1) the dataframe 
+        (2) a list of columns in the table that are used for training
+        (3) a list of names for re-naming columns in (1) for clarity
+    """
+    techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
+    techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
+    groups_df                   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
+    groups_techniques_df        = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_techniques_df.csv'))
+    groups_software_df          = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_software_df.csv'))
+    
+    data_and_setting = {
     'techniques_df' :               (techniques_df,             ['ID'],                         ['technique_ID']), 
     'techniques_platforms_df' :     (techniques_df,             ['ID', 'platforms'],            ['technique_ID', 'platforms']), #only names for platforms, no IDs
     'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', 'technique_ID']), 
@@ -46,35 +64,35 @@ FILTER_COLUMN_RENAME = {
     'groups_software_df' :          (groups_software_df,        ['source ID', 'target ID'],     ['group_ID', 'software_ID']),
     'im_positive_cases_df':         (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
     #im = interation matrix
-}
+    }
+    return data_and_setting
 
-### END OF CONFIGURATION ###
 
-
-def _filter_rename_columns ():
+def _filter_rename_columns (data_and_setting):
     """
-    Based on FILTER_COLUMN_RENAME:\n
+    Based on data_and_setting:\n
     Filters the selected columns for the collected data, then re-name them
     """
     res_dfs = {}
-    for key in FILTER_COLUMN_RENAME.keys():
+    for key in data_and_setting.keys():
+        df = data_and_setting[key][0]        
         # 1- Filter the columns
-        df = FILTER_COLUMN_RENAME[key][0]        
-        df = df[FILTER_COLUMN_RENAME[key][1]]
+        df = df[data_and_setting[key][1]]
         # 2- Rename the columns
-        df.columns = FILTER_COLUMN_RENAME[key][2]
+        df.columns = data_and_setting[key][2]
         
         res_dfs[key] = df
     return res_dfs
 
-def _make_interaction_matrix (user_IDs_df = groups_df, 
-                              item_IDs_df = techniques_df, 
-                              positive_cases = groups_techniques_df) -> pd.DataFrame():
+def _make_interaction_matrix (user_IDs_df, 
+                              item_IDs_df, 
+                              positive_cases) -> pd.DataFrame():
     """Creates an interaction matrix (all possible combination) between users and items based on the IDs.
 
     """
     group_technique_interactions = pd.merge (user_IDs_df, item_IDs_df, how = 'cross')
-    positive_cases ['target'] = 1
+    # positive_cases ['target'] = 1
+    positive_cases = positive_cases.assign (target = 1)
     group_technique_interaction_matrix = pd.merge (
         left = group_technique_interactions,
         right = positive_cases, 
@@ -116,6 +134,7 @@ def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
         )
     return object_features
 
+### MAIN FUNCTION ###
 def clean_data(target_path = TARGET_PATH):
     """Filters the columns needed for training, then combines all features of a object group into one table.\n
     Returns 3 tables:\n
@@ -123,7 +142,10 @@ def clean_data(target_path = TARGET_PATH):
     b. Group features\n
     c. Target Group-Technique\n
     """
-    filtered_dfs = _filter_rename_columns()
+    print ('cleaning.py')
+    data_and_setting = _get_data()
+    filtered_dfs = _filter_rename_columns(data_and_setting)
+    
     group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
     technique_features_df = _combine_features (object= 'technique', dfs = filtered_dfs)
     interaction_matrix = _make_interaction_matrix(
