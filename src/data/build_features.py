@@ -17,6 +17,10 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
 TARGET_PREFIX = 'cleaned_'
 
+def _get_data():
+    technique_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_technique_features_df.csv'))
+    group_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_group_features_df.csv'))
+    return technique_features_df, group_features_df
 
 def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
     """Build one-hot encoded features in table `df` for the columns indicated by `feature_names`.\n
@@ -51,8 +55,7 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
 
 
 def build_features(target_path = TARGET_PATH):
-    technique_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_technique_features_df.csv'))
-    group_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_group_features_df.csv'))
+    technique_features_df, group_features_df = _get_data()
     
     onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
                                                          ID = 'technique_ID', 
