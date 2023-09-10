@@ -63,9 +63,9 @@ def split_data_by_group (target_df: pd.DataFrame, ratio: list, save_as_csv = Tru
     test_df    = target_df[target_df['group_ID'].isin(test_IDs)]
     if save_as_csv:
         dfs = {
-            'target_train_df': train_df,
-            'target_cv_df': cv_df,
-            'target_test_df': test_df
+            'train_y': train_df,
+            'cv_y': cv_df,
+            'test_y': test_df
         }
-        utils.batch_save_df_to_csv (dfs, target_path = TARGET_PATH , prefix= 'split_by_group_')
+        utils.batch_save_df_to_csv (dfs, target_path = TARGET_PATH , postfix= 'split_by_group', output_list_file= 'split')
     return train_df, cv_df, test_df

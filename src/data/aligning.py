@@ -8,7 +8,7 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the built-feature data
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
-TARGET_PREFIX = 'aligned_'
+TARGET_POSTFIX = 'aligned'
 
 RANDOM_STATE = 13
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
@@ -29,10 +29,10 @@ def align_input_to_target(feature_df: pd.DataFrame, object: str, target_df: pd.D
         filename = from_set + '_'
     if object == 'group':
         id_name = 'group_ID'
-        filename += 'group_input_'
+        filename += 'X_group'
     elif object == 'technique':
         id_name = 'technique_ID'
-        filename += 'technique_input_'
+        filename += 'X_technique'
     df_aligned = pd.merge(left = feature_df, right= target_df, on = id_name, how = 'right')
     
     # remove unecessary columns after merging
@@ -42,5 +42,5 @@ def align_input_to_target(feature_df: pd.DataFrame, object: str, target_df: pd.D
         df_aligned.drop (columns= ['group_ID', 'target'], inplace= True)
     
     if save_to_csv:
-        utils.save_df_to_csv (df_aligned, target_path = TARGET_PATH, filename= filename, prefix= TARGET_PREFIX)
+        utils.save_df_to_csv (df_aligned, target_path = TARGET_PATH, filename= filename, postfix=TARGET_POSTFIX)
     return df_aligned
