@@ -75,7 +75,6 @@ class ContentBasedFiltering(keras.Model):
         opt = keras.optimizers.Adam (learning_rate= 0.01)
         self.model.compile  (optimizer = opt, loss = BinaryCrossentropy (from_logits= True))
         
-
     def train(self, train_data, val_data, epochs):
         history = self.model.fit(
             train_data, 
