@@ -28,9 +28,10 @@ def save_df_to_csv (df: pd.DataFrame, target_path, filename, prefix = '', postfi
     
     if not filename.endswith (".csv"): filename+= ".csv"
     output_file = os.path.join(target_path, filename)
+    print ('Saving:\t', filename)
     df.to_csv (output_file, index = False)
-    print ("Finished: files saved to", target_path)
     print ("Saved:\t",  filename, sep = '')
+    print ("Finished: file saved to", target_path)
     
     if output_list_file is not None:
         _make_file_list (filename= filename, target_path=target_path, content= [filename])
@@ -55,13 +56,13 @@ def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix ='', postfix 
         output_file = os.path.join(target_path, filename)
         
         df = file_name_dfs[key]
+        print ('Saving:\t', filename)
         df.to_csv (output_file, index = False)
         content.append (filename)
-        print ("Saved:\t",  filename, sep = '')
+        print ('Saved:\t',  filename, sep = '')
     
-    print ("Finished: files saved to", target_path)
+    print ("Finished: {} files saved to {}".format (len(file_name_dfs.keys()),target_path))
     
     if output_list_file is not None:
         # make a txt file containing the names of exported file
         _make_file_list (filename = output_list_file, target_path=target_path, content=content)
-    
