@@ -2,17 +2,13 @@ import os
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
+from .constants import ROOT_FOLDER, INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
+
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 SOURCE_FILENAME = 'FINAL.txt'
 SOURCE_LIST_FILE = os.path.join (SOURCE_PATH, SOURCE_FILENAME)
 
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/processed')
-TARGET_PREFIX = 'model1_'
-
-INPUT_GROUP_LAYER_NAME = 'input_Group'
-INPUT_TECHNIQUE_LAYER_NAME = 'input_Technique'
-RANDOM_STATE = 13
 
 def _get_data ():
     """ Get the necessary files from data/interim
