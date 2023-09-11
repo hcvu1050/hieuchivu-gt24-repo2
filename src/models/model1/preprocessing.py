@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from .constants import ROOT_FOLDER, INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
+from .constants import ROOT_FOLDER, INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME, TRAIN_DATASET_FILENAME, CV_DATASET_FILENAME, TEST_DATASET_FILENAME
 
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 SOURCE_FILENAME = 'FINAL.txt'
@@ -83,7 +83,7 @@ def model_preprocess():
     cv_dataset = _build_dataset(cv_dataset)
     test_dataset = _build_dataset(test_dataset)
     
-    _save_dataset (dataset = train_dataset, file_name= 'train_dataset')
-    _save_dataset (dataset = cv_dataset, file_name= 'cv_dataset')
-    _save_dataset (dataset = test_dataset, file_name= 'test_dataset')
+    _save_dataset (dataset = train_dataset, file_name= TRAIN_DATASET_FILENAME)
+    _save_dataset (dataset = cv_dataset, file_name= CV_DATASET_FILENAME)
+    _save_dataset (dataset = test_dataset, file_name= TEST_DATASET_FILENAME)
     

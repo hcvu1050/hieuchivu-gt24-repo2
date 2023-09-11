@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 
+from .constants import ROOT_FOLDER
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/processed')
 
