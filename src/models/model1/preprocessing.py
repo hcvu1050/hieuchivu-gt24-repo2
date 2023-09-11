@@ -3,6 +3,7 @@ import pandas as pd
 import tensorflow as tf
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
+SOURCE_PREFIX = 'FINAL'
 TARGET_PREFIX = 'model1_'
 
 def _get_data ():
