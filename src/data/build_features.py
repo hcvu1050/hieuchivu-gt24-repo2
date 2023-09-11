@@ -66,9 +66,14 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
     return df_onehot
 
 
-def build_features(target_path = TARGET_PATH):
+def build_features(technique_features_df: pd.DataFrame|None, 
+                   group_features_df: pd.DataFrame|None,
+                   target_path = TARGET_PATH, 
+                   save_as_csv = True):
     print (PROCESS_RUNNING_MSG)
-    technique_features_df, group_features_df = _get_data()
+    if (technique_features_df is None) or (group_features_df is None):
+        # if don't receive the tables as args, get the table from files instead
+        technique_features_df, group_features_df = _get_data()
     
     onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
                                                          ID = 'technique_ID', 
@@ -76,9 +81,10 @@ def build_features(target_path = TARGET_PATH):
     onehot_group_features_df = _onehot_encode_features (group_features_df,
                                                      ID = 'group_ID', 
                                                      feature_names= ['software_ID'])
-    dfs = {
-        'X_technique' : onehot_technique_features_df,
-        'X_group': onehot_group_features_df
-    }
-    utils.batch_save_df_to_csv (dfs, target_path, postfix = 'onehot', output_list_file= 'built_features')
+    if save_as_csv:
+        dfs = {
+            'X_technique' : onehot_technique_features_df,
+            'X_group': onehot_group_features_df
+        }
+        utils.batch_save_df_to_csv (dfs, target_path, postfix = 'onehot', output_list_file= 'built_features')
     return onehot_technique_features_df, onehot_group_features_df

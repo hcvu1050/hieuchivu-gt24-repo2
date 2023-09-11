@@ -135,7 +135,7 @@ def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
     return object_features
 
 ### MAIN FUNCTION ###
-def clean_data(target_path = TARGET_PATH):
+def clean_data(target_path = TARGET_PATH, save_as_csv = True):
     """Filters the columns needed for training, then combines all features of a object group into one table.\n
     Returns 3 tables:\n
     a. Technique features\n
@@ -153,11 +153,11 @@ def clean_data(target_path = TARGET_PATH):
         item_IDs_df= filtered_dfs['techniques_df'],
         positive_cases= filtered_dfs['im_positive_cases_df']
     )
-    
-    res_dfs = {
-        'X_technique' : technique_features_df,
-        'X_group' : group_features_df ,
-        'y' : interaction_matrix,
-    }
-    utils.batch_save_df_to_csv (res_dfs, target_path, postfix = 'cleaned', output_list_file= 'cleaned')
+    if save_as_csv:
+        res_dfs = {
+            'X_technique' : technique_features_df,
+            'X_group' : group_features_df ,
+            'y' : interaction_matrix,
+        }
+        utils.batch_save_df_to_csv (res_dfs, target_path, postfix = 'cleaned', output_list_file= 'cleaned')
     return technique_features_df, group_features_df, interaction_matrix
