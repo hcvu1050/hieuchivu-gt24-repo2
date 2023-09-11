@@ -80,7 +80,7 @@ def _save_dataset (dataset, file_name):
     tf.data.Dataset.save (dataset, file_path)
     print ('Dataset saved to', file_path)
 
-def model_preprocess(partial_train: float = None):
+def model_preprocess():
     train_dataset, cv_dataset, test_dataset = _get_data()
     
     train_dataset = _build_dataset(train_dataset)
