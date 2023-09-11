@@ -14,7 +14,7 @@ def main():
                          help='optional argument to sample a traction of train_dataset for training')
     args = parser.parse_args()
     sample_train = args.sample_train
-    train_dataset, cv_dataset, test_dataset = load_data (sample_train= sample_train)
+    load_data (sample_train= sample_train)
     
 if __name__ == '__main__':
     main()
