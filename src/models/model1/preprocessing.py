@@ -75,39 +75,19 @@ def _build_dataset(df_set, frac: float = None):
         y_tf))
     return res_dataset
 
-# Define a function to serialize your data
-# def _serialize_example(dictionary, float_value):
-#     # Convert tensors to numpy arrays
-#     dict_value = {key: value.numpy() for key, value in dictionary.items()}
-#     float_value = float_value.numpy()
-    
-    
-#     # Ensure the values are NumPy arrays with float32 data type
-#     dict_value = {key: np.array(value, dtype='float32') for key, value in dict_value.items()}
-#     float_value = np.array(float_value, dtype='float32')
-    
-#     feature = {
-#         'input_Group': tf.train.Feature(float_list=tf.train.FloatList(value=dict_value['input_Group'])),
-#         'input_Technique': tf.train.Feature(float_list=tf.train.FloatList(value=dict_value['input_Technique'])),
-#         'float_value': tf.train.Feature(float_list=tf.train.FloatList(value=[float_value])),
-#     }
-#     example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
-#     return example_proto.SerializeToString()
-
 def _save_dataset (dataset, file_name):
     file_path = os.path.join (TARGET_PATH, file_name)
     tf.data.Dataset.save (dataset, file_path)
     print ('Dataset saved to', file_path)
 
 def model_preprocess(partial_train: float = None):
-    train_set, cv_set, test_set = _get_data()
-    train_dataset = _build_dataset(train_set)
+    train_dataset, cv_dataset, test_dataset = _get_data()
     
-    element_spec = train_dataset.element_spec
-    print (element_spec)
-    dataset_size = tf.data.experimental.cardinality(train_dataset).numpy()
-    print (dataset_size)
+    train_dataset = _build_dataset(train_dataset)
+    cv_dataset = _build_dataset(cv_dataset)
+    test_dataset = _build_dataset(test_dataset)
     
     _save_dataset (dataset = train_dataset, file_name= 'train_dataset')
-    # cv_data_set = _build_dataset (cv_set)
-    # test_data_set = _build_dataset(test_set)
+    _save_dataset (dataset = cv_dataset, file_name= 'cv_dataset')
+    _save_dataset (dataset = test_dataset, file_name= 'test_dataset')
+    
