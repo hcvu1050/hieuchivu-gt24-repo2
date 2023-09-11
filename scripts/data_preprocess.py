@@ -29,55 +29,59 @@ def main():
                                                         group_features_df= group_features,
                                                         save_as_csv = save_intermediary_table)
     
-    train_target_df, cv_target_df, test_target_df = split_data_by_group (interaction_matrix, ratio= TRAIN_CV_TEST_RATIO, save_as_csv = save_intermediary_table)
+    train_y_df, cv_y_df, test_y_df = split_data_by_group (interaction_matrix, ratio= TRAIN_CV_TEST_RATIO, save_as_csv = save_intermediary_table)
     
-    balanced_train_target_df = naive_random_oversampling (train_target_df, save_as_csv= save_intermediary_table)
+    train_y_balanced_df = naive_random_oversampling (train_y_df, save_as_csv= save_intermediary_table)
     
     ### CREATING FINAL TABLES ###
     # aligining: train input
-    train_technique_input = align_input_to_target ( feature_df= technique_features,
+    train_X_technique = align_input_to_target ( feature_df= technique_features,
                                                    object= 'technique',
-                                                   target_df= balanced_train_target_df,
+                                                   target_df= train_y_balanced_df,
                                                    from_set = 'train', save_to_csv= save_intermediary_table)
-    train_group_input = align_input_to_target ( feature_df= group_features,
+    train_X_group = align_input_to_target ( feature_df= group_features,
                                                    object= 'group',
-                                                   target_df= balanced_train_target_df,
+                                                   target_df= train_y_balanced_df,
                                                    from_set = 'train', save_to_csv= save_intermediary_table)
-    
     
     # aligning: cv input
-    cv_technique_input = align_input_to_target (feature_df= technique_features,
+    cv_X_technique = align_input_to_target (feature_df= technique_features,
                                                   object= 'technique',
-                                                  target_df = cv_target_df,
+                                                  target_df = cv_y_df,
                                                   from_set= 'cv', save_to_csv= save_intermediary_table)
-    cv_group_input = align_input_to_target (feature_df= group_features,
+    cv_X_group = align_input_to_target (feature_df= group_features,
                                                   object= 'group',
-                                                  target_df = cv_target_df,
+                                                  target_df = cv_y_df,
                                                   from_set = 'cv', save_to_csv=save_intermediary_table)
     
     # aligning: test input
-    test_technique_input = align_input_to_target (feature_df= technique_features,
+    test_X_technique = align_input_to_target (feature_df= technique_features,
                                                   object= 'technique',
-                                                  target_df=test_target_df,
+                                                  target_df=test_y_df,
                                                   from_set= 'test', save_to_csv= save_intermediary_table)
-    test_group_input = align_input_to_target (feature_df= group_features,
+    test_X_input = align_input_to_target (feature_df= group_features,
                                                   object= 'group',
-                                                  target_df=test_target_df,
+                                                  target_df=test_y_df,
                                                   from_set= 'test', save_to_csv= save_intermediary_table)
+    
+    # remove ID columns in target tables after aligning
+    train_y_balanced_df = train_y_balanced_df['target']
+    cv_y_df = cv_y_df['target']
+    test_y_df = test_y_df['target']
     
     ### SAVING FINAL TABLES 
     dfs = {
-        'train_y_balanced':             balanced_train_target_df,
-        'train_X_technique_aligned':    train_technique_input,
-        'train_X_group_aligned':        train_group_input,
-        'cv_y':                         cv_target_df,
-        'cv_X_technique_aligned':       cv_technique_input,
-        'cv_X_group_aligned':           cv_group_input,
-        'test_y':                       test_target_df,
-        'test_X_technique_aligned':       test_technique_input,
-        'test_X_group_aligned':           test_group_input,
+        'train_y_balanced':             train_y_balanced_df,
+        'train_X_technique_aligned':    train_X_technique,
+        'train_X_group_aligned':        train_X_group,
+        'cv_y':                         cv_y_df,
+        'cv_X_technique_aligned':       cv_X_technique,
+        'cv_X_group_aligned':           cv_X_group,
+        'test_y':                       test_y_df,
+        'test_X_technique_aligned':     test_X_technique,
+        'test_X_group_aligned':         test_X_input,
     }
-    batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, prefix = 'FINAL')
+    batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, prefix = 'FINAL', output_list_file = 'FINAL')
     
 if __name__ == '__main__':
     main()
