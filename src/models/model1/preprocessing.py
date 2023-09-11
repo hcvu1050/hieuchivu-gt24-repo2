@@ -10,6 +10,20 @@ SOURCE_LIST_FILE = os.path.join (SOURCE_PATH, SOURCE_FILENAME)
 
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/processed')
 
+
+### MAIN FUNCTION ###
+def model_preprocess():
+    train_dataset, cv_dataset, test_dataset = _get_data()
+    
+    train_dataset = _build_dataset(train_dataset)
+    cv_dataset = _build_dataset(cv_dataset)
+    test_dataset = _build_dataset(test_dataset)
+    
+    _save_dataset (dataset = train_dataset, file_name= TRAIN_DATASET_FILENAME)
+    _save_dataset (dataset = cv_dataset, file_name= CV_DATASET_FILENAME)
+    _save_dataset (dataset = test_dataset, file_name= TEST_DATASET_FILENAME)
+    
+
 def _get_data ():
     """ Get the necessary files from data/interim
     """
@@ -75,15 +89,3 @@ def _save_dataset (dataset, file_name):
     file_path = os.path.join (TARGET_PATH, file_name)
     tf.data.Dataset.save (dataset, file_path)
     print ('Dataset saved to', file_path)
-
-def model_preprocess():
-    train_dataset, cv_dataset, test_dataset = _get_data()
-    
-    train_dataset = _build_dataset(train_dataset)
-    cv_dataset = _build_dataset(cv_dataset)
-    test_dataset = _build_dataset(test_dataset)
-    
-    _save_dataset (dataset = train_dataset, file_name= TRAIN_DATASET_FILENAME)
-    _save_dataset (dataset = cv_dataset, file_name= CV_DATASET_FILENAME)
-    _save_dataset (dataset = test_dataset, file_name= TEST_DATASET_FILENAME)
-    
