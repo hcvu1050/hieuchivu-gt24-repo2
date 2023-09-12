@@ -33,25 +33,43 @@ class ContentBasedFiltering(keras.Model):
         patience=32,           # Number of epochs with no improvement before stopping
         restore_best_weights=True  # Restore model weights from the epoch with the best validation loss
         ) 
+        ### OPTION :not self variable ####
+        # input_Group = tf.keras.layers.Input(shape = (self.num_G_features), name = "input_Group")
+        # input_Technique = tf.keras.layers.Input (shape= (self.num_T_features), name = "input_Technique")
         
+        # Group_NN = self.build_Group_NN ()
+        # vg = Group_NN(input_Group)
+        
+        # Technique_NN = self.build_Technique_NN ()
+        # vt = Technique_NN (input_Technique)
+        
+        # output_layer = tf.keras.layers.Dot (axes=1)(inputs= [vg, vt], )
+        # self.inputs = [input_Group, input_Technique]
+        # self.outputs = output_layer
+        # self.build ([tuple(input_Group.shape), tuple(input_Technique.shape)])
+        ### END OPTION: not self variable ####
+        
+        
+        ### OPTION: self variable ####
         self.input_Group = tf.keras.layers.Input(shape = (self.num_G_features), name = "input_Group")
         self.input_Technique = tf.keras.layers.Input (shape= (self.num_T_features), name = "input_Technique")
-        
+
         self.Group_NN = self.build_Group_NN ()
         self.vg = self.Group_NN(self.input_Group)
-        
+
         self.Technique_NN = self.build_Technique_NN ()
         self.vt = self.Technique_NN (self.input_Technique)
         
-        
         self.output_layer = tf.keras.layers.Dot (axes=1)(inputs= [self.vg, self.vt], )
-        
         self.inputs = [self.input_Group, self.input_Technique]
         self.outputs = self.output_layer
+        self.build ([tuple(self.input_Group.shape), tuple(self.input_Technique.shape)])
         print (self.input_Group.shape)
         print (self.input_Technique.shape)
-        self.build ([tuple(self.input_Group.shape), tuple(self.input_Technique.shape)])
-    
+        print (self.inputs)
+        print (self.outputs)
+        ### END OPTION: self variable ####
+        
     
     def set_random_seed(self):
         tf.random.set_seed(self.seed)
