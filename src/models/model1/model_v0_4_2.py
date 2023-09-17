@@ -38,14 +38,15 @@ class ContentBasedFiltering(keras.Model):
         self.input_Technique = tf.keras.layers.Input (shape= (self.num_T_features), name = "input_Technique")
 
         self.Group_NN = self.build_Group_NN ()
-        self.vg = self.Group_NN(self.input_Group)
+        # self.vg = self.Group_NN(self.input_Group)
 
         self.Technique_NN = self.build_Technique_NN ()
-        self.vt = self.Technique_NN (self.input_Technique)
+        # self.vt = self.Technique_NN (self.input_Technique)
         
-        self.output_layer = tf.keras.layers.Dot (axes=1)(inputs= [self.vg, self.vt], )
+        self.dot_product = tf.keras.layers.Dot (axes=1)
+        # self.output_layer = tf.keras.layers.Dot (axes=1)(inputs= [self.vg, self.vt])
         self.inputs = [self.input_Group, self.input_Technique]
-        self.outputs = self.output_layer
+        self.outputs = self.dot_product
         
         ### BUILD AND COMPILE ###
         self.build ([tuple(self.input_Group.shape), tuple(self.input_Technique.shape)])
@@ -56,7 +57,13 @@ class ContentBasedFiltering(keras.Model):
             optimizer = keras.optimizers.Adam (learning_rate= 0.01),
             # metrics
         )
-        
+    
+    def call(self, inputs):
+        vg = self.Group_NN (self.input_Group)
+        vt = self.Technique_NN (self.input_Technique)
+        dot_product = self.dot_product ([vg,vt])
+        return dot_product
+    
     
     def set_random_seed(self):
         tf.random.set_seed(self.seed)
