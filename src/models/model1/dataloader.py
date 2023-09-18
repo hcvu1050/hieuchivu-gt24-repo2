@@ -34,11 +34,11 @@ def load_data (sample_train: float = None, feature_info = True):
     print (('test_dataset: {} examples').format(len(test_dataset)))    
     
     if feature_info:
-        info = {
-            'X_group_num_features' : cv_dataset.element_spec[0][INPUT_GROUP_LAYER_NAME].shape[0],
-            'X_technique_num_features' : train_dataset.element_spec[0][INPUT_TECHNIQUE_LAYER_NAME].shape[0]
+        feature_info = {
+            'group_feature_size' : cv_dataset.element_spec[0][INPUT_GROUP_LAYER_NAME].shape[0],
+            'technique_feature_size' : train_dataset.element_spec[0][INPUT_TECHNIQUE_LAYER_NAME].shape[0]
         }
-        return train_dataset, cv_dataset, test_dataset, info
+        return train_dataset, cv_dataset, test_dataset, feature_info
     
     
     return train_dataset, cv_dataset, test_dataset
