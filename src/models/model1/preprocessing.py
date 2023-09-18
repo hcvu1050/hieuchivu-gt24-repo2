@@ -1,3 +1,14 @@
+"""
+last update: 2023-09-18
+Preprocessing for model1\n
+0. REQUIRED: interim data is collected from `data/interim`
+run script `data_preprocess.py` first
+1. Get the necessary files from data/interim and read as DataFrames
+2. Group the DataFrames into train set, cv set, and test set
+3. From each set, build a tensorflow Dataset (consists of both inputs and labels)
+4. Save the Datasets to data/processed
+"""
+
 import os
 import pandas as pd
 import numpy as np
@@ -13,6 +24,7 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/processed')
 
 ### MAIN FUNCTION ###
 def model_preprocess():
+    # get the data set as DataFrames
     train_dataset, cv_dataset, test_dataset = _get_data()
     
     train_dataset = _build_dataset(train_dataset)
@@ -25,7 +37,9 @@ def model_preprocess():
     
 
 def _get_data ():
-    """ Get the necessary files from data/interim
+    """ Get the necessary files from data/interim\n
+    The list of files to get is stored in `SOURCE_LIST_FILE`('data/interim/FINAL.txt')\n
+    Returns 3 `dict`s that stores the data train set, cv set, and test set as DataFrame 
     """
     #1 get files
     print ('Collecting data')
@@ -42,9 +56,12 @@ def _get_data ():
     test_set = _get_Xy_dfs (test_files)
     return train_set, cv_set, test_set
 
-def _get_Xy_dfs (file_list: list):
+def _get_Xy_dfs (file_list: list) -> dict:
     """
-    Finds and map file to input and output DataFrame
+    From the list of file in file_lists, find each file that store either input or output. \n
+    Read the inputs and output as DataFrame\n
+    The list of files belongs to either train, cv, or test set\n
+    Returns a dictionary mapping the DataFrames as inputs or output\n
     """
     X_group_file_name =     [file_name for file_name in file_list if 'X_group' in file_name][0]
     X_technique_file_name = [file_name for file_name in file_list if 'X_technique' in file_name][0]
@@ -66,7 +83,8 @@ def _get_Xy_dfs (file_list: list):
 
 def _build_dataset(df_set, frac: float = None):
     """
-    From a set(train, cv, test) containing X and y values: Create a a tensorflow Dataset
+    From a set(train, cv, test) stored in a `dict` containing X and y values:\n
+    Create and return a tensorflow Dataset
     """
     X_group = df_set['X_group'].drop(columns = 'group_ID')
     X_technique = df_set['X_technique'].drop(columns = 'technique_ID')
