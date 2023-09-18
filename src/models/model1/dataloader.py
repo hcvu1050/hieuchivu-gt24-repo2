@@ -1,3 +1,10 @@
+"""
+last update: 2023-09-18\n
+Loadd the Datasets from data/processed and return those Datasets
+
+"""
+
+
 import os
 import pandas as pd
 import numpy as np
@@ -33,6 +40,7 @@ def load_data (sample_train: float = None, feature_info = True):
     print ('cv_dataset: {} examples'.format(len(cv_dataset)))
     print (('test_dataset: {} examples').format(len(test_dataset)))    
     
+    # return feature sizes to configure the model
     if feature_info:
         feature_info = {
             'group_feature_size' : cv_dataset.element_spec[0][INPUT_GROUP_LAYER_NAME].shape[0],
