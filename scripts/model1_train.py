@@ -31,7 +31,7 @@ def main():
     
     # LOAD DATASETS
     if preprocess: model_preprocess()
-    train_dataset, cv_dataset, test_dataset, feature_info  = load_data(sample_train= 0.001)
+    train_dataset, cv_dataset, test_dataset, feature_info  = load_data()
     
     # LOAD CONFIG FILE from configs
     if not config_file_name.endswith ('.yaml'): config_file_name += '.yaml'
