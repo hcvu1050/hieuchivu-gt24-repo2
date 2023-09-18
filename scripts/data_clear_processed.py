@@ -1,3 +1,6 @@
+"""
+clear all the data in data/processed
+"""
 import sys
 import os
 sys.path.append("..")
