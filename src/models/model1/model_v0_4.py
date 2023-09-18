@@ -2,86 +2,82 @@ import tensorflow as tf
 from keras.losses import BinaryCrossentropy
 from tensorflow import keras
 
-class ContentBasedFiltering(keras.Model):
+class customNN(keras.Sequential):
     def __init__(self, 
-                 num_G_features, 
-                 num_T_features,
-                 Group_NN_width,
-                 Group_NN_depth,
-                 Technique_NN_width,
-                 Technique_NN_depth,
-                 name = 'content_based_filtering',
-                 **kwargs):
-        super().__init__(name = name, **kwargs)
-        
-        self.seed = 17
-        self.set_random_seed()
-        
-        # input / output config
-        self.num_G_features = num_G_features
-        self.num_T_features = num_T_features
-        self.num_outputs = 32
-        
-        # neural network config
-        self.Group_NN_width = Group_NN_width
-        self.Group_NN_depth = Group_NN_depth
-        self.Technique_NN_width = Technique_NN_width
-        self.Technique_NN_depth = Technique_NN_depth
-        
-        self.early_stopping = tf.keras.callbacks.EarlyStopping(
-        monitor='val_loss',  # Monitor validation loss for early stopping
-        patience=32,           # Number of epochs with no improvement before stopping
-        restore_best_weights=True  # Restore model weights from the epoch with the best validation loss
-        ) 
+                 name,
+                 input_size, 
+                 output_size,
+                 widths: int|list,
+                 depth: int,
+                 hidden_layer_activation = 'relu',
+                 output_layer_activation = 'linear',
+                 ):
+        super().__init__(name = name)
+        """
+        when there is a single int for `widths`, all the Dense layers are identical in size
+        `widths` only indicates the widths in the middle layer, NOT the last layer. 
+        The last layer's widths is indicated by `output_size`
+        """
+        if isinstance (widths, int):
+            # First dense layer defined with input shape
+            self.add(keras.layers.Dense(widths, input_shape=(input_size,)))
+            # Custom layer of hidden Dense layer
+            for _ in range (depth-2):
+                self.add (keras.layers.Dense(widths,activation= hidden_layer_activation))
+            # Output layer
+            self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
+        elif isinstance (widths, list) and len(widths) == (depth-2):
+            self.add(keras.layers.Dense(widths[0], input_shape=(input_size,)))
+            for width in widths[1:]:
+                self.add (keras.layers.Dense(width,activation= hidden_layer_activation))
+            self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
+        else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Most likely becase: widths is a list, and len(width) == (depth-2) is False")
 
-        self.input_Group = tf.keras.layers.Input(shape = (self.num_G_features), name = "input_Group")
-        self.input_Technique = tf.keras.layers.Input (shape= (self.num_T_features), name = "input_Technique")
 
-        self.Group_NN = self.build_Group_NN ()
-        self.vg = self.Group_NN(self.input_Group)
-
-        self.Technique_NN = self.build_Technique_NN ()
-        self.vt = self.Technique_NN (self.input_Technique)
+class Model1(keras.Model):
+    def __init__(self, input_sizes, name = None,
+                 group_nn_widths = None, group_nn_depth = None, 
+                 technique_nn_widths = None, technique_nn_depth = None,
+                 nn_output_size = None, config = None,
+                 *args, **kwargs):
+        super().__init__(name = name, *args, **kwargs)
         
-        self.output_layer = tf.keras.layers.Dot (axes=1)(inputs= [self.vg, self.vt], )
-        self.inputs = [self.input_Group, self.input_Technique]
-        self.outputs = self.output_layer
+        if config != None:
+            print ('---model built from config')
+            group_nn_widths = config['group_nn_widths']
+            group_nn_depth = config['group_nn_depth']
+            technique_nn_widths = config['technique_nn_widths']
+            technique_nn_depth = config['technique_nn_depth']
+            nn_output_size = config['nn_output_size']
+            
+        group_input_size = input_sizes['group_feature_size']
+        technique_input_size = input_sizes['technique_feature_size']
         
-        ### BUILD AND COMPILE ###
-        self.build ([tuple(self.input_Group.shape), tuple(self.input_Technique.shape)])
+        self.input_Group = keras.layers.Input (shape= (group_input_size,), name = 'input_Group')
+        self.input_Technique = keras.layers.Input (shape= (technique_input_size,), name = 'input_Technique')
+        self.Group_NN = customNN(input_size =  group_input_size,
+                                 output_size = nn_output_size,
+                                 widths = group_nn_widths,
+                                 depth =group_nn_depth,
+                                 name = 'Group_NN')
+        self.Technique_NN = customNN(input_size = technique_input_size,
+                                 output_size = nn_output_size,
+                                 widths = technique_nn_widths,
+                                 depth = technique_nn_depth,
+                                 name = 'Technique_NN')
         
-        self.set_random_seed()
-        self.compile (
-            loss = BinaryCrossentropy(from_logits= True),
-            optimizer = keras.optimizers.Adam (learning_rate= 0.01),
-            # metrics
-        )
-        
+        self.dot_product = keras.layers.Dot(axes= 1)
     
-    def set_random_seed(self):
-        tf.random.set_seed(self.seed)
+    def call(self, inputs):
+        # self.input_NN_1, self.input_NN_2 = inputs[0], inputs[1]
+        self.input_Group = inputs['input_Group']
+        self.input_Technique = inputs['input_Technique']
         
-    def build_hidden_layers(self, width, depth):
-        self.set_random_seed()
-        layers = []
-        for _ in range (depth):
-            layers.append(tf.keras.layers.Dense (width, activation = 'relu'))
-        return layers
-    
-    def build_Group_NN(self):
-        self.set_random_seed()
-        Group_NN = tf.keras.models.Sequential (
-            layers= self.build_hidden_layers (width= self.Group_NN_width, depth=self.Group_NN_depth) + 
-            [tf.keras.layers.Dense (self.num_outputs, activation='linear', name = 'output_Group')],
-            name = 'Group_NN'
-        )
-        return Group_NN
-    
-    def build_Technique_NN(self):
-        self.set_random_seed()
-        Technique_NN = tf.keras.models.Sequential (
-            layers= self.build_hidden_layers (width= self.Technique_NN_width, depth=self.Technique_NN_depth) + 
-            [tf.keras.layers.Dense (self.num_outputs, activation='linear', name = 'output_Tecnique')],
-            name = 'Technique_NN'
-        )
-        return Technique_NN
+        output_Group = self.Group_NN(self.input_Group)
+        output_Technique = self.Technique_NN(self.input_Technique)
+        
+        norm_output_Group = tf.linalg.l2_normalize (output_Group, axis = 1)
+        norm_output_Technique = tf.linalg.l2_normalize (output_Technique, axis = 1)
+        
+        dot_product = self.dot_product ([norm_output_Group, norm_output_Technique])
+        return dot_product
