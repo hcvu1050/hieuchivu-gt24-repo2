@@ -83,7 +83,7 @@ def main():
     # SAVE HISTORY 
     history_df = pd.DataFrame(history.history)
     config_file_name = args.config
-    history_df.to_csv('training_history_{config_file}.csv'.format(config_file = config_file_name), index=False)
+    history_df.to_csv('train_loss_{config_file}.csv'.format(config_file = config_file_name), index=False)
 if __name__ == '__main__':
     main()
     
