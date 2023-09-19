@@ -40,7 +40,6 @@ def main():
         config = yaml.safe_load (config_file)
         
     model_architecture_config = config['model_architecture']
-    
     train_config = config['train']
     batch_size = train_config['batch_size']
     epochs = train_config['epochs']
@@ -62,8 +61,8 @@ def main():
     train_dataset = train_dataset.shuffle(buffer_size=len(train_dataset))
     train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
     
-    cv_dataset = cv_dataset.batch(batch_size)
-    test_dataset = test_dataset.batch(batch_size)
+    cv_dataset = cv_dataset.batch(32)
+    test_dataset = test_dataset.batch(32)
     
     start_time = time.time()
     ## Train the model
