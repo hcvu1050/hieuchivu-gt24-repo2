@@ -14,9 +14,10 @@ from src.models.model1.model_v0_4 import Model1
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
+RECORD_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
 
 def main():
-    # PARSING ARGS
+    #### PARSING ARGS
     parser = argparse.ArgumentParser (description= 'command-line arguments when running {}'.format ('__file__'))
     parser.add_argument ('-config', required = True,
                          type = str, 
@@ -29,11 +30,11 @@ def main():
     config_file_name = args.config
     preprocess = args.preprocess
     
-    # LOAD DATASETS
+    #### LOAD DATASETS
     if preprocess: model_preprocess()
     train_dataset, cv_dataset, test_dataset, feature_info  = load_data()
     
-    # LOAD CONFIG FILE from configs
+    #### LOAD CONFIG FILE from configs
     if not config_file_name.endswith ('.yaml'): config_file_name += '.yaml'
     config_file_path = os.path.join (CONFIG_FOLDER, config_file_name)
     with open (config_file_path, 'r') as config_file:
@@ -46,16 +47,16 @@ def main():
     learning_rate = train_config['learning_rate']
     print ('---config for Model1\n',config)
     
-    # LOAD MODEL1
+    #### LOAD MODEL1
     model = Model1 (input_sizes= feature_info,
                     config=model_architecture_config)    
     
-    # COMPILE MODEL
+    #### COMPILE MODEL
     optimizer = keras.optimizers.Adam (learning_rate= learning_rate)    
     loss = keras.losses.BinaryCrossentropy (from_logits= True)
     model.compile (optimizer, loss = loss)
     
-    # TRAIN MODEL
+    #### TRAIN MODEL
     ## Config Datasets
     train_dataset = train_dataset.batch(batch_size)
     train_dataset = train_dataset.shuffle(buffer_size=len(train_dataset))
@@ -74,16 +75,20 @@ def main():
     
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"Training completed in {elapsed_time:.2f} seconds")
+    elapsed_minutes = int(elapsed_time // 60)
+    elapsed_seconds = elapsed_time  % 60
+    print(f"Training completed in {elapsed_minutes} minutes and {elapsed_seconds} seconds")
     
     print (model.summary())
     print (model.Group_NN.summary())
     print (model.Technique_NN.summary())
     
-    # SAVE HISTORY 
+    ##### SAVE HISTORY 
     history_df = pd.DataFrame(history.history)
-    config_file_name = args.config
-    history_df.to_csv('train_loss_{config_file}.csv'.format(config_file = config_file_name), index=False)
+    file_name = 'train_loss_{config_file}.csv'.format(config_file = args.config)
+    file_path = os.path.join (RECORD_FOLDER, 'train_loss', file_name)
+    
+    history_df.to_csv(file_path, index=False)
 if __name__ == '__main__':
     main()
     
