@@ -1,0 +1,16 @@
+val: 1
+val2: 2
+val_str: abc
+list: 
+  - 1
+  - 2 
+  - def
+val3: 3
+dict1: 
+  val_dict_1: 2
+  val_dict_2: 3
+  val_dict_3: 4
+  list_dict: 
+    - 12
+    - 13
+    - 14
