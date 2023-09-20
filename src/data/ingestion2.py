@@ -1,7 +1,9 @@
 """
-last update:
-V2. Previous working version: ingestion.py
-Used to gather the data from MITRE ATT&CK. It extracts the following pandas DataFrames and save as csv files in "data/interim"
+last update: 2023-09-20
+V2. Previous working version: ingestion.py.
+Used to gather the data from MITRE ATT&CK. The idea is to collect all data that can potentially be used for training.
+The specific data for training will be decided in downtreamm tasks. 
+Extracts the following pandas DataFrames and save as csv files in "data/interim"
 
 1. `groups_df`
 2. `groups_software_df`
