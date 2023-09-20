@@ -1,5 +1,5 @@
 """
-clear all the data in data/processed
+delete all files in data/preprocessed
 """
 import sys
 import os

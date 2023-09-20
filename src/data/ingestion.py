@@ -23,7 +23,6 @@ PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     """
     v1.0
-    
     Reads local file 'enterprise-attack.json' from `path` (default = "data/raw").
     Returns the following DataFrames:
         techniques_df, \n

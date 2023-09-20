@@ -1,5 +1,5 @@
 """
-clear all the data in data/interim
+delete all files in data/interim
 """
 
 import sys
