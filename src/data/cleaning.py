@@ -13,7 +13,6 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
 import os
 import pandas as pd
 from . import utils
-### CONFIGURATION ###
 
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
@@ -22,22 +21,6 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the cleaned data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
-# Get the collected tables
-# techniques_df               = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_df.csv'))
-# techniques_mitigations_df   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_techniques_mitigations_df.csv'))
-# groups_df                   = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
-# groups_techniques_df        = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_techniques_df.csv'))
-# groups_software_df          = pd.read_csv (os.path.join (SOURCE_PATH, 'collected_groups_software_df.csv'))
-
-# data_and_setting = {
-#     'techniques_df' :               (techniques_df,             ['ID'],                         ['technique_ID']), 
-#     'techniques_platforms_df' :     (techniques_df,             ['ID', 'platforms'],            ['technique_ID', 'platforms']), #only names for platforms, no IDs
-#     'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', 'technique_ID']), 
-#     'groups_df' :                   (groups_df,                 ['ID'],                         ['group_ID']),
-#     'groups_software_df' :          (groups_software_df,        ['source ID', 'target ID'],     ['group_ID', 'software_ID']),
-#     'im_positive_cases_df':         (groups_techniques_df,      ['source ID', 'target ID'],     ['group_ID', 'technique_ID'])
-#     #im = interation matrix
-# }
 
 ### END OF CONFIGURATION ###
 def _get_data():

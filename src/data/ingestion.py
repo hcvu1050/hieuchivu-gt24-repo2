@@ -3,7 +3,7 @@ last update: 2023-09-08
 Used to gather the data from MITRE ATT&CK. It extracts the following pandas DataFrames and save as csv files in "data/interim"
 
 collected_technique_df.csv: list of all Techniques
-collected_techniques_mitigations_df.csv: list of all Mitigations for each Techniques
+collected_techni ques_mitigations_df.csv: list of all Mitigations for each Techniques
 collected_groups_df.csv: list of all Groups
 collected_groups_techniques_df.csv: list of all Techniques used by each Group
 collected_groups_software_df.csv: list of all Software used by each Group
