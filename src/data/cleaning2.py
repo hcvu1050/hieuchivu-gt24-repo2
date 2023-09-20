@@ -44,13 +44,13 @@ def _get_data():
     labels_df = pd.read_csv(os.path.join (SOURCE_PATH, 'collected_labels_df.csv'))
     
     data_and_setting = {
-        'groups_df' :           (groups_df,         ['ID'],                     [GROUP_ID_NAME]),
-        'groups_software_df' :  (groups_software_df,['source ID', 'target ID'], [GROUP_ID_NAME, 'software_ID']),
-        'techniques_df' :       (techniques_df,     ['ID'],                     [TECHNIQUE_ID_NAME]), 
-        'techniques_platforms_df':      (techniques_df, ['ID', 'platforms'], [TECHNIQUE_ID_NAME, 'platforms']),
-        'techniques_tactics_df': (techniques_df, ['ID', 'tactics'], [TECHNIQUE_ID_NAME, 'tactics']),
-        'techniques_defenses_bypassed_df': (techniques_df, ['ID', 'defenses bypassed'], [TECHNIQUE_ID_NAME, 'defenses_bypassed']),
-        'techniques_permissions_required_df': (techniques_df, ['ID','permissions required'], [TECHNIQUE_ID_NAME, 'permissions required']),
+        'groups_df' :                   (groups_df,         ['ID'],                     [GROUP_ID_NAME]),
+        'groups_software_df' :          (groups_software_df,['source ID', 'target ID'], [GROUP_ID_NAME, 'software_ID']),
+        'techniques_df' :               (techniques_df,     ['ID'],                     [TECHNIQUE_ID_NAME]), 
+        'techniques_platforms_df':      (techniques_df,     ['ID', 'platforms'],        [TECHNIQUE_ID_NAME, 'platforms']),
+        'techniques_tactics_df':        (techniques_df,     ['ID', 'tactics'],          [TECHNIQUE_ID_NAME, 'tactics']),
+        'techniques_defenses_bypassed_df':      (techniques_df, ['ID', 'defenses bypassed'],    [TECHNIQUE_ID_NAME, 'defenses_bypassed']),
+        'techniques_permissions_required_df':   (techniques_df, ['ID','permissions required'],  [TECHNIQUE_ID_NAME, 'permissions required']),
         'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', TECHNIQUE_ID_NAME]), 
         'techniques_detections_df' :    (techniques_detections_df,  ['source name','target ID'],    ['detection name', TECHNIQUE_ID_NAME]),
         'techniques_software_df':       (techniques_software_df,    ['source ID', 'target ID'],     ['software_ID', TECHNIQUE_ID_NAME]),
