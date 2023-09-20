@@ -7,6 +7,7 @@ TARGET_PATH = os.path.join (FILE_DIR, 'data/interim')
 
 def _make_file_list (filename: str, target_path, content: list):
     """
+    create a .txt file containing a list of file names stored in `content`
     """
     # file_path = os.path.join(data_folder, filename)
     os.makedirs (target_path, exist_ok= True)
@@ -21,6 +22,10 @@ def _make_file_list (filename: str, target_path, content: list):
     
 
 def save_df_to_csv (df: pd.DataFrame, target_path, filename, prefix = '', postfix = '', output_list_file = None):
+    """
+    save a pandas DataFrame as csv file. The name of the file is customized by `filename`, `prefix`, and `postfix`
+    """
+    
     os.makedirs (target_path, exist_ok = True)
     if not (prefix == '') and (not prefix.endswith ('_')): prefix += '_'
     if not (postfix == '') and (not prefix.startswith ('_')): postfix = '_' + postfix
@@ -39,10 +44,9 @@ def save_df_to_csv (df: pd.DataFrame, target_path, filename, prefix = '', postfi
 def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix ='', postfix ='',output_list_file = None):
     """
     Saves the DataFrames stored in a dict as csv file. \n
-    file_name_dfs: \n
+    Arg `file_name_dfs` stores the filenames as keys and the corresponding DataFrame as values\n
         key: filename\n
         value = DataFrame\n
-    prefix: a string added before filename
     """
     if not (prefix == '') and (not prefix.endswith ('_')): prefix += '_'
     if not (postfix == '') and (not prefix.startswith ('_')): postfix = '_' + postfix

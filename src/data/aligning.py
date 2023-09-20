@@ -21,6 +21,8 @@ def align_input_to_target(feature_df: pd.DataFrame, object: str, target_df: pd.D
         target_df (pd.DataFrame): DataFrame that feature_df will be aligned to \n
         from_set (str): ('train'|'cv'|'test') describes which set does target_df come from (train, cross-validation, or test)\n
         object (str): "group" or "technique"\n
+        (`from_set` and `object` arguments are only used for naming the output tables)
+        
     """
     print (PROCESS_RUNNING_MSG)
     id_name = ''
