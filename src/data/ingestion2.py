@@ -9,7 +9,7 @@ Used to gather the data from MITRE ATT&CK. It extracts the following pandas Data
 4. `techniques_mitigations_df`
 5. `techniques_detections_df`
 6. `techniques_software_df`
-7. `groups_techniques_df`
+7. `labels_df`
 
 """
 from stix2 import MemoryStore
@@ -35,7 +35,7 @@ def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
         4. `techniques_mitigations_df`
         5. `techniques_detections_df`
         6. `techniques_software_df`
-        7. `groups_techniques_df`
+        7. `labels_df`
     """
     
     attackdata = MemoryStore ()
@@ -55,9 +55,9 @@ def read_data_local(file_path = MITRE_ATTCK_FILE_PATH):
     techniques_detections_df = relationships_df[relationships_df['mapping type'] == 'detects']
     techniques_software_df = software_data['techniques used']
     
-    groups_techniques_df = groups_data['techniques used']
+    labels_df = groups_data['techniques used']
         
-    return groups_df, groups_software_df, techniques_df, techniques_mitigations_df, techniques_detections_df, techniques_software_df, groups_techniques_df
+    return groups_df, groups_software_df, techniques_df, techniques_mitigations_df, techniques_detections_df, techniques_software_df, labels_df
 
 ### MAIN FUNCTION ###
 def collect_data(target_path = TARGET_PATH):
@@ -71,10 +71,10 @@ def collect_data(target_path = TARGET_PATH):
         4.`techniques_mitigations_df`\n
         5.`techniques_detections_df`\n
         6.`techniques_software_df`\n
-        7.`groups_techniques_df`\n
+        7.`labels_df`\n
     """
     print (PROCESS_RUNNING_MSG)
-    groups_df, groups_software_df, techniques_df, techniques_mitigations_df, techniques_detections_df, techniques_software_df, groups_techniques_df = read_data_local()
+    groups_df, groups_software_df, techniques_df, techniques_mitigations_df, techniques_detections_df, techniques_software_df, labels_df = read_data_local()
     
     dfs = {
         'groups_df':groups_df,
@@ -83,7 +83,7 @@ def collect_data(target_path = TARGET_PATH):
         'techniques_mitigations_df':techniques_mitigations_df,
         'techniques_detections_df':techniques_detections_df,
         'techniques_software_df':techniques_software_df,
-        'groups_techniques_df':groups_techniques_df
+        'labels_df':labels_df
     }
     utils.batch_save_df_to_csv (dfs, target_path, prefix = 'collected_')
     return dfs
