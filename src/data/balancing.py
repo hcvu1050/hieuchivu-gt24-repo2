@@ -1,3 +1,7 @@
+"""
+Last update 2023-09-20
+Balance the labels in a pandas Dataframe.
+"""
 import os
 import pandas as pd
 from . import utils
@@ -10,11 +14,15 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 
 # path to save the built-feature data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
-# TARGET_PREFIX = 'balanced_'
+
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 RANDOM_STATE = 13
 
 def naive_random_oversampling (df: pd.DataFrame, save_as_csv = True):
+    """
+    Balance the labels stored in 'target' column of a DataFrame 'df'
+    Currently this only works if 'df' has EXACTLY 3 columns: 'group_ID', 'technique_ID', and 'target'
+    """
     print (PROCESS_RUNNING_MSG)
     postfix = 'naive_oversampled'
     X = df[['group_ID','technique_ID']]
