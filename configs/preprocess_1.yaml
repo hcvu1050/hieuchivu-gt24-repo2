@@ -2,10 +2,9 @@ train_cv_test_ratio:
   - 0.75
   - 0.15
   - 0.15
-group_features:
+selected_group_features:
   - 'software_ID'
-technique_features:
-  - 'defenses_bypassed'
+selected_technique_features:
   - 'platforms'
   - 'tactics'
   - 'defenses_bypassed'
