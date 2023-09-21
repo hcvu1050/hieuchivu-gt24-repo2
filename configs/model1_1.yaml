@@ -12,6 +12,8 @@ model_architecture:
     - 32
   technique_nn_depth: 5
   nn_output_size: 32
+  regularizer: ~
+  regularizer_weight: ~
 
 train:
   epochs: 1

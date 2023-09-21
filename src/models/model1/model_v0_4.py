@@ -4,6 +4,7 @@ from tensorflow import keras
 
 class customNN(keras.Sequential):
     def __init__(self, 
+                 regularizer: str|None, regularizer_weight: int|None,
                  name,
                  input_size, 
                  output_size,
@@ -32,6 +33,10 @@ class customNN(keras.Sequential):
                 self.add (keras.layers.Dense(width,activation= hidden_layer_activation))
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Most likely becase: widths is a list, and len(width) == (depth-2) is False")
+        
+        if regularizer == 'l2':
+            for layer in self.layers:
+                layer.kernel_regularizer = tf.keras.regularizers.l2(regularizer_weight)
 
 
 class Model1(keras.Model):
@@ -49,6 +54,8 @@ class Model1(keras.Model):
             technique_nn_widths = config['technique_nn_widths']
             technique_nn_depth = config['technique_nn_depth']
             nn_output_size = config['nn_output_size']
+            regularizer = config['regularizer']
+            regularizer_weight = config['regularizer_weight']
             
         group_input_size = input_sizes['group_feature_size']
         technique_input_size = input_sizes['technique_feature_size']
@@ -59,12 +66,14 @@ class Model1(keras.Model):
                                  output_size = nn_output_size,
                                  widths = group_nn_widths,
                                  depth =group_nn_depth,
-                                 name = 'Group_NN')
+                                 name = 'Group_NN', 
+                                 regularizer= regularizer, regularizer_weight= regularizer_weight)
         self.Technique_NN = customNN(input_size = technique_input_size,
                                  output_size = nn_output_size,
                                  widths = technique_nn_widths,
                                  depth = technique_nn_depth,
-                                 name = 'Technique_NN')
+                                 name = 'Technique_NN', 
+                                 regularizer=regularizer, regularizer_weight= regularizer_weight)
         
         self.dot_product = keras.layers.Dot(axes= 1)
     

@@ -15,7 +15,7 @@ sys.path.append("..")
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 REPORT_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
-from .model1_batch_train_configs import CONFIG_LIST
+from model1_batch_train_configs import CONFIG_LIST
 
 from src.models.model1.preprocessing import model_preprocess
 from src.models.model1.dataloader import load_data
