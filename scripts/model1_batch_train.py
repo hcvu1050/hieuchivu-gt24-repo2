@@ -15,6 +15,7 @@ sys.path.append("..")
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 REPORT_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
+TRAINED_MODELS_FOLDER = os.path.join (ROOT_FOLDER, 'trained_models')
 from model1_batch_train_configs import CONFIG_LIST
 
 from src.models.model1.preprocessing import model_preprocess
@@ -66,9 +67,14 @@ def train_from_config (config_file_name: str):
     print(f"Training completed in {elapsed_minutes} minutes and {elapsed_seconds} seconds")
     
     history_df = pd.DataFrame(history.history)
-    file_name = 'train_loss_{config_file}.csv'.format(config_file = config_file_name)
-    file_path = os.path.join (REPORT_FOLDER, 'train_loss', file_name)
+    report_file_name = 'train_loss_{config_file}.csv'.format(config_file = config_file_name)
+    file_path = os.path.join (REPORT_FOLDER, 'train_loss', report_file_name)
+    history_df.to_csv(file_path, index=False)
     
+    #### SAVE TRAINED MODEL
+    model_file_name = config_file_name
+    model_file_path = os.path.join (TRAINED_MODELS_FOLDER, model_file_name)
+    model.save (model_file_path)
     
 def main():
     parser = argparse.ArgumentParser (description= 'command-line arguments when running {}'.format ('__file__'))
