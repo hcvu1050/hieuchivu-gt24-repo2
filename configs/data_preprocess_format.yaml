@@ -1,3 +1,6 @@
+# last update: 2023-09-21
+# ONLY used for formatting config files for data_preprocess scripts
+# (copy this file for config files, then change the ratio / comment out the features if not needed for training)
 train_cv_test_ratio: 
   - 0.75
   - 0.15
