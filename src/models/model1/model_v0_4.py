@@ -9,17 +9,17 @@ class customNN(keras.Sequential):
                  input_size, 
                  output_size,
                  widths: int|list,
-                 depth: int,
+                 depth: int| None,
                  hidden_layer_activation = 'relu',
                  output_layer_activation = 'linear',
                  ):
         super().__init__(name = name)
         """
-        when there is a single int for `widths`, all the Dense layers are identical in size
+        when `widths` is an `int`, all the Dense layers are identical in size
         `widths` only indicates the widths in the middle layer, NOT the last layer. 
         The last layer's widths is indicated by `output_size`
         """
-        if isinstance (widths, int):
+        if isinstance (widths, int) and isinstance (depth, int):
             # First dense layer defined with input shape
             self.add(keras.layers.Dense(widths, input_shape=(input_size,)))
             # Custom layer of hidden Dense layer
@@ -27,12 +27,13 @@ class customNN(keras.Sequential):
                 self.add (keras.layers.Dense(widths,activation= hidden_layer_activation))
             # Output layer
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
-        elif isinstance (widths, list) and len(widths) == (depth-2):
+        
+        elif isinstance (widths, list) and depth == None:
             self.add(keras.layers.Dense(widths[0], input_shape=(input_size,)))
             for width in widths[1:]:
                 self.add (keras.layers.Dense(width,activation= hidden_layer_activation))
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
-        else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Most likely becase: widths is a list, and len(width) == (depth-2) is False")
+        else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Correct cases: (widths is int and depth is int) OR (widths is list and depth is None)")
         
         if regularizer == 'l2':
             for layer in self.layers:
