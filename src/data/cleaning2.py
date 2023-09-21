@@ -77,7 +77,7 @@ def _filter_rename_columns (data_and_setting):
 def _make_interaction_matrix (user_IDs_df, 
                               item_IDs_df, 
                               positive_cases) -> pd.DataFrame():
-    """Creates an interaction matrix (all possible combination) between users and items based on the IDs.
+    """Creates an interaction matrix (all possible combination) between Groups and Techniques based on the IDs.
 
     """
     group_technique_interactions = pd.merge (user_IDs_df, item_IDs_df, how = 'cross')
