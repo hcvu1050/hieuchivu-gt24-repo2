@@ -31,14 +31,14 @@ def _get_data():
     # group_features_df = pd.read_csv (os.path.join (SOURCE_PATH, 'cleaned_group_features_df.csv'))
     return technique_features_df, group_features_df
 
-def select_features(group_features: list = None, technique_features: list = None, save_as_csv = True):
+def select_features(group_feature_names: list = None, technique_feature_names: list = None, save_as_csv = True):
     technique_features_df, group_features_df = _get_data()
-    if group_features:
-        group_features = [GROUP_ID_NAME] + group_features
-        group_features_df = group_features_df[group_features]
-    if technique_features: 
-        technique_features = [TECHNIQUE_ID_NAME] + technique_features
-        technique_features_df = technique_features_df[technique_features]
+    if group_feature_names:
+        group_feature_names = [GROUP_ID_NAME] + group_feature_names
+        group_features_df = group_features_df[group_feature_names]
+    if technique_feature_names: 
+        technique_feature_names = [TECHNIQUE_ID_NAME] + technique_feature_names
+        technique_features_df = technique_features_df[technique_feature_names]
     if save_as_csv:
         dfs = {
             GROUP_TABLE_PREFIX: group_features_df,
