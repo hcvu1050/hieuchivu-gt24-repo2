@@ -21,9 +21,10 @@ SOURCE_LIST_FILE = os.path.join (SOURCE_PATH, SOURCE_FILENAME)
 
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/processed')
 
-
+PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 ### MAIN FUNCTION ###
 def model_preprocess():
+    print (PROCESS_RUNNING_MSG)
     # get the data set as DataFrames
     train_dataset, cv_dataset, test_dataset = _get_data()
     

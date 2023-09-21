@@ -14,6 +14,6 @@ model_architecture:
   nn_output_size: 32
 
 train:
-  epochs: 30
+  epochs: 1
   learning_rate: 0.0001
   batch_size: 64

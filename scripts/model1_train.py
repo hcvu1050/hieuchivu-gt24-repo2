@@ -14,7 +14,7 @@ from src.models.model1.model_v0_4 import Model1
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
-RECORD_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
+REPORT_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
 
 def main():
     #### PARSING ARGS
@@ -68,9 +68,9 @@ def main():
     start_time = time.time()
     ## Train the model
     history = model.fit (
-    train_dataset,
-    validation_data= cv_dataset,
-    epochs=epochs
+        train_dataset,
+        validation_data= cv_dataset,
+        epochs=epochs
     )
     
     end_time = time.time()
@@ -86,7 +86,7 @@ def main():
     ##### SAVE HISTORY 
     history_df = pd.DataFrame(history.history)
     file_name = 'train_loss_{config_file}.csv'.format(config_file = args.config)
-    file_path = os.path.join (RECORD_FOLDER, 'train_loss', file_name)
+    file_path = os.path.join (REPORT_FOLDER, 'train_loss', file_name)
     
     history_df.to_csv(file_path, index=False)
 if __name__ == '__main__':
