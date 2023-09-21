@@ -1,5 +1,5 @@
 """
-last update: 2023-09-09
+last update: 2023-09-21
 - used to split the dataset into train, cross-validation, and test set. The ratio of the sets are defined by the users
 - Currently there are two ways to split the dataset:
 	1. Split the dataset randomly into train, cross-validation, and test set
