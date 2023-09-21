@@ -1,9 +1,9 @@
 # config file for model1's
 model_architecture:
   group_nn_widths: 128
-  group_nn_depth: 3
+  group_nn_depth: 12
   technique_nn_widths: 256
-  technique_nn_depth: 3
+  technique_nn_depth: 12
   nn_output_size: 32
   regularizer: ~
   regularizer_weight: ~

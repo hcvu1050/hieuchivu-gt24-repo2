@@ -5,8 +5,8 @@ model_architecture:
   technique_nn_widths: 256
   technique_nn_depth: 3
   nn_output_size: 32
-  regularizer: ~
-  regularizer_weight: ~
+  regularizer: 'l2'
+  regularizer_weight: 0.001
 
 train:
   epochs: 50
