@@ -1,0 +1,13 @@
+last update: 2023-09-21
+
+all Group features:
+software_ID
+
+all Technique features:
+platforms
+tactics
+defenses_bypassed
+permissions_required
+mitigation_ID
+detection_name
+software_ID
