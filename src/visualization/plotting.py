@@ -50,7 +50,7 @@ def plot_loss (filename: str, title: str):
     validation_loss = history_df['val_loss']
     # plt.figure(figsize=(6, 5))
 
-    plt.ylim(.50, .65) 
+    # plt.ylim(.50, .65) 
     plt.plot(epochs, training_loss, label='Training Loss')
     plt.plot(epochs, validation_loss, label='Validation Loss')
     plt.title(title)
@@ -62,7 +62,7 @@ def plot_config (filename: str, title: str):
     with open (filename, 'r') as config_file:
         config = yaml.safe_load(config_file)
         
-    formatted_text = yaml.dump(config, default_flow_style=False, indent=4)
+    formatted_text = yaml.dump(config, default_flow_style=False, indent=4, sort_keys=False)
     # Display the formatted text
     plt.text(0.1, 0.5, formatted_text, fontsize=11, va='center', ha='left')
     # Turn off axis for this subplot

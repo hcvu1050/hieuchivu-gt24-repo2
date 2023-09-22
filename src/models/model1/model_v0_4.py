@@ -8,8 +8,8 @@ class customNN(keras.Sequential):
                  name,
                  input_size, 
                  output_size,
-                 widths: int|list,
-                 depth: int| None,
+                 hidden_layer_widths: int|list,
+                 hidden_layer_depth: int| None,
                  hidden_layer_activation = 'relu',
                  output_layer_activation = 'linear',
                  ):
@@ -19,18 +19,18 @@ class customNN(keras.Sequential):
         `widths` only indicates the widths in the middle layer, NOT the last layer. 
         The last layer's widths is indicated by `output_size`
         """
-        if isinstance (widths, int) and isinstance (depth, int):
+        if isinstance (hidden_layer_widths, int) and isinstance (hidden_layer_depth, int):
             # First dense layer defined with input shape
-            self.add(keras.layers.Dense(widths, input_shape=(input_size,)))
+            self.add(keras.layers.Dense(hidden_layer_widths, input_shape=(input_size,)))
             # Custom layer of hidden Dense layer
-            for _ in range (depth-2):
-                self.add (keras.layers.Dense(widths,activation= hidden_layer_activation))
+            for _ in range (hidden_layer_depth-1):
+                self.add (keras.layers.Dense(hidden_layer_widths,activation= hidden_layer_activation))
             # Output layer
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         
-        elif isinstance (widths, list) and depth == None:
-            self.add(keras.layers.Dense(widths[0], input_shape=(input_size,)))
-            for width in widths[1:]:
+        elif isinstance (hidden_layer_widths, list) and hidden_layer_depth == None:
+            self.add(keras.layers.Dense(hidden_layer_widths[0], input_shape=(input_size,)))
+            for width in hidden_layer_widths[1:]:
                 self.add (keras.layers.Dense(width,activation= hidden_layer_activation))
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Correct cases: (widths is int and depth is int) OR (widths is list and depth is None)")
@@ -42,18 +42,18 @@ class customNN(keras.Sequential):
 
 class Model1(keras.Model):
     def __init__(self, input_sizes, name = None,
-                 group_nn_widths = None, group_nn_depth = None, 
-                 technique_nn_widths = None, technique_nn_depth = None,
+                 group_nn_hidden_layer_widths = None, group_nn_hidden_layer_depth = None, 
+                 technique_nn_hidden_layer_widths = None, technique_nn_hidden_layer_depth = None,
                  nn_output_size = None, config = None,
                  *args, **kwargs):
         super().__init__(name = name, *args, **kwargs)
         
         if config != None:
             print ('---model built from config')
-            group_nn_widths = config['group_nn_widths']
-            group_nn_depth = config['group_nn_depth']
-            technique_nn_widths = config['technique_nn_widths']
-            technique_nn_depth = config['technique_nn_depth']
+            group_nn_hidden_layer_widths = config['group_nn_hidden_layer_widths']
+            group_nn_hidden_layer_depth = config['group_nn_hidden_layer_depth']
+            technique_nn_hidden_layer_widths = config['technique_nn_hidden_layer_widths']
+            technique_nn_hidden_layer_depth = config['technique_nn_hidden_layer_depth']
             nn_output_size = config['nn_output_size']
             regularizer = config['regularizer']
             regularizer_weight = config['regularizer_weight']
@@ -65,14 +65,14 @@ class Model1(keras.Model):
         self.input_Technique = keras.layers.Input (shape= (technique_input_size,), name = 'input_Technique')
         self.Group_NN = customNN(input_size =  group_input_size,
                                  output_size = nn_output_size,
-                                 widths = group_nn_widths,
-                                 depth =group_nn_depth,
+                                 hidden_layer_widths = group_nn_hidden_layer_widths,
+                                 hidden_layer_depth =group_nn_hidden_layer_depth,
                                  name = 'Group_NN', 
                                  regularizer= regularizer, regularizer_weight= regularizer_weight)
         self.Technique_NN = customNN(input_size = technique_input_size,
                                  output_size = nn_output_size,
-                                 widths = technique_nn_widths,
-                                 depth = technique_nn_depth,
+                                 hidden_layer_widths = technique_nn_hidden_layer_widths,
+                                 hidden_layer_depth = technique_nn_hidden_layer_depth,
                                  name = 'Technique_NN', 
                                  regularizer=regularizer, regularizer_weight= regularizer_weight)
         
