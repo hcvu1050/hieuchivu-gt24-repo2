@@ -16,15 +16,14 @@ ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 REPORT_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
 TRAINED_MODELS_FOLDER = os.path.join (ROOT_FOLDER, 'trained_models')
-from model1_batch_train_configs import CONFIG_LIST
 
 from src.models.model1.preprocessing import model_preprocess
 from src.models.model1.dataloader import load_data
 from src.models.model1.model_v0_4 import Model1
 
-def train_from_config (config_file_name: str):
-    full_config_file_name = config_file_name + '.yaml'
-    config_file_path = os.path.join (CONFIG_FOLDER, full_config_file_name)
+def train_from_config (config_filename: str, target_folder_name: str):
+    
+    config_file_path = os.path.join (CONFIG_FOLDER, target_folder_name, config_filename)
     with open (config_file_path, 'r') as config_file:
         config = yaml.safe_load (config_file)
     
@@ -63,17 +62,25 @@ def train_from_config (config_file_name: str):
     end_time = time.time()
     elapsed_time = end_time - start_time
     elapsed_minutes = int(elapsed_time // 60)
-    elapsed_seconds = elapsed_time  % 60
+    elapsed_seconds = int (elapsed_time  % 60)
     print(f"Training completed in {elapsed_minutes} minutes and {elapsed_seconds} seconds")
     
+    #### SAVE HISTORY
     history_df = pd.DataFrame(history.history)
-    report_file_name = 'train_loss_{config_file}.csv'.format(config_file = config_file_name)
-    file_path = os.path.join (REPORT_FOLDER, 'train_loss', report_file_name)
+    report_file_name = 'train_loss_{config_file}.csv'.format(config_file = config_filename)
+    
+    # CREATE THE FOLDER
+    folder_path = os.path.join (REPORT_FOLDER, 'train_loss', target_folder_name)
+    if not os.path.exists (folder_path):
+        os.makedirs (folder_path)
+    file_path = os.path.join (folder_path, report_file_name)
     history_df.to_csv(file_path, index=False)
     
     #### SAVE TRAINED MODEL
-    model_file_name = config_file_name
-    model_file_path = os.path.join (TRAINED_MODELS_FOLDER, model_file_name)
+    base_config_filename = config_filename.split(".")[0]
+    
+    model_file_name = base_config_filename
+    model_file_path = os.path.join (TRAINED_MODELS_FOLDER, target_folder_name, model_file_name)
     model.save (model_file_path)
     
 def main():
@@ -81,15 +88,22 @@ def main():
     
     parser.add_argument ('-pp', '--preprocess', type = bool,
                          required= False, default= False,
-                         help = 'option to preprocess the data first (only necessary for the first time)')
+                         help = 'option to preprocess the data first')
+    parser.add_argument ('-configs', type = str,
+                         required= True,
+                         help = 'name of the folder in `configs/` that stores the config files')
     args = parser.parse_args()
     preprocess = args.preprocess
+    config_sub_folder = args.configs
     
-    #### LOAD DATASETS
+    filenames = os.listdir(os.path.join (CONFIG_FOLDER, config_sub_folder))
+    print (filenames)
+    ### LOAD DATASETS
     if preprocess: model_preprocess()
 
-    for config_file_name in CONFIG_LIST:
-        train_from_config (config_file_name)
+    ### BATCH CONFIG AND TRAIN MODELS
+    for config_file_name in filenames:
+        train_from_config (config_file_name, target_folder_name =config_sub_folder)
         
 if __name__ == '__main__':
     main()
