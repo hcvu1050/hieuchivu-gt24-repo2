@@ -14,7 +14,6 @@ from src.data.aligning import align_input_to_target
 from src.data.utils import batch_save_df_to_csv
 from src.data.constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 
-# TRAIN_CV_TEST_RATIO = [.7,.15, .15]
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 

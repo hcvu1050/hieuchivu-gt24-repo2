@@ -2,12 +2,12 @@
 V2.0
 used to clean the data by reducing outliers/noise, handling missing values, etc.
 1. Reads collected files from data/interim
-2. Filters the comlumns needed for training
-3. Rename the columns
-4. Main Function clean_data: Merge the tables into 3 main tables
+2. Filters the columns needed for training, then rename the columns 
+3. Make interaction matrix between Group and Technique
+4. Main Function clean_data: From the cleaned data, create the following tables:
     (a). Group-Technique interaction matrix
-    (b). Technique features: Containing all possible features for Techniques. 
-    (c). Group features: Containing all possible features for Groups
+    (b). Technique features: Containing all available features for Techniques. 
+    (c). Group features: Containing all available features for Groups
 5. Export to data/interim
 """
 import os

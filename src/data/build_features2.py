@@ -4,8 +4,9 @@ Build features for training the model.
 Current functions inlude:
 1. One-hot encoding for single-valued string. (for example, "MacOS", Windows)
 2. One-hot encoding for multiple-valued strings (for example, "MacOS, Windows") and 
-    handling variations of a same value: uppercase/lowercase ("MacOS"/"macos"), hyphens/non-hyphen ("anti-virus"/"anti virus")
-
+    handling variations of the same value: 
+        uppercase/lowercase ("MacOS" is similar to "macos"), 
+        hyphens/non-hyphen ("anti-virus" is similar to "anti virus")
 """
 import os
 import pandas as pd
