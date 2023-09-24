@@ -1,6 +1,6 @@
 """
 last update: 2023-09-18\n
-Loadd the Datasets from data/processed and return those Datasets
+Load the Datasets from data/processed and return those Datasets
 
 """
 
