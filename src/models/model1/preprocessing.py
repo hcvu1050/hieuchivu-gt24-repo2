@@ -23,16 +23,24 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/processed')
 
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 ### MAIN FUNCTION ###
-def model_preprocess():
+def model_preprocess(train_set_split: float= None):
     print (PROCESS_RUNNING_MSG)
     # get the data set as DataFrames
-    train_dataset, cv_dataset, test_dataset = _get_data()
+    train_df, cv_df, test_df = _get_data()
     
-    train_dataset = _build_dataset(train_dataset)
-    cv_dataset = _build_dataset(cv_dataset)
-    test_dataset = _build_dataset(test_dataset)
+    if train_set_split is None:
+        train_dataset = _build_dataset(df_set = train_df)
+        _save_dataset (dataset = train_dataset, file_name= TRAIN_DATASET_FILENAME)
     
-    _save_dataset (dataset = train_dataset, file_name= TRAIN_DATASET_FILENAME)
+    else: 
+        train_dataset, train_cv_dataset = _build_dataset (df_set = train_df, train_set_split= train_set_split)
+        _save_dataset (dataset = train_dataset, file_name= TRAIN_DATASET_FILENAME)
+        _save_dataset (dataset = train_cv_dataset, file_name = 'train_cv_dataset')
+
+    
+    cv_dataset = _build_dataset(cv_df)
+    test_dataset = _build_dataset(test_df)
+    
     _save_dataset (dataset = cv_dataset, file_name= CV_DATASET_FILENAME)
     _save_dataset (dataset = test_dataset, file_name= TEST_DATASET_FILENAME)
     
@@ -82,7 +90,7 @@ def _get_Xy_dfs (file_list: list) -> dict:
         'y': y_df
     }
 
-def _build_dataset(df_set, frac: float = None):
+def _build_dataset(df_set, train_set_split: float = None):
     """
     From a set(train, cv, test) stored in a `dict` containing X and y values:\n
     Create and return a tensorflow Dataset
@@ -95,14 +103,23 @@ def _build_dataset(df_set, frac: float = None):
     X_group_tf = tf.convert_to_tensor(X_group.values, dtype = tf.float32)
     X_technique_tf = tf.convert_to_tensor(X_technique.values, dtype = tf.float32)
     y_tf = tf.convert_to_tensor(y.values, dtype = tf.float32)
-    
     res_dataset = tf.data.Dataset.from_tensor_slices ((
         {
             INPUT_GROUP_LAYER_NAME: X_group_tf, 
             INPUT_TECHNIQUE_LAYER_NAME: X_technique_tf
             },
         y_tf))
-    return res_dataset
+    if train_set_split is None:
+        return res_dataset
+    else: 
+        res_dataset_size = res_dataset.cardinality().numpy()
+        res_dataset = res_dataset.shuffle (buffer_size= res_dataset_size, seed=13)
+        train_size = int (res_dataset_size * train_set_split)
+        
+        train_dataset = res_dataset.take (train_size)
+        train_cv_dataset = res_dataset.skip (train_size)
+        return train_dataset, train_cv_dataset
+
 
 def _save_dataset (dataset, file_name):
     file_path = os.path.join (TARGET_PATH, file_name)

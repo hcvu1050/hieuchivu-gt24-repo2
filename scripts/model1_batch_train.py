@@ -35,7 +35,7 @@ def train_from_config (config_filename: str, target_folder_name: str):
     epochs = train_config['epochs']
     learning_rate = train_config['learning_rate']
 
-    train_dataset, cv_dataset, test_dataset, feature_info  = load_data()
+    train_dataset, train_cv_dataset, cv_dataset, test_dataset, feature_info  = load_data()
 
     #### COMPILE MODEL
     model = Model1 (input_sizes= feature_info,

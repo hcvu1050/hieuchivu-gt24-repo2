@@ -10,16 +10,19 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def batch_plot_loss (model_name: str):
+def batch_plot_loss (model_name:str, folder_name: str):
     # get list of configs
-    config_file_list = os.listdir (SOURCE_CONFIG_FOLDER)
-    config_file_list = [f for f in config_file_list if f.startswith(model_name)]
-    config_file_list = [os.path.join(SOURCE_CONFIG_FOLDER, f) for f in config_file_list]
+    
+    config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
+    config_file_list = os.listdir (config_folder_path)
+    # config_file_list = [f for f in config_file_list if f.startswith(model_name)]
+    config_file_list = [os.path.join(config_folder_path, f) for f in config_file_list]
         
     # get list of train loss files
-    train_loss_folder = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss')
-    train_loss_file_list = os.listdir (train_loss_folder)
-    train_loss_file_list = [os.path.join (train_loss_folder, f) for f in train_loss_file_list]
+    
+    train_loss_folder_path = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss', folder_name)
+    train_loss_file_list = os.listdir (train_loss_folder_path)
+    train_loss_file_list = [os.path.join (train_loss_folder_path, f) for f in train_loss_file_list]
 
     # PLOTTING
     num_grid_rows = len (train_loss_file_list)

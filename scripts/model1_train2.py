@@ -54,29 +54,16 @@ def main():
     print ('---config for Model1\n',config)
 
     #### LOAD DATASETS, THEN CONFIG DATASETS
-    if preprocess: model_preprocess()
-    train_dataset, cv_dataset, test_dataset, feature_info  = load_data()
+    if preprocess: model_preprocess(train_set_split= 0.7)
+    train_dataset, train_cv_dataset, cv_dataset, test_dataset, feature_info = load_data(load_train_cv_set= True)
     
     train_dataset = train_dataset.batch(batch_size)
     train_dataset = train_dataset.shuffle(buffer_size=len(train_dataset))
     train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
 
-    cv_dataset = cv_dataset.batch(32)
-    test_dataset = test_dataset.batch(32)
-    
-    #### ☝️ Creating a train_dev_set from train_dataset.
-    # split_fraction = 0.8 
-    # num_elements = int (len (full_train_dataset))
-    # full_train_dataset = full_train_dataset.shuffle (buffer_size=len(full_train_dataset))
-    # num_elements_first_part = int (num_elements + split_fraction)
-    # train_dataset = full_train_dataset.skip (num_elements_first_part)
-    # train_dev_dataset = full_train_dataset.take (num_elements_first_part)
-    
-    # train_dataset = train_dataset.batch(batch_size)
-    # train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
 
-    # train_dev_dataset = train_dev_dataset.batch(batch_size)
-    
+    train_cv_dataset = train_cv_dataset.batch(32)
+    # test_dataset = test_dataset.batch(32)
     
     #### LOAD/COMPILE MODEL THEN TRAIN MODEL
     model = Model1 (input_sizes= feature_info,
@@ -90,7 +77,7 @@ def main():
     start_time = time.time()
     history = model.fit (
         train_dataset,
-        # validation_data= train_dev_dataset,
+        validation_data= train_cv_dataset,
         epochs=epochs
     )
     end_time = time.time()
@@ -101,9 +88,12 @@ def main():
     
     #### SAVE HISTORY
     history_df = pd.DataFrame(history.history)
-    file_name = 'train_loss_{config_file}.csv'.format(config_file = args.config)
+    file_name = '{config_file}.csv'.format(config_file = args.config)
     file_path = os.path.join (REPORT_FOLDER, 'train_loss', SINGLE_TRAIN_FOLDER_NAME,file_name)
     history_df.to_csv(file_path, index=False)
+    
+    
+    #### SAVE TRAINED MODEL: tk
     
 if __name__ == '__main__':
     main()
