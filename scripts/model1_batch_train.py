@@ -35,7 +35,7 @@ def train_from_config (config_filename: str, target_folder_name: str):
     epochs = train_config['epochs']
     learning_rate = train_config['learning_rate']
 
-    train_dataset, train_cv_dataset, cv_dataset, test_dataset, feature_info  = load_data()
+    train_dataset, train_cv_dataset, cv_dataset, test_dataset, feature_info  = load_data(load_train_cv_set=True)
 
     #### COMPILE MODEL
     model = Model1 (input_sizes= feature_info,
@@ -99,7 +99,7 @@ def main():
     filenames = os.listdir(os.path.join (CONFIG_FOLDER, config_sub_folder))
     print (filenames)
     ### LOAD DATASETS
-    if preprocess: model_preprocess()
+    if preprocess: model_preprocess(train_set_split=0.8)
 
     ### BATCH CONFIG AND TRAIN MODELS
     for config_file_name in filenames:

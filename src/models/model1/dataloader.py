@@ -18,10 +18,10 @@ ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/processed')
 
 def _single_load (file_name):
-    print ("loading\t", file_name)
+    print ("loading\t", file_name, '-----', end='')
     file_path = os.path.join (SOURCE_PATH, file_name) 
     dataset = tf.data.Dataset.load (file_path)
-    print ('loaded:\t', file_name)
+    print ('loaded:')
     return dataset
 
 def load_data (sample_train: float = None, load_train_cv_set: bool = False):
