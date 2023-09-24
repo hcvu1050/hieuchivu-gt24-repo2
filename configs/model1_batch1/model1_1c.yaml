@@ -9,6 +9,6 @@ model_architecture:
   regularizer_weight: 0.1
 
 train:
-  epochs: 50
+  epochs: 30
   learning_rate: 0.001
   batch_size: 32
