@@ -1,5 +1,9 @@
 import os
 
+GROUP_ID_NAME = 'group_ID'
+TECHNIQUE_ID_NAME = 'technique_ID'
+LABEL_NAME = 'label'
+
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 INPUT_GROUP_LAYER_NAME = 'input_Group'
 INPUT_TECHNIQUE_LAYER_NAME = 'input_Technique'

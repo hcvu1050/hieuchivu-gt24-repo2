@@ -11,6 +11,7 @@ data preprocess pipeline V3. Steps:
     - The interation matrix between Groups and Techniques
     - Built Group features
     - Built Technique features
+6. The list of exported files are stored in PREPROCESSED.txt
 """
 
 import sys
@@ -20,7 +21,7 @@ import argparse
 import yaml
 
 ### MODULES
-from src.data.utils import save_df_to_csv
+from src.data.utils import batch_save_df_to_csv
 from src.data.constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 
 from src.data.ingestion2 import collect_data
@@ -73,13 +74,15 @@ def main():
         technique_feature_names = selected_technique_features,
         group_features_df = group_features,
         group_features_names = selected_group_features,
-        save_as_csv= True
+        save_as_csv= save_intermediary_table
     )
     
-    ## ALSO SAVE INTERACTION MATRIX
-    # if interaction_matrix was not saved at previous step (clean_data)
-    if not save_intermediary_table:
-        save_df_to_csv (df = interaction_matrix, target_path=TARGET_PATH, filename = 'y' , postfix='cleaned')
+    dfs ={
+        'y_cleaned': interaction_matrix,
+        'X_group_onehot': group_features,
+        'X_technique_onehot': technique_features,
+    }
+    batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
     
     
 if __name__ == '__main__':
