@@ -25,6 +25,34 @@ TECHNIQUE_TABLE_PREFIX = 'X_technique'
 GROUP_TABLE_PREFIX = 'X_group'
 from .constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME
 
+def build_features(technique_features_df: pd.DataFrame|None, 
+                   technique_feature_names: list|None,
+                   group_features_df: pd.DataFrame|None,
+                   group_features_names: list |None,
+                   target_path = TARGET_PATH, 
+                   save_as_csv = True):
+
+    print (PROCESS_RUNNING_MSG)
+    
+    if (technique_features_df is None) or (group_features_df is None):
+    ###  If don't receive the tables as args, get the table from files instead
+        technique_features_df, group_features_df = _get_data()
+    
+    onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
+                                                         ID = TECHNIQUE_ID_NAME, 
+                                                         feature_names= technique_feature_names)
+    onehot_group_features_df = _onehot_encode_features (group_features_df,
+                                                     ID = GROUP_ID_NAME, 
+                                                     feature_names= group_features_names)
+    if save_as_csv:
+        dfs = {
+            TECHNIQUE_TABLE_PREFIX : onehot_technique_features_df,
+            GROUP_TABLE_PREFIX: onehot_group_features_df
+        }
+        utils.batch_save_df_to_csv (dfs, target_path, postfix = 'onehot', output_list_file= 'built_features')
+    return onehot_technique_features_df, onehot_group_features_df
+
+
 def _get_data():
     with open (SOURCE_LIST_FILE, 'r') as file:
         csv_file_names = file.read().splitlines()
@@ -79,28 +107,3 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
             
     return df_onehot
 
-def build_features(technique_features_df: pd.DataFrame|None, 
-                   technique_feature_names: list|None,
-                   group_features_df: pd.DataFrame|None,
-                   group_features_names: list |None,
-                   target_path = TARGET_PATH, 
-                   save_as_csv = True):
-    print (PROCESS_RUNNING_MSG)
-    
-    if (technique_features_df is None) or (group_features_df is None):
-    ###  If don't receive the tables as args, get the table from files instead
-        technique_features_df, group_features_df = _get_data()
-    
-    onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
-                                                         ID = TECHNIQUE_ID_NAME, 
-                                                         feature_names= technique_feature_names)
-    onehot_group_features_df = _onehot_encode_features (group_features_df,
-                                                     ID = GROUP_ID_NAME, 
-                                                     feature_names= group_features_names)
-    if save_as_csv:
-        dfs = {
-            TECHNIQUE_TABLE_PREFIX : onehot_technique_features_df,
-            GROUP_TABLE_PREFIX: onehot_group_features_df
-        }
-        utils.batch_save_df_to_csv (dfs, target_path, postfix = 'onehot', output_list_file= 'built_features')
-    return onehot_technique_features_df, onehot_group_features_df

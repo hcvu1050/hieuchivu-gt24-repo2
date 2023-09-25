@@ -16,7 +16,6 @@ from src.data.constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
-
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 
 def main():
