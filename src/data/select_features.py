@@ -1,5 +1,5 @@
 """
-select the features from the features created from cleaned2.py
+select the features from the features created (from cleaned2.py)
 """
 import os
 import pandas as pd
