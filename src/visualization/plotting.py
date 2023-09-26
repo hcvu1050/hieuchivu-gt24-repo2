@@ -40,7 +40,7 @@ def batch_plot_loss (model_name:str, folder_name: str):
         else:
             plot_config(
                 config_file_list[int(grid/2-1)],
-                title= 'name'
+                title=  config_file_list[int(grid/2-1)].split(sep = "\\")[-1]
                 )
         
     
