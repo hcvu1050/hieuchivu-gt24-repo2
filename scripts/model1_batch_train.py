@@ -17,7 +17,7 @@ CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 REPORT_FOLDER = os.path.join (ROOT_FOLDER, 'reports', 'model1')
 TRAINED_MODELS_FOLDER = os.path.join (ROOT_FOLDER, 'trained_models')
 
-from src.models.model1.preprocessing import model_preprocess
+from src.models.model1.archive.preprocessing import model_preprocess
 from src.models.model1.dataloader import load_data
 from src.models.model1.model_v0_4 import Model1
 

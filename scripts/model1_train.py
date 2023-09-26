@@ -8,7 +8,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 
-from src.models.model1.preprocessing import model_preprocess
+from src.models.model1.archive.preprocessing import model_preprocess
 from src.models.model1.dataloader import load_data
 from src.models.model1.model_v0_4 import Model1
 
