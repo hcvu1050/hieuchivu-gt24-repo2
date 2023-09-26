@@ -71,7 +71,7 @@ def main():
     end_time = time.time()
     elapsed_time = end_time - start_time
     elapsed_minutes = int(elapsed_time // 60)
-    elapsed_seconds = elapsed_time  % 60
+    elapsed_seconds = int (elapsed_time % 60)
     print(f"Training completed in {elapsed_minutes} minutes and {elapsed_seconds} seconds")
     
     #### SAVE HISTORY
