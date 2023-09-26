@@ -20,7 +20,7 @@ def main():
                          type = str, 
                          help='name of config file preprocess data for model1')
     
-    parser.add_argument ('--last-only','-lo', required=True, 
+    parser.add_argument ('--last-only','-lo', required=True, choices= ['True', 'False'],
                          help='Option to not save the tables for intermediary steps, only save the last processed tables value is either "True" or "False"')
     
     args = parser.parse_args()
