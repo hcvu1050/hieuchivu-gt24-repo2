@@ -1,7 +1,3 @@
-train_cv_test_ratio: 
-  - 0.75
-  - 0.15
-  - 0.15
 selected_group_features:
   - 'software_ID'
 selected_technique_features:

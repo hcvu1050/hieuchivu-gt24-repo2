@@ -1,14 +1,24 @@
 """
-delete all files in data/interim
+delete all files in a folder in `data/`. Folder name is specified as an arg
 """
-
-import sys
-import os
+import sys, os, argparse
 sys.path.append("..")
 # path to save the built-feature data
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
-TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
+DATA_FOLDER = os.path.join(ROOT_FOLDER, 'data')
+
 import shutil
+
+def main ():
+    parser = argparse.ArgumentParser (description= 'command-line arguments when running current script')
+    parser.add_argument ('-dir', required= True,  choices = ['interim', 'processed'],
+                         help = 'name of the directory in `data/` whose contents will be deleted. Can ONLY delete from folder "interim" or "processed"')
+    args = parser.parse_args()
+    dir_name = args.dir
+    
+    target_path = os.path.join (DATA_FOLDER, dir_name)
+    clear_folder (target_path)
+    
 
 def clear_folder(folder_path):
     try:
@@ -28,4 +38,4 @@ def clear_folder(folder_path):
         print(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
-    clear_folder(TARGET_PATH)
+    main ()
