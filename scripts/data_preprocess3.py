@@ -14,16 +14,10 @@ data preprocess pipeline V3. Steps:
 6. The list of exported files are stored in PREPROCESSED.txt
 """
 
-import sys
-import os
+import sys, os, argparse, yaml
 sys.path.append("..")
-import argparse
-import yaml
-
 ### MODULES
 from src.data.utils import batch_save_df_to_csv
-from src.data.constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
-
 from src.data.ingestion2 import collect_data
 from src.data.cleaning2 import clean_data
 from src.data.select_features import select_features

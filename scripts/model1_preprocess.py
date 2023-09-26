@@ -4,15 +4,16 @@ data preprocess script for model 1
 
 """
 import sys, os, yaml, argparse
-
 sys.path.append("..")
+
+from src.models.model1.data_preprocess import *
+from src.constants import TRAIN_DATASET_FILENAME, TRAIN_CV_DATASET_FILENAME, CV_DATASET_FILENAME, TEST_DATASET_FILENAME
+from src.data.utils import batch_save_df_to_csv
+
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 TARGET_PATH = os.path.join (ROOT_FOLDER, 'data/processed/model1')
 
-from src.models.model1.data_preprocess import *
-from src.models.model1.constants import *
-from src.data.utils import batch_save_df_to_csv
 def main():
     parser = argparse.ArgumentParser (description= 'command-line arguments when running {}'.format ('__file__'))
     parser.add_argument ('-config', required = True,

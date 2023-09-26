@@ -1,24 +1,23 @@
 """
 last update: 2023-09-25
-data preprocessing modules secifically for Model1
+data preprocessing modules specifically for Model1
 """
 
 import os
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import RandomOverSampler
 
-from .constants import ROOT_FOLDER, INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
-from .constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
-
-from sklearn.model_selection import train_test_split
+from ...constants import INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
+from ...constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
+from ...constants import RANDOM_STATE
+ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 SOURCE_FILENAME = 'PREPROCESSED.txt'
 SOURCE_LIST_FILE = os.path.join (SOURCE_PATH, SOURCE_FILENAME)
-
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
-RANDOM_STATE = 13
 
 def get_data ():
     """

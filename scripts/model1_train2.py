@@ -4,17 +4,13 @@ V2
 training script for model1 - single train
 the config files for training (one at a time) are stored in `configs/model1_single_config_train`
 """
-import time
-import sys
-import os
-import yaml
+
+import sys, os, argparse, yaml, time
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
-import argparse
 
 sys.path.append("..")
-
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 ### folder for config of single model train
