@@ -13,7 +13,7 @@ collected_groups_software_df.csv: list of all Software used by each Group
 from stix2 import MemoryStore
 import mitreattack.attackToExcel.stixToDf as stixToDf
 import pandas as pd
-from . import utils
+from .. import utils
 import os
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))

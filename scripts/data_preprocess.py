@@ -2,12 +2,12 @@ import sys
 import os
 sys.path.append("..")
 import argparse
-from src.data.ingestion import collect_data
-from src.data.cleaning import clean_data
-from src.data.build_features import build_features
-from src.data.splitting import split_data_by_group
-from src.data.balancing import naive_random_oversampling
-from src.data.aligning import align_input_to_target
+from src.data.archived.ingestion import collect_data
+from src.data.archived.cleaning import clean_data
+from src.data.archived.build_features import build_features
+from src.data.archived.splitting import split_data_by_group
+from src.data.archived.balancing import naive_random_oversampling
+from src.data.archived.aligning import align_input_to_target
 from src.data.utils import batch_save_df_to_csv
 
 TRAIN_CV_TEST_RATIO = [.7,.15, .15]

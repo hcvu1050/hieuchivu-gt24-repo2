@@ -6,7 +6,7 @@ Used to engineer the features, including
 """
 import os
 import pandas as pd
-from . import utils
+from .. import utils
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 
 # path to get cleaned data

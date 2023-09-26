@@ -8,8 +8,8 @@ last update: 2023-09-21
 """
 import os
 import pandas as pd
-from . import utils
-from .constants import GROUP_ID_NAME
+from .. import utils
+from ..constants import GROUP_ID_NAME
 from sklearn.model_selection import train_test_split
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))

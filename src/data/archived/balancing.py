@@ -4,8 +4,8 @@ Balance the labels in a pandas Dataframe.
 """
 import os
 import pandas as pd
-from . import utils
-from .constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
+from .. import utils
+from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 from imblearn.over_sampling import RandomOverSampler
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))

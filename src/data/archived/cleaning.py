@@ -13,7 +13,7 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
 
 import os
 import pandas as pd
-from . import utils
+from .. import utils
 
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))

@@ -8,9 +8,9 @@ from src.data.ingestion2 import collect_data
 from src.data.cleaning2 import clean_data
 from src.data.select_features import select_features
 from src.data.build_features2 import build_features
-from src.data.splitting import split_data_by_group
-from src.data.balancing import naive_random_oversampling
-from src.data.aligning import align_input_to_target
+from src.data.archived.splitting import split_data_by_group
+from src.data.archived.balancing import naive_random_oversampling
+from src.data.archived.aligning import align_input_to_target
 from src.data.utils import batch_save_df_to_csv
 from src.data.constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 
