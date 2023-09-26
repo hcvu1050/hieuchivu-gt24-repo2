@@ -9,20 +9,21 @@ import numpy as np
 import tensorflow as tf
 from imblearn.over_sampling import RandomOverSampler
 
-from .constants import ROOT_FOLDER, INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME, TRAIN_DATASET_FILENAME, CV_DATASET_FILENAME, TEST_DATASET_FILENAME
+from .constants import ROOT_FOLDER, INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
 from .constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 
 from sklearn.model_selection import train_test_split
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
-TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/processed')
 SOURCE_FILENAME = 'PREPROCESSED.txt'
 SOURCE_LIST_FILE = os.path.join (SOURCE_PATH, SOURCE_FILENAME)
-
 
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 RANDOM_STATE = 13
 
 def get_data ():
+    """
+    Read the csv files (filenames stored in PREPROCESSED.txt) and return as DataFrames
+    """
     print ('Collecting data')
     with open (SOURCE_LIST_FILE, 'r') as file:
         csv_file_names = file.read().splitlines()
@@ -72,7 +73,7 @@ def oversample (df: pd.DataFrame):
     return res_df
 
 
-def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.DataFrame, from_set: str , save_to_csv = True):
+def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.DataFrame):
     """ Aligns the instances in feature_df so that they match with their corresponding labels in target_df.
     The main purpose of the function is for the input features (group features and technique features)\n
     Args:
@@ -84,15 +85,11 @@ def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.Da
         
     """
     id_name = '' # for merging
-    filename = '' # for saving table after aligning
-    if from_set in ('train', 'cv','test'):
-        filename = from_set + '_'
+
     if object == 'group':
         id_name = GROUP_ID_NAME
-        filename += 'X_group'
     elif object == 'technique':
         id_name = TECHNIQUE_ID_NAME
-        filename += 'X_technique'
     df_aligned = pd.merge(left = feature_df, right= label_df, on = id_name, how = 'right')
     
     # remove unecessary columns after merging
@@ -108,6 +105,11 @@ def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:p
     """
     From the (aligned) feature tables and label table, build and return a tensorflow dataset
     """
+    # removing the ID columns because they are not used for training
+    X_group_df = X_group_df.drop (columns= GROUP_ID_NAME)
+    X_technique_df = X_technique_df.drop (columns= TECHNIQUE_ID_NAME)
+    y_df = y_df[LABEL_NAME]
+    
     X_group_tf = tf.convert_to_tensor(X_group_df.values, dtype = tf.float32)
     X_technique_tf = tf.convert_to_tensor(X_technique_df.values, dtype = tf.float32)
     y_tf = tf.convert_to_tensor(y_df.values, dtype = tf.float32)
@@ -121,7 +123,7 @@ def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:p
     
     return res_dataset
 
-def save_dataset (dataset, file_name):
-    file_path = os.path.join (TARGET_PATH, file_name)
+def save_dataset (dataset, target_folder, file_name):
+    file_path = os.path.join (target_folder, file_name)
     tf.data.Dataset.save (dataset, file_path)
     print ('Dataset saved to', file_path)

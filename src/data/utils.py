@@ -59,8 +59,8 @@ def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix ='', postfix 
         if not filename.endswith (".csv"): filename+= ".csv"
         output_file = os.path.join(target_path, filename)
         
-        df = file_name_dfs[key]
         print ('Saving:\t', filename, end = '-----')
+        df = file_name_dfs[key]
         df.to_csv (output_file, index = False)
         content.append (filename)
         print ('Saved')
