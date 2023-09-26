@@ -4,7 +4,7 @@ select the features from the features created (from cleaned2.py)
 import os
 import pandas as pd
 from . import utils
-from .constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
+from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME
 TECHNIQUE_TABLE_PREFIX = 'X_technique'
 GROUP_TABLE_PREFIX = 'X_group'
 RESULT_FILE_POSTFIX = 'selected_features'

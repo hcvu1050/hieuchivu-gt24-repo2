@@ -23,7 +23,7 @@ TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 TECHNIQUE_TABLE_PREFIX = 'X_technique'
 GROUP_TABLE_PREFIX = 'X_group'
-from .constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME
+from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME
 
 def build_features(technique_features_df: pd.DataFrame|None, 
                    technique_feature_names: list|None,
