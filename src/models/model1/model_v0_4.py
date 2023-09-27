@@ -37,7 +37,7 @@ class customNN(keras.Sequential):
         
         if regularizer == 'l2':
             for layer in self.layers:
-                layer.kernel_regularizer = tf.keras.regularizers.l2(regularizer_weight)
+                layer.kernel_regularizer = tf.keras.regularizers.l2(l2=regularizer_weight)
 
 
 class Model1(keras.Model):

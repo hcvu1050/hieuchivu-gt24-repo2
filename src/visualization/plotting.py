@@ -10,7 +10,7 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def batch_plot_loss (model_name:str, folder_name: str):
+def batch_plot_loss (model_name:str, folder_name: str, ylims: list = None):
     # get list of configs
     
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
@@ -33,6 +33,7 @@ def batch_plot_loss (model_name:str, folder_name: str):
         plt.subplot (num_grid_rows, 2, grid)
         
         if grid % 2 == 1: 
+            if ylims is not None: plt.ylim(ylims) 
             plot_loss (
                 train_loss_file_list[int((grid-1)/2)],
                 title = 'name'
