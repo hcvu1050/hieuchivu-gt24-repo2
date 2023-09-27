@@ -81,8 +81,10 @@ def train_from_config (config_filename: str, target_folder_name: str):
     print(f"Training completed in {elapsed_minutes} minutes and {elapsed_seconds} seconds")
     
     #### SAVE HISTORY
+    base_config_filename = config_filename.split(".")[0]
+    
     history_df = pd.DataFrame(history.history)
-    report_file_name = 'train_loss_{config_file}.csv'.format(config_file = config_filename)
+    report_file_name = 'train_loss_{config_file}.csv'.format(config_file = base_config_filename)
     
     # CREATE THE FOLDER
     folder_path = os.path.join (REPORT_FOLDER, 'train_loss', target_folder_name)
@@ -92,7 +94,6 @@ def train_from_config (config_filename: str, target_folder_name: str):
     history_df.to_csv(file_path, index=False)
     
     #### SAVE TRAINED MODEL
-    base_config_filename = config_filename.split(".")[0]
     model_file_name = base_config_filename
     if not os.path.exists (os.path.join (TRAINED_MODELS_FOLDER, target_folder_name)):
         os.makedirs (os.path.join (TRAINED_MODELS_FOLDER, target_folder_name))

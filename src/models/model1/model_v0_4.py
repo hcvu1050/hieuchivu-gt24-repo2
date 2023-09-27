@@ -57,6 +57,7 @@ class Model1(keras.Model):
             nn_output_size = config['nn_output_size']
             regularizer = config['regularizer']
             regularizer_weight = config['regularizer_weight']
+            if regularizer_weight != None: regularizer_weight = float (regularizer_weight)
             
         group_input_size = input_sizes['group_feature_size']
         technique_input_size = input_sizes['technique_feature_size']
