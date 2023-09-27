@@ -8,11 +8,9 @@ Project Organization
 
 ```
 hieuchivu-gt24-repo2/
-├── LICENSE     
-├── README.md                  
-├── Makefile                     # Makefile with commands like `make data` or `make train`                   
-├── configs                      # Config files (models and training hyperparameters)
-│   └── model1.yaml              
+├── README.md                           
+├── configs                     
+│   └── model1.yaml               # Config files (models and training hyperparameters)
 │
 ├── data                         
 │   ├── external                 # Data from third party sources.
