@@ -1,5 +1,8 @@
 """
-Trains multiple instances of model1. Each instance is configured by a .yaml file in `config` folder
+last update: 2023-10-05
+- Usage: Train multiple instances of model1 with different hyperparameters
+- Args: 
+    - `configs`: name of the subfolder in `configs/` that contains the `yaml` files for different instances (each instance is defined by a set of hyperparameters) of model1
 """
 import time
 import sys

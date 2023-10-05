@@ -2,7 +2,7 @@
 last update: 2023-09-25
 data preprocess pipeline V3. Steps:
 1. Extract the data from `data/raw/enterprise-attack.json` and save as pands dataframe (`src.data.ingestion2`)
-2. Clean the data to achive only the parts that can be used for training (`src.data.cleaning2`)
+2. Clean the data to retreive only the portion that can be used for training (`src.data.cleaning2`)
 3. Select the features that will be used for training (`src.data.select_features`)
     - The selected features are defined in a yaml file in `configs/` folder. 
     The file name is one of the arguments when running the script

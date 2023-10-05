@@ -1,7 +1,15 @@
 """
-last update: 2023-09-25
-data preprocess script for model 1
-
+last update: 2023-10-05
+- Usage: data preprocess pipeline specific to model 1. ❗Only works after running `data_preprocess3`. Steps: 
+    1. Load the data exported by running `data_preprocess3`
+    2. Split the data into train, train-cv, cv, and test set with ratios defined by a yaml file in `configs/folder`
+    3. Oversampling train and train-cv data
+    4. Aligning features to labels
+    5. Create tensorflow Datasets for train and train-cv sets.
+    6. Save the preprocessed data to `data/preprocessed/model1`
+- Args: 
+    - `config`: name of the `yaml` file in `configs/` that will be used to define the ratios for splitting the data sets.
+    - `-lo`  (means 'last only', defaul = `True`): optional argument to save the intermediary data while going through the preprocessing steps.
 """
 import sys, os, yaml, argparse
 sys.path.append("..")

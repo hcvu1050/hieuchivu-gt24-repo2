@@ -1,8 +1,8 @@
 """
-last update: 2023-09-24
-V2
-training script for model1 - single train
-the config files for training (one at a time) are stored in `configs/model1_single_config_train`
+last update: 2023-10-05
+- Usage: Train a single instance of model1 (script version 2). 
+- Args: 
+    - `-config`:  name of the `yaml` file in `configs/model1/single_train` that will be used to define the hyperparameters for model1
 """
 
 import sys, os, argparse, yaml, time
