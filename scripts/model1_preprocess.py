@@ -6,7 +6,7 @@ data preprocess script for model 1
 import sys, os, yaml, argparse
 sys.path.append("..")
 
-from src.models.model1.data_preprocess import *
+from src.models.model1.model_preprocess import *
 from src.constants import TRAIN_DATASET_FILENAME, TRAIN_CV_DATASET_FILENAME, CV_DATASET_FILENAME, TEST_DATASET_FILENAME
 from src.data.utils import batch_save_df_to_csv
 

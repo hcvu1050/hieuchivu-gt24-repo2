@@ -1,13 +1,12 @@
 """
 delete all files in a folder in `data/`. Folder name is specified as an arg
+Except for files in `data/raw`, which can NOT be deleted.
 """
-import sys, os, argparse
+import sys, os, argparse, shutil
 sys.path.append("..")
 # path to save the built-feature data
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 DATA_FOLDER = os.path.join(ROOT_FOLDER, 'data')
-
-import shutil
 
 def main ():
     parser = argparse.ArgumentParser (description= 'command-line arguments when running current script')
@@ -18,7 +17,6 @@ def main ():
     
     target_path = os.path.join (DATA_FOLDER, dir_name)
     clear_folder (target_path)
-    
 
 def clear_folder(folder_path):
     try:
