@@ -10,6 +10,7 @@ class customNN(keras.Sequential):
                  output_size,
                  hidden_layer_widths: int|list,
                  hidden_layer_depth: int| None,
+                 initializer: str|None,
                  hidden_layer_activation = 'relu',
                  output_layer_activation = 'linear',
                  ):
@@ -35,17 +36,23 @@ class customNN(keras.Sequential):
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Correct cases: (widths is int and depth is int) OR (widths is list and depth is None)")
         
-        # APPLYING RELUARIZER: exlude the last Dense layer
+        # APPLYING REGULARIZER: exlude the last Dense layer
         if regularizer == 'l2':
             for layer in self.layers[:-1]:
                 layer.kernel_regularizer = tf.keras.regularizers.l2(l2=regularizer_weight)
-
+                
+        # INITIALIZER: 
+        if initializer == 'he':
+            initializer = keras.initializers.he_normal(seed = 13)
+            for layer in self.layers: 
+                layer.kernel_initializer = initializer
 
 class Model1(keras.Model):
     def __init__(self, input_sizes, name = None,
                  group_nn_hidden_layer_widths = None, group_nn_hidden_layer_depth = None, 
                  technique_nn_hidden_layer_widths = None, technique_nn_hidden_layer_depth = None,
                  nn_output_size = None, config = None,
+                 initializer = None,
                  *args, **kwargs):
         super().__init__(name = name, *args, **kwargs)
         
@@ -59,6 +66,7 @@ class Model1(keras.Model):
             regularizer = config['regularizer']
             regularizer_weight = config['regularizer_weight']
             if regularizer_weight != None: regularizer_weight = float (regularizer_weight)
+            initializer = config['initializer']
             
         group_input_size = input_sizes['group_feature_size']
         technique_input_size = input_sizes['technique_feature_size']
@@ -69,12 +77,14 @@ class Model1(keras.Model):
                                  output_size = nn_output_size,
                                  hidden_layer_widths = group_nn_hidden_layer_widths,
                                  hidden_layer_depth =group_nn_hidden_layer_depth,
+                                 initializer= initializer,
                                  name = 'Group_NN', 
                                  regularizer= regularizer, regularizer_weight= regularizer_weight)
         self.Technique_NN = customNN(input_size = technique_input_size,
                                  output_size = nn_output_size,
                                  hidden_layer_widths = technique_nn_hidden_layer_widths,
                                  hidden_layer_depth = technique_nn_hidden_layer_depth,
+                                 initializer= initializer,
                                  name = 'Technique_NN', 
                                  regularizer=regularizer, regularizer_weight= regularizer_weight)
         
