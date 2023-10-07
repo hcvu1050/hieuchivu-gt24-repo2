@@ -10,7 +10,7 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def batch_plot_history_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None):
+def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None):
     # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
@@ -18,21 +18,21 @@ def batch_plot_history_with_config (model_name:str, folder_name: str,labels: lis
     config_file_list = [os.path.join(config_folder_path, f) for f in config_file_list]
         
     # get list of train loss files
-    train_loss_folder_path = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss', folder_name)
-    train_loss_file_list = os.listdir (train_loss_folder_path)
-    train_loss_file_list = [os.path.join (train_loss_folder_path, f) for f in train_loss_file_list]
+    history_folder_path = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss', folder_name)
+    history_file_list = os.listdir (history_folder_path)
+    history_file_list = [os.path.join (history_folder_path, f) for f in history_file_list]
 
     # PLOTTING
-    num_grid_rows = len (train_loss_file_list)
+    num_grid_rows = len (history_file_list)
     plt.figure(figsize=(12, 5 * num_grid_rows)) 
     
-    for grid in range (1, len(train_loss_file_list) + len(config_file_list)+1):
+    for grid in range (1, len(history_file_list) + len(config_file_list)+1):
         plt.subplot (num_grid_rows, 2, grid)
         
         if grid % 2 == 1: 
             if ylims is not None: plt.ylim(ylims) 
             plot_history (
-                train_loss_file_list[int((grid-1)/2)],
+                history_file_list[int((grid-1)/2)],
                 title = 'name', labels= labels
             )
         else:
