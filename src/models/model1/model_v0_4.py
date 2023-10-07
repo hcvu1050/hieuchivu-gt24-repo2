@@ -35,6 +35,7 @@ class customNN(keras.Sequential):
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Correct cases: (widths is int and depth is int) OR (widths is list and depth is None)")
         
+        # APPLYING RELUARIZER: exlude the last Dense layer
         if regularizer == 'l2':
             for layer in self.layers[:-1]:
                 layer.kernel_regularizer = tf.keras.regularizers.l2(l2=regularizer_weight)
