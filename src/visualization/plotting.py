@@ -31,36 +31,44 @@ def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list
         
         if grid % 2 == 1: 
             if ylims is not None: plt.ylim(ylims) 
-            plot_history (
-                history_file_list[int((grid-1)/2)],
-                title = 'name', labels= labels
-            )
+            for label in labels:
+                _plot_history (
+                    history_file_list[int((grid-1)/2)],
+                    title = 'name', label= label
+                )
         else:
-            plot_config(
+            _plot_config(
                 config_file_list[int(grid/2-1)],
                 title=  config_file_list[int(grid/2-1)].split(sep = "\\")[-1]
                 )
-def single_plot_with_config (model_name:str, folder_name, file_name: str,labels: list, ylims: list = None ):
+def multi_line_plot_history (model_name: str, folder_name: str, labels: list, ylims: list = None):
+    # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
-    config_fill_paht = os.path.join (config_folder_path, file_name)
-
-def plot_history (filename: str, title: str, labels:list):
+    config_file_list = os.listdir (config_folder_path)
+    # config_file_list = [f for f in config_file_list if f.startswith(model_name)]
+    config_file_list = [os.path.join(config_folder_path, f) for f in config_file_list]
+        
+    # get list of train loss files
+    history_folder_path = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss', folder_name)
+    history_file_list = os.listdir (history_folder_path)
+    history_file_list = [os.path.join (history_folder_path, f) for f in history_file_list]
+    
+    # plot the lines with the line labels being the value of the chosen hyper parameter
+    plt.figure (figsize= (24,10))
+    
+def _plot_history (filename: str, title: str, label:list):
     history_df = pd.read_csv(filename)
-
     epochs = range(1, len(history_df) + 1)
-    training_loss = history_df[labels[0]]
-    validation_loss = history_df[labels[1]]
+    values = history_df[label]
     # plt.figure(figsize=(6, 5))
-
     # plt.ylim(.50, .65) 
-    plt.plot(epochs, training_loss, label= labels[0])
-    plt.plot(epochs, validation_loss, label= labels[1])
+    plt.plot(epochs, values, label= label)
     plt.title(title)
     plt.xlabel('Epochs')
     # plt.ylabel('Loss')
     plt.legend()
 
-def plot_config (filename: str, title: str): 
+def _plot_config (filename: str, title: str): 
     with open (filename, 'r') as config_file:
         config = yaml.safe_load(config_file)
         
