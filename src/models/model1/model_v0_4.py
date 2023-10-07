@@ -17,7 +17,7 @@ class customNN(keras.Sequential):
                  ):
         super().__init__(name = name)
         """
-        when `widths` is an `int`, all the Dense layers are identical in size
+        when `widths` is an `int`, all the Dense layers are identical in size (width)
         `widths` only indicates the widths in the middle layer, NOT the last layer. 
         The last layer's widths is indicated by `output_size`
         """
