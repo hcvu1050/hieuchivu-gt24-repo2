@@ -59,7 +59,7 @@ def main():
     
     optimizer = keras.optimizers.Adam (learning_rate= learning_rate)    
     loss = keras.losses.BinaryCrossentropy (from_logits= True)
-    model.compile (optimizer, loss = loss)
+    model.compile (optimizer, loss = loss, metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True)])
     
     #### TRAIN MODEL 
     start_time = time.time()

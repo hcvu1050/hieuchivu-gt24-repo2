@@ -10,9 +10,8 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def batch_plot_loss (model_name:str, folder_name: str, ylims: list = None):
+def batch_plot_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None):
     # get list of configs
-    
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
     # config_file_list = [f for f in config_file_list if f.startswith(model_name)]
@@ -32,30 +31,33 @@ def batch_plot_loss (model_name:str, folder_name: str, ylims: list = None):
         
         if grid % 2 == 1: 
             if ylims is not None: plt.ylim(ylims) 
-            plot_loss (
+            plot_train_cv_value (
                 train_loss_file_list[int((grid-1)/2)],
-                title = 'name'
+                title = 'name', labels= labels
             )
         else:
             plot_config(
                 config_file_list[int(grid/2-1)],
                 title=  config_file_list[int(grid/2-1)].split(sep = "\\")[-1]
                 )
-        
-def plot_loss (filename: str, title: str):
+def single_plot_with_config (model_name:str, folder_name, file_name: str,labels: list, ylims: list = None ):
+    config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
+    config_fill_paht = os.path.join (config_folder_path, file_name)
+
+def plot_train_cv_value (filename: str, title: str, labels:list):
     history_df = pd.read_csv(filename)
 
     epochs = range(1, len(history_df) + 1)
-    training_loss = history_df['loss']
-    validation_loss = history_df['val_loss']
+    training_loss = history_df[labels[0]]
+    validation_loss = history_df[labels[1]]
     # plt.figure(figsize=(6, 5))
 
     # plt.ylim(.50, .65) 
-    plt.plot(epochs, training_loss, label='Training Loss')
-    plt.plot(epochs, validation_loss, label='Validation Loss')
+    plt.plot(epochs, training_loss, label= labels[0])
+    plt.plot(epochs, validation_loss, label= labels[1])
     plt.title(title)
     plt.xlabel('Epochs')
-    plt.ylabel('Loss')
+    # plt.ylabel('Loss')
     plt.legend()
 
 def plot_config (filename: str, title: str): 
