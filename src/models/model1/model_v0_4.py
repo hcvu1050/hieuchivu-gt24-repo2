@@ -5,12 +5,13 @@ from tensorflow import keras
 class customNN(keras.Sequential):
     def __init__(self, 
                  regularizer: str|None, regularizer_weight: int|None,
+                 initializer: str|None,
+                 dropout_rate: float|None,
                  name,
                  input_size, 
                  output_size,
                  hidden_layer_widths: int|list,
                  hidden_layer_depth: int| None,
-                 initializer: str|None,
                  hidden_layer_activation = 'relu',
                  output_layer_activation = 'linear',
                  ):
@@ -23,16 +24,24 @@ class customNN(keras.Sequential):
         if isinstance (hidden_layer_widths, int) and isinstance (hidden_layer_depth, int):
             # First dense layer defined with input shape
             self.add(keras.layers.Dense(hidden_layer_widths, input_shape=(input_size,)))
+            if dropout_rate != None: 
+                self.add (keras.layers.Dropout (dropout_rate, seed = 13))
             # Custom layer of hidden Dense layer
             for _ in range (hidden_layer_depth-1):
                 self.add (keras.layers.Dense(hidden_layer_widths,activation= hidden_layer_activation))
+                if dropout_rate != None: 
+                    self.add (keras.layers.Dropout (dropout_rate, seed = 13))
             # Output layer
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         
         elif isinstance (hidden_layer_widths, list) and hidden_layer_depth == None:
             self.add(keras.layers.Dense(hidden_layer_widths[0], input_shape=(input_size,)))
+            if dropout_rate is not None: 
+                self.add (keras.layers.Dropout (dropout_rate, seed = 13))
             for width in hidden_layer_widths[1:]:
                 self.add (keras.layers.Dense(width,activation= hidden_layer_activation))
+                if dropout_rate is not None: 
+                    self.add (keras.layers.Dropout (dropout_rate, seed = 13))
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Correct cases: (widths is int and depth is int) OR (widths is list and depth is None)")
         
@@ -52,7 +61,7 @@ class Model1(keras.Model):
                  group_nn_hidden_layer_widths = None, group_nn_hidden_layer_depth = None, 
                  technique_nn_hidden_layer_widths = None, technique_nn_hidden_layer_depth = None,
                  nn_output_size = None, config = None,
-                 initializer = None,
+                 initializer = None, dropout_rate = None, 
                  *args, **kwargs):
         super().__init__(name = name, *args, **kwargs)
         
@@ -67,6 +76,8 @@ class Model1(keras.Model):
             regularizer_weight = config['regularizer_weight']
             if regularizer_weight != None: regularizer_weight = float (regularizer_weight)
             initializer = config['initializer']
+            dropout_rate = config['dropout_rate']
+            if dropout_rate != None: dropout_rate = float (dropout_rate)
             
         group_input_size = input_sizes['group_feature_size']
         technique_input_size = input_sizes['technique_feature_size']
@@ -79,14 +90,14 @@ class Model1(keras.Model):
                                  hidden_layer_depth =group_nn_hidden_layer_depth,
                                  initializer= initializer,
                                  name = 'Group_NN', 
-                                 regularizer= regularizer, regularizer_weight= regularizer_weight)
+                                 regularizer= regularizer, regularizer_weight= regularizer_weight, dropout_rate= dropout_rate)
         self.Technique_NN = customNN(input_size = technique_input_size,
                                  output_size = nn_output_size,
                                  hidden_layer_widths = technique_nn_hidden_layer_widths,
                                  hidden_layer_depth = technique_nn_hidden_layer_depth,
                                  initializer= initializer,
                                  name = 'Technique_NN', 
-                                 regularizer=regularizer, regularizer_weight= regularizer_weight)
+                                 regularizer=regularizer, regularizer_weight= regularizer_weight, dropout_rate= dropout_rate)
         
         self.dot_product = keras.layers.Dot(axes= 1)
     

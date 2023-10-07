@@ -1,0 +1,16 @@
+# config file for model1's
+model_architecture:
+  group_nn_hidden_layer_widths: 16
+  group_nn_hidden_layer_depth: 5
+  technique_nn_hidden_layer_widths: 32
+  technique_nn_hidden_layer_depth: 5
+  nn_output_size: 16
+  regularizer: l2
+  regularizer_weight: 1e-3
+  initializer: 'he'
+  dropout_rate: 0.2
+
+train:
+  epochs: 10
+  learning_rate: 1e-6
+  batch_size: 32
