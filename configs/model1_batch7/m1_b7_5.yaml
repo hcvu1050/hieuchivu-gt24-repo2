@@ -1,9 +1,9 @@
 # config file for model1's
 model_architecture:
   group_nn_hidden_layer_widths: 4
-  group_nn_hidden_layer_depth: 1
+  group_nn_hidden_layer_depth: 9
   technique_nn_hidden_layer_widths: 8
-  technique_nn_hidden_layer_depth: 1
+  technique_nn_hidden_layer_depth: 9
   nn_output_size: 2
   regularizer: ~
   regularizer_weight: ~

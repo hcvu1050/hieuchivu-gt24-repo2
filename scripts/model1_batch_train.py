@@ -45,7 +45,9 @@ def train_from_config (config_filename: str, target_folder_name: str):
     with open (config_file_path, 'r') as config_file:
         config = yaml.safe_load (config_file)
     
-    print ('---model config:', config)
+    formatted_text = yaml.dump(config, default_flow_style=False, indent=2, sort_keys=False)
+    print ('---config for Model1\n',formatted_text)
+    
     model_architecture_config = config['model_architecture']
     
     train_config = config['train']
