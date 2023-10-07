@@ -69,7 +69,7 @@ def train_from_config (config_filename: str, target_folder_name: str):
     loss = keras.losses.BinaryCrossentropy (from_logits= True)
     model.compile (optimizer, 
                    loss = loss, 
-                   metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True)])
+                   metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True, name = 'auc-pr')])
     
     #### TRAIN MODEL
     start_time = time.time()

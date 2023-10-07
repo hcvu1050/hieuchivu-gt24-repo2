@@ -10,7 +10,7 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def batch_plot_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None):
+def batch_plot_history_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None):
     # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
@@ -31,7 +31,7 @@ def batch_plot_with_config (model_name:str, folder_name: str,labels: list, ylims
         
         if grid % 2 == 1: 
             if ylims is not None: plt.ylim(ylims) 
-            plot_train_cv_value (
+            plot_history (
                 train_loss_file_list[int((grid-1)/2)],
                 title = 'name', labels= labels
             )
@@ -44,7 +44,7 @@ def single_plot_with_config (model_name:str, folder_name, file_name: str,labels:
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_fill_paht = os.path.join (config_folder_path, file_name)
 
-def plot_train_cv_value (filename: str, title: str, labels:list):
+def plot_history (filename: str, title: str, labels:list):
     history_df = pd.read_csv(filename)
 
     epochs = range(1, len(history_df) + 1)
