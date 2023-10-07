@@ -36,7 +36,7 @@ class customNN(keras.Sequential):
         else: raise Exception ("CustomNN: widths and depths are set incorrectly.\n Correct cases: (widths is int and depth is int) OR (widths is list and depth is None)")
         
         if regularizer == 'l2':
-            for layer in self.layers:
+            for layer in self.layers[:-1]:
                 layer.kernel_regularizer = tf.keras.regularizers.l2(l2=regularizer_weight)
 
 
