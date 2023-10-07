@@ -10,7 +10,7 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None):
+def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None, xlims: list = None):
     # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
@@ -32,6 +32,7 @@ def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list
         
         if grid % 2 == 1: 
             if ylims is not None: plt.ylim(ylims) 
+            if xlims is not None: plt.ylim(xlims) 
             for label in labels:
                 _plot_history (
                     file_name = history_file_list[int((grid-1)/2)],
