@@ -23,6 +23,7 @@ def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list
     history_file_list = [os.path.join (history_folder_path, f) for f in history_file_list]
 
     # PLOTTING
+    
     num_grid_rows = len (history_file_list)
     plt.figure(figsize=(12, 5 * num_grid_rows)) 
     
@@ -33,15 +34,15 @@ def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list
             if ylims is not None: plt.ylim(ylims) 
             for label in labels:
                 _plot_history (
-                    history_file_list[int((grid-1)/2)],
-                    title = 'name', label= label
+                    file_name = history_file_list[int((grid-1)/2)],
+                    title = ' / '.join (labels), label= label
                 )
         else:
             _plot_config(
                 config_file_list[int(grid/2-1)],
                 title=  config_file_list[int(grid/2-1)].split(sep = "\\")[-1]
                 )
-def multi_line_plot_history (model_name: str, folder_name: str, labels: list, ylims: list = None):
+def multi_line_plot_history (model_name: str, folder_name: str, label: str, hyperparameter: list, ylims: list = None, xlims: list = None):
     # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
@@ -55,14 +56,35 @@ def multi_line_plot_history (model_name: str, folder_name: str, labels: list, yl
     
     # plot the lines with the line labels being the value of the chosen hyper parameter
     plt.figure (figsize= (24,10))
+    if ylims is not None: plt.ylim(ylims) 
+    if xlims is not None: plt.xlim(xlims)
+    for i in range (len (history_file_list)):
+        # get the hyperparameter value from the config file
+        with open (config_file_list[i], 'r') as config_file:
+            config = yaml.safe_load(config_file)
+        
+        line_name = config[hyperparameter[0]]
+        line_name = line_name[hyperparameter[1]]
+        if line_name is None: line_name = 'None'
+        
+        _plot_history (
+            file_name = history_file_list[i],
+            title = hyperparameter[-1],
+            label = label, 
+            line_name = line_name
+        )
     
-def _plot_history (filename: str, title: str, label:list):
-    history_df = pd.read_csv(filename)
+    
+def _plot_history (file_name: str, title: str, label:str, line_name: str = None):
+    history_df = pd.read_csv(file_name)
     epochs = range(1, len(history_df) + 1)
     values = history_df[label]
     # plt.figure(figsize=(6, 5))
     # plt.ylim(.50, .65) 
-    plt.plot(epochs, values, label= label)
+    if line_name is not None: 
+        plt.plot(epochs, values, label= line_name)
+    else: 
+        plt.plot(epochs, values, label = label)
     plt.title(title)
     plt.xlabel('Epochs')
     # plt.ylabel('Loss')
