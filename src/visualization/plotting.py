@@ -1,6 +1,4 @@
-import sys
-import os
-import yaml
+import sys, os, yaml, re
 sys.path.append("..")
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
@@ -10,16 +8,20 @@ SOURCE_CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list, ylims: list = None, xlims: list = None):
+def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list, file_name_filter: str = None, ylims: list = None, xlims: list = None):
     # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
+    if file_name_filter != None:
+        config_file_list = [f for f in config_file_list if re.fullmatch (file_name_filter, f) is not None]
     # config_file_list = [f for f in config_file_list if f.startswith(model_name)]
     config_file_list = [os.path.join(config_folder_path, f) for f in config_file_list]
         
     # get list of train loss files
     history_folder_path = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss', folder_name)
     history_file_list = os.listdir (history_folder_path)
+    if file_name_filter != None:
+        history_file_list = [f for f in history_file_list if re.fullmatch (file_name_filter, f) is not None]
     history_file_list = [os.path.join (history_folder_path, f) for f in history_file_list]
 
     # PLOTTING
@@ -43,16 +45,21 @@ def grid_plot_history_with_config (model_name:str, folder_name: str,labels: list
                 config_file_list[int(grid/2-1)],
                 title=  config_file_list[int(grid/2-1)].split(sep = "\\")[-1]
                 )
-def multi_line_plot_history (model_name: str, folder_name: str, label: str, hyperparameter: list, ylims: list = None, xlims: list = None):
+def multi_line_plot_history (model_name: str, folder_name: str, label: str,  hyperparameter: list, file_name_filter: str = None, ylims: list = None, xlims: list = None):
     # get list of configs
     config_folder_path = os.path.join (SOURCE_CONFIG_FOLDER, folder_name)
     config_file_list = os.listdir (config_folder_path)
+    if file_name_filter != None:
+        config_file_list = [f for f in config_file_list if re.fullmatch (file_name_filter, f) is not None]
     # config_file_list = [f for f in config_file_list if f.startswith(model_name)]
+    print (config_file_list)
     config_file_list = [os.path.join(config_folder_path, f) for f in config_file_list]
-        
+    
     # get list of train loss files
     history_folder_path = os.path.join (SOURCE_REPORT_FOLDER, model_name, 'train_loss', folder_name)
     history_file_list = os.listdir (history_folder_path)
+    if file_name_filter != None:
+        history_file_list = [f for f in history_file_list if re.fullmatch (file_name_filter, f) is not None]
     history_file_list = [os.path.join (history_folder_path, f) for f in history_file_list]
     
     # plot the lines with the line labels being the value of the chosen hyper parameter
