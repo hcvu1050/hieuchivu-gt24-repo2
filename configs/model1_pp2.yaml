@@ -1,6 +1,6 @@
 # Data splitting ratio for model1
 data_split: 
-  - 0.55
-  - 0.15
+  - 0.70
+  - 0.0
   - 0.15
   - 0.15

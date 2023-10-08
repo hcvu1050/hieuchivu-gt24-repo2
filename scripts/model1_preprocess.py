@@ -71,10 +71,12 @@ def main():
         }
         batch_save_df_to_csv (dfs, TARGET_PATH, postfix= 'split')
     
-    #### 3- OVERSAMPLING train and train_cv 
+    #### 3- OVERSAMPLING train and train_cv, if train_cv size is set to 0, return an empty dataframe
     print ('--oversampling data')
     train_y_oversampled_df = oversample (train_y_df)
-    train_cv_y_oversampled_df = oversample (train_cv_y_df)
+    train_cv_y_oversampled_df = pd.DataFrame()
+    if train_cv_size != 0:
+        train_cv_y_oversampled_df = oversample (train_cv_y_df)
     if save_intermediary_table:
         dfs = {
             'train_y': train_y_oversampled_df,
@@ -92,12 +94,15 @@ def main():
                                                   object= 'technique', 
                                                   label_df= train_y_oversampled_df)
     # train_cv set
-    train_cv_X_group_df = align_input_to_labels (group_features_df, 
-                                              object= 'group', 
-                                              label_df= train_cv_y_oversampled_df)
-    train_cv_X_technique_df = align_input_to_labels (technique_features_df, 
-                                                  object= 'technique', 
-                                                  label_df= train_cv_y_oversampled_df)
+    train_cv_X_group_df = pd.DataFrame()
+    train_cv_X_technique_df = pd.DataFrame()
+    if train_cv_size != 0:
+        train_cv_X_group_df = align_input_to_labels (group_features_df, 
+                                                object= 'group', 
+                                                label_df= train_cv_y_oversampled_df)
+        train_cv_X_technique_df = align_input_to_labels (technique_features_df, 
+                                                    object= 'technique', 
+                                                    label_df= train_cv_y_oversampled_df)
     # cv set
     cv_X_group_df = align_input_to_labels (group_features_df, 
                                            object= 'group', 
@@ -133,10 +138,11 @@ def main():
                                   X_technique_df =  train_X_technique_df,
                                   y_df =            train_y_oversampled_df)
     
-    train_cv_dataset = build_dataset(X_group_df=    train_cv_X_group_df, 
-                                    X_technique_df= train_cv_X_technique_df,
-                                    y_df=           train_cv_y_oversampled_df)
-    
+    if train_cv_size != 0:
+        train_cv_dataset = build_dataset(X_group_df=    train_cv_X_group_df, 
+                                        X_technique_df= train_cv_X_technique_df,
+                                        y_df=           train_cv_y_oversampled_df)
+        
     cv_dataset = build_dataset(X_group_df =         cv_X_group_df, 
                                   X_technique_df =  cv_X_technique_df,
                                   y_df =            cv_y_df)
@@ -146,7 +152,8 @@ def main():
                                   y_df =            test_y_df)
     
     save_dataset (train_dataset, TARGET_PATH, TRAIN_DATASET_FILENAME)
-    save_dataset (train_cv_dataset, TARGET_PATH, TRAIN_CV_DATASET_FILENAME)
+    if train_cv_size !=0:
+        save_dataset (train_cv_dataset, TARGET_PATH, TRAIN_CV_DATASET_FILENAME)
     save_dataset (cv_dataset, TARGET_PATH, CV_DATASET_FILENAME)
     save_dataset (test_dataset, TARGET_PATH, TEST_DATASET_FILENAME)
 if __name__ == '__main__':

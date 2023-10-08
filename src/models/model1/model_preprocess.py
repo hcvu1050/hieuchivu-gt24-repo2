@@ -40,14 +40,15 @@ def get_data ():
 def split_by_group(df: pd.DataFrame, ratio: float):
     """Splits data by Group randomly so that: data of a Group ONLY belong to a set. 
     Returns two tables, the first table's size is indicated by `ratio`.
-
+    If ratio  == 0: return None, df
     Args:
         `labels_df` (pd.DataFrame): a table that contains the column `GROUP_ID_NAME`
         `ratio` : the ratio for the first output table.
         `save_as_csv` (list, optional): save the split table as csv files by the names indiacted.
     """
     group_IDs = df[GROUP_ID_NAME].unique()
-
+    if ratio == 0:
+        return pd.DataFrame(), df
     group_1_IDs, group_2_IDs = train_test_split (group_IDs, 
                                          train_size = ratio, 
                                          random_state= RANDOM_STATE, 

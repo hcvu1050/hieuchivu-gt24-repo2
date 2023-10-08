@@ -21,30 +21,35 @@ def _single_load (file_name):
     print ('loaded')
     return dataset
 
-def load_train_datasets (sample_train: float = None):
+def load_train_datasets (empty_train_cv: bool = False, sample_train: float = None ):
     train_dataset = _single_load (TRAIN_DATASET_FILENAME)
-    train_cv_dataset = _single_load (TRAIN_CV_DATASET_FILENAME)
+    
+    if not empty_train_cv: 
+        train_cv_dataset = _single_load (TRAIN_CV_DATASET_FILENAME)
     
     if sample_train is not None:
         num_samples = int(len(train_dataset) * sample_train)
         train_dataset = train_dataset.shuffle(buffer_size=len(train_dataset), seed=RANDOM_STATE).take(num_samples)
         
     print ('train_dataset: {} examples'.format(len(train_dataset)))
-    print ('train_cv_dataset: {} examples'.format(len(train_cv_dataset)))
+    if not empty_train_cv:
+        print ('train_cv_dataset: {} examples'.format(len(train_cv_dataset)))
     
     feature_info = {
         'group_feature_size' : train_dataset.element_spec[0][INPUT_GROUP_LAYER_NAME].shape[0],
         'technique_feature_size' : train_dataset.element_spec[0][INPUT_TECHNIQUE_LAYER_NAME].shape[0]
     }
-    
-    return train_dataset, train_cv_dataset, feature_info
+    if not empty_train_cv:
+        return train_dataset, train_cv_dataset, feature_info
+    return train_dataset
 
-def load_datasets (sample_train: float = None):
+def load_datasets (empty_train_cv: bool = False, sample_train: float = None):
     """
     sample_train: option to sample and train only a fraction of train_dataset
     """
     train_dataset = _single_load (TRAIN_DATASET_FILENAME)
-    train_cv_dataset = _single_load (TRAIN_CV_DATASET_FILENAME)
+    if not empty_train_cv: 
+        train_cv_dataset = _single_load (TRAIN_CV_DATASET_FILENAME)
     cv_dataset = _single_load (CV_DATASET_FILENAME)
     test_dataset = _single_load (TEST_DATASET_FILENAME)
     
@@ -55,7 +60,8 @@ def load_datasets (sample_train: float = None):
     
     print ('train_dataset: {} examples'.format(len(train_dataset)))
     print ('train_cv_dataset: {} examples'.format(len(train_cv_dataset)))
-    print ('cv_dataset: {} examples'.format(len(cv_dataset)))
+    if not empty_train_cv:
+        print ('cv_dataset: {} examples'.format(len(cv_dataset)))
     print ('test_dataset: {} examples'.format(len(test_dataset)))
     
     # return feature sizes to configure the model
@@ -63,5 +69,6 @@ def load_datasets (sample_train: float = None):
         'group_feature_size' : train_dataset.element_spec[0][INPUT_GROUP_LAYER_NAME].shape[0],
         'technique_feature_size' : train_dataset.element_spec[0][INPUT_TECHNIQUE_LAYER_NAME].shape[0]
     }
-    
-    return train_dataset, train_cv_dataset, cv_dataset, test_dataset, feature_info
+    if not empty_train_cv:
+        return train_dataset, train_cv_dataset, cv_dataset, test_dataset, feature_info
+    return train_dataset, cv_dataset, test_dataset, feature_info
