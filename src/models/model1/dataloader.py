@@ -59,9 +59,9 @@ def load_datasets (empty_train_cv: bool = False, sample_train: float = None):
         # print (train_dataset.element_spec)
     
     print ('train_dataset: {} examples'.format(len(train_dataset)))
-    print ('train_cv_dataset: {} examples'.format(len(train_cv_dataset)))
     if not empty_train_cv:
-        print ('cv_dataset: {} examples'.format(len(cv_dataset)))
+        print ('train_cv_dataset: {} examples'.format(len(train_cv_dataset)))
+    print ('cv_dataset: {} examples'.format(len(cv_dataset)))
     print ('test_dataset: {} examples'.format(len(test_dataset)))
     
     # return feature sizes to configure the model
