@@ -1,15 +1,18 @@
 model_architecture:
-  group_nn_hidden_layer_widths: 64
+  group_nn_hidden_layer_widths: 340
   group_nn_hidden_layer_depth: 4
-  technique_nn_hidden_layer_widths: 128
+  technique_nn_hidden_layer_widths: 590
   technique_nn_hidden_layer_depth: 4
   nn_output_size: 32
   regularizer: ~
   regularizer_weight: ~
-  initializer: he
-  dropout_rate: 0.15
+  initializer: ~
+  dropout_rate: 0.2
 
 train:
-  epochs: 200
-  learning_rate: 5e-7
+  epochs: 100
+  learning_rate: 3e-6
   batch_size: 32
+  class_weights: 
+    0: 1.0
+    1: 15.0

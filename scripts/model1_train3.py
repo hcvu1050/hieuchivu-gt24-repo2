@@ -41,6 +41,7 @@ def main():
     batch_size = train_config['batch_size']
     epochs = train_config['epochs']
     learning_rate = float (train_config['learning_rate'])
+    class_weights = train_config['class_weights']
     formatted_text = yaml.dump(config, default_flow_style=False, indent=2, sort_keys=False)
     print ('---config for Model1\n',formatted_text)
 
@@ -59,14 +60,18 @@ def main():
     
     optimizer = keras.optimizers.Adam (learning_rate= learning_rate)    
     loss = keras.losses.BinaryCrossentropy (from_logits= True)
-    model.compile (optimizer, loss = loss, metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True, name = 'auc-pr')])
+    model.compile (optimizer, 
+                   loss = loss, 
+                   metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True, name = 'auc-pr')],
+                   )
     
     #### TRAIN MODEL 
     start_time = time.time()
     history = model.fit (
         train_dataset,
         validation_data= cv_dataset,
-        epochs=epochs
+        epochs=epochs,
+        class_weight=class_weights
     )
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -91,7 +96,6 @@ def main():
         os.makedirs(TRAINED_MODELS_FOLDER)
     model_file_path = os.path.join (TRAINED_MODELS_FOLDER, model_file_name)
     model.save (model_file_path)
-    
     
 if __name__ == '__main__':
     main()
