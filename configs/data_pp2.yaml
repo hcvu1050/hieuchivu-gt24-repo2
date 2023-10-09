@@ -1,11 +1,12 @@
 selected_group_features:
   - 'software_ID'
 selected_technique_features:
-  - 'platforms'
-  - 'tactics'
-  - 'defenses_bypassed'
-  - 'permissions_required'
-  - 'mitigation_ID'
-  - 'detection_name'
-  - 'software_ID'
+  # - 'platforms'
+  # - 'tactics'
+  - 'data_sources'
+  # - 'defenses_bypassed'
+  # - 'permissions_required'
+  # - 'mitigation_ID'
+  # - 'detection_name'
+  # - 'software_ID'
 include_unused_techniques: False

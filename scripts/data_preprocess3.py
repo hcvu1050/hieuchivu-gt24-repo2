@@ -35,6 +35,8 @@ def main():
     parser.add_argument ('--last-only','-lo', choices= ['True', 'False'], default= 'True',help='Option: Do not save the tables for intermediary steps, only save the LAST processed tables')
     args = parser.parse_args()
     last_only = args.last_only
+    if last_only == "True": last_only = True
+    elif last_only == "False": last_only = False
     config_file_name = args.config
     #### SETTING: option to save tables in intermediary steps
     save_intermediary_table = not last_only

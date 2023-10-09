@@ -1,6 +1,6 @@
 """
-last update: 2023-10-09
-V2.2
+last update: 2023-10-09: updated _get_data to include techniques' data sources
+V2.3
 used to clean the data by reducing outliers/noise, handling missing values, etc.
 1. Reads collected files from data/interim
 2. Filters the columns needed for training, then rename the columns 
@@ -79,6 +79,7 @@ def _get_data():
         'techniques_df' :               (techniques_df,     ['ID'],                     [TECHNIQUE_ID_NAME]), 
         'techniques_platforms_df':      (techniques_df,     ['ID', 'platforms'],        [TECHNIQUE_ID_NAME, 'platforms']),
         'techniques_tactics_df':        (techniques_df,     ['ID', 'tactics'],          [TECHNIQUE_ID_NAME, 'tactics']),
+        'techniques_data_sources':      (techniques_df,     ['ID', 'data sources'],     [TECHNIQUE_ID_NAME, 'data_sources']),
         'techniques_defenses_bypassed_df':      (techniques_df, ['ID', 'defenses bypassed'],    [TECHNIQUE_ID_NAME, 'defenses_bypassed']),
         'techniques_permissions_required_df':   (techniques_df, ['ID','permissions required'],  [TECHNIQUE_ID_NAME, 'permissions_required']),
         'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', TECHNIQUE_ID_NAME]), 
