@@ -8,3 +8,4 @@ selected_technique_features:
   - 'mitigation_ID'
   - 'detection_name'
   - 'software_ID'
+include_unused_techniques: False

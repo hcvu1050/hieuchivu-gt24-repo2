@@ -1,9 +1,10 @@
 """
-V2.0
+last update: 2023-10-09
+V2.2
 used to clean the data by reducing outliers/noise, handling missing values, etc.
 1. Reads collected files from data/interim
 2. Filters the columns needed for training, then rename the columns 
-3. Make interaction matrix between Group and Technique
+3. Make interaction matrix between Group and Technique with option to include unused Techniques in the matrix.
 4. Main Function clean_data: From the cleaned data, create the following tables:
     (a). Group-Technique interaction matrix
     (b). Technique features: Containing all available features for Techniques. 
@@ -21,8 +22,37 @@ SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 # path to save the cleaned data
 TARGET_PATH = os.path.join(ROOT_FOLDER, 'data/interim')
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
-
 ### END OF CONFIGURATION ###
+
+### MAIN FUNCTION
+def clean_data(include_unused_technique: bool, target_path = TARGET_PATH , save_as_csv = True):
+    """Filters the columns needed for training, then combines all features of a object group into one table.\n
+    Returns 3 tables:\n
+    a. Technique features\n
+    b. Group features\n
+    c. Group-Technique interaction matrix\n
+    """
+    print (PROCESS_RUNNING_MSG)
+    data_and_setting = _get_data()
+    filtered_dfs = _filter_rename_columns(data_and_setting)
+    
+    group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
+    technique_features_df = _combine_features (object= 'technique', dfs = filtered_dfs)
+    interaction_matrix = _make_interaction_matrix(
+        include_unused = include_unused_technique,
+        user_IDs_df= filtered_dfs['groups_df'],
+        item_IDs_df= filtered_dfs['techniques_df'],
+        positive_cases= filtered_dfs['labels_df']
+    )
+    if save_as_csv:
+        res_dfs = {
+            'X_technique' : technique_features_df,
+            'X_group' : group_features_df ,
+            'y' : interaction_matrix,
+        }
+        utils.batch_save_df_to_csv (res_dfs, target_path, postfix = 'cleaned', output_list_file= 'cleaned')
+    return technique_features_df, group_features_df, interaction_matrix
+
 
 def _get_data():
     """Get the collected tables and make settings for filtering and renaming columns
@@ -76,17 +106,19 @@ def _filter_rename_columns (data_and_setting):
 
 def _make_interaction_matrix (user_IDs_df, 
                               item_IDs_df, 
-                              positive_cases) -> pd.DataFrame():
+                              positive_cases, include_unused: bool) -> pd.DataFrame():
     """Creates an interaction matrix (all possible combination) between Groups and Techniques based on the IDs.
-
+    `include_unused`: option to include Techniques that are not used by any Group in interaction matrix.
     """
+    if include_unused == False:
+        item_IDs_df = item_IDs_df [item_IDs_df[TECHNIQUE_ID_NAME].isin (positive_cases[TECHNIQUE_ID_NAME])]
     group_technique_interactions = pd.merge (user_IDs_df, item_IDs_df, how = 'cross')
-    # positive_cases ['target'] = 1
+    # positive_cases ['label'] = 1
     positive_cases = positive_cases.assign (label = 1)
     group_technique_interaction_matrix = pd.merge (
         left = group_technique_interactions,
         right = positive_cases, 
-        on = ['group_ID', 'technique_ID'], 
+        on = [GROUP_ID_NAME, TECHNIQUE_ID_NAME], 
         how = 'left'
     )
     group_technique_interaction_matrix[LABEL_NAME].fillna (0, inplace= True)
@@ -124,30 +156,3 @@ def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
             how = 'left'
         )
     return object_features
-
-def clean_data(target_path = TARGET_PATH, save_as_csv = True):
-    """Filters the columns needed for training, then combines all features of a object group into one table.\n
-    Returns 3 tables:\n
-    a. Technique features\n
-    b. Group features\n
-    c. Target Group-Technique\n
-    """
-    print (PROCESS_RUNNING_MSG)
-    data_and_setting = _get_data()
-    filtered_dfs = _filter_rename_columns(data_and_setting)
-    
-    group_features_df = _combine_features (object= 'group', dfs = filtered_dfs)
-    technique_features_df = _combine_features (object= 'technique', dfs = filtered_dfs)
-    interaction_matrix = _make_interaction_matrix(
-        user_IDs_df= filtered_dfs['groups_df'],
-        item_IDs_df= filtered_dfs['techniques_df'],
-        positive_cases= filtered_dfs['labels_df']
-    )
-    if save_as_csv:
-        res_dfs = {
-            'X_technique' : technique_features_df,
-            'X_group' : group_features_df ,
-            'y' : interaction_matrix,
-        }
-        utils.batch_save_df_to_csv (res_dfs, target_path, postfix = 'cleaned', output_list_file= 'cleaned')
-    return technique_features_df, group_features_df, interaction_matrix

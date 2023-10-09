@@ -1,6 +1,6 @@
 """
-last update: 2023-09-25
-data preprocess pipeline V3. Steps:
+last update: 2023-10-09 - Added option to include unused Techniques in interaction matrix
+data preprocess pipeline V3.2. Steps:
 1. Extract the data from `data/raw/enterprise-attack.json` and save as pands dataframe (`src.data.ingestion2`)
 2. Clean the data to retreive only the portion that can be used for training (`src.data.cleaning2`)
 3. Select the features that will be used for training (`src.data.select_features`)
@@ -45,14 +45,17 @@ def main():
     with open (config_file_path, 'r') as config_file:
         config = yaml.safe_load (config_file)
         
+    formatted_text = yaml.dump(config, default_flow_style=False, indent=2, sort_keys=False)
+    print ('---Config for data preprocessing\n',formatted_text)
+        
     selected_group_features = config['selected_group_features']
     selected_technique_features = config['selected_technique_features']
-    
+    include_unused_techniques = config['include_unused_techniques']
     collect_data ()
     
     #### CLEANING DATA / SELECTING FEATURES
     
-    technique_features, group_features, interaction_matrix = clean_data(save_as_csv = save_intermediary_table)
+    technique_features, group_features, interaction_matrix = clean_data(include_unused_technique = include_unused_techniques, save_as_csv = save_intermediary_table)
     technique_features, group_features = select_features(technique_features_df= technique_features,
                                                          technique_feature_names= selected_technique_features, 
                                                          group_features_df= group_features,
