@@ -1,9 +1,10 @@
 """
-last update: 2023-10-05
+last update: 2023-10-09 Option to oversample train set
+- Model1 preprocessing steps (srcript version 1.2)
 - Usage: data preprocess pipeline specific to model 1. ❗Only works after running `data_preprocess3`. Steps: 
     1. Load the data exported by running `data_preprocess3`
     2. Split the data into train, train-cv, cv, and test set with ratios defined by a yaml file in `configs/folder`
-    3. Oversampling train and train-cv data
+    3. (Optional step) Oversampling train and train-cv data
     4. Aligning features to labels
     5. Create tensorflow Datasets for train and train-cv sets.
     6. Save the preprocessed data to `data/preprocessed/model1`
@@ -47,9 +48,11 @@ def main():
     config_file_path = os.path.join (CONFIG_FOLDER,config_file_name)
     with open (config_file_path, 'r') as config_file:
         config = yaml.safe_load (config_file)
-        
-    data_split = config['data_split']
+    formatted_text = yaml.dump(config, default_flow_style=False, indent=2, sort_keys=False)
+    print ('---config for model 1 preprocessing:\n',formatted_text)
     
+    data_split = config['data_split']
+    resampling = config['resampling']
     train_size, train_cv_size, cv_size, test_size = data_split
     
     #### 1- LOAD DATA
@@ -71,38 +74,39 @@ def main():
         }
         batch_save_df_to_csv (dfs, TARGET_PATH, postfix= 'split')
     
-    #### 3- OVERSAMPLING train and train_cv, if train_cv size is set to 0, return an empty dataframe
-    print ('--oversampling data')
-    train_y_oversampled_df = oversample (train_y_df)
-    train_cv_y_oversampled_df = pd.DataFrame()
-    if train_cv_size != 0:
-        train_cv_y_oversampled_df = oversample (train_cv_y_df)
-    if save_intermediary_table:
-        dfs = {
-            'train_y': train_y_oversampled_df,
-            'train_cv_y': train_cv_y_oversampled_df,
-        }
-        batch_save_df_to_csv (dfs, TARGET_PATH, postfix='oversampled')
+    #### 3- (OPTIONAL) OVERSAMPLING train and train_cv, if train_cv size is set to 0, return an empty dataframe
+    if resampling == 'oversample':
+        print ('--oversampling data')
+        train_y_df = label_oversample (train_y_df)
+        train_cv_y_df = pd.DataFrame()
+        if train_cv_size != 0:
+            train_cv_y_df = label_oversample (train_cv_y_df)
+        if save_intermediary_table:
+            dfs = {
+                'train_y': train_y_df,
+                'train_cv_y': train_cv_y_df,
+            }
+            batch_save_df_to_csv (dfs, TARGET_PATH, postfix='oversampled')
         
     #### 4- ALIGNING features to labels
     ## train set
     print ('--aligning data')
     train_X_group_df = align_input_to_labels (group_features_df, 
                                               object= 'group', 
-                                              label_df= train_y_oversampled_df)
+                                              label_df= train_y_df)
     train_X_technique_df = align_input_to_labels (technique_features_df, 
                                                   object= 'technique', 
-                                                  label_df= train_y_oversampled_df)
+                                                  label_df= train_y_df)
     # train_cv set
     train_cv_X_group_df = pd.DataFrame()
     train_cv_X_technique_df = pd.DataFrame()
     if train_cv_size != 0:
         train_cv_X_group_df = align_input_to_labels (group_features_df, 
                                                 object= 'group', 
-                                                label_df= train_cv_y_oversampled_df)
+                                                label_df= train_cv_y_df)
         train_cv_X_technique_df = align_input_to_labels (technique_features_df, 
                                                     object= 'technique', 
-                                                    label_df= train_cv_y_oversampled_df)
+                                                    label_df= train_cv_y_df)
     # cv set
     cv_X_group_df = align_input_to_labels (group_features_df, 
                                            object= 'group', 
@@ -136,12 +140,12 @@ def main():
     
     train_dataset = build_dataset(X_group_df =      train_X_group_df, 
                                   X_technique_df =  train_X_technique_df,
-                                  y_df =            train_y_oversampled_df)
+                                  y_df =            train_y_df)
     
     if train_cv_size != 0:
         train_cv_dataset = build_dataset(X_group_df=    train_cv_X_group_df, 
                                         X_technique_df= train_cv_X_technique_df,
-                                        y_df=           train_cv_y_oversampled_df)
+                                        y_df=           train_cv_y_df)
         
     cv_dataset = build_dataset(X_group_df =         cv_X_group_df, 
                                   X_technique_df =  cv_X_technique_df,

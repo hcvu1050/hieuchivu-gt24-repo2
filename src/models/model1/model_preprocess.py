@@ -58,7 +58,7 @@ def split_by_group(df: pd.DataFrame, ratio: float):
     
     return df_1, df_2
     
-def oversample (df: pd.DataFrame):
+def label_oversample (df: pd.DataFrame):
     """
     Balances the table df by over sampling.
     Balance the labels stored in `LABEL_NAME` column of a DataFrame 'df'
