@@ -100,12 +100,15 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
         onehot_feature_dfs.append (feature_onehot)
         # combine the one-hot encoded features with the constant columns
     onehot_feature_dfs = [constant_cols] + onehot_feature_dfs
-    df_onehot = pd.concat (
+    df_onehot_encode = pd.concat (
         onehot_feature_dfs,
         axis = 1
     )
     
-    df_onehot = df_onehot.groupby(ID).max().reset_index()
+    df_onehot_encode = df_onehot_encode.groupby(ID).max().reset_index()
             
-    return df_onehot
+    return df_onehot_encode
 
+def _frequency_encode_features (df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+    
+    return df_
