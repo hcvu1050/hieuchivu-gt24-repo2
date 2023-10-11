@@ -82,7 +82,9 @@ def main():
         'X_technique_onehot': technique_features,
     }
     batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
-    
+    print ('---Shapes:')
+    for df in dfs.keys():
+        print ('{df}: {shape}'.format(df = df, shape = dfs[df].shape))
     
 if __name__ == '__main__':
     main()
