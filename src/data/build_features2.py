@@ -31,7 +31,8 @@ def build_features_onehot(technique_features_df: pd.DataFrame|None,
                    group_features_names: list |None,
                    target_path = TARGET_PATH, 
                    save_as_csv = True):
-
+    """One-hot encoding features for Techniques and Group. 
+    The features to be one-hot encoded are defined in `technique_feature_names` and `group_feature_names`"""
     print (PROCESS_RUNNING_MSG)
     
     if (technique_features_df is None) or (group_features_df is None):
@@ -67,6 +68,7 @@ def _get_data():
 
 def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
     """Build one-hot encoded features in table `df` for the columns indicated by `feature_names`.\n
+    Returns the entire DataFrame with the specified feature one-hot encoded.\n
     Work for 2 cases\n
     (1): Single-valued strings (e.g.: "MacOS" , "Windows")\n
     (2): Multiple-valued strings (e.g.: "MacOS, Windows"). The default char that separates the values is `,`
