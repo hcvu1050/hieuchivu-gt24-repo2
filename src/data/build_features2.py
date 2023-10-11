@@ -10,6 +10,7 @@ Current functions inlude:
 """
 import os
 import pandas as pd
+import category_encoders as ce
 from . import utils
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 
@@ -110,5 +111,31 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
     return df_onehot_encode
 
 def _frequency_encode_features (df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+    """Build frequency encoded features in table `df` for the columns indicated by `feature_names`.\n
+    Returns the entire DataFrame with the specified feature one-hot encoded.\n
+    Work for 2 cases\n
+    (1): Single-valued strings (e.g.: "MacOS" , "Windows")\n
+    (2): Multiple-valued strings (e.g.: "MacOS, Windows"). The default char that separates the values is `,`
+    """
+    count_enc = ce.CountEncoder(normalize=True)
+    # get the columns that will not change
+    constant_names = [col for col in df.columns if col not in feature_names]
+    constant_cols = df[constant_names]
+    freq_encoded_feature_dfs = []
     
-    return df_
+    for feature_name in feature_names:
+        # check if the features are single valued strings
+        multi_valued = df[feature_name].str.contains(feature_sep_char, case=False).any()
+        if not multi_valued:
+            freq_encoded = count_enc.fit_transform (df[feature_name], return_df = True)
+            freq_encoded_one_hot = pd.get_dummies (freq_encoded[feature_name], dtype = float)
+            freq_encoded_one_hot = freq_encoded_one_hot.multiply (freq_encoded_one_hot.columns, axis = 1)
+        freq_encoded_feature_dfs.append (freq_encoded_one_hot)
+        
+        # else:
+    freq_encoded_feature_dfs = [constant_cols] + freq_encoded_feature_dfs
+    df_freq_encode = pd.concat(
+        freq_encoded_feature_dfs, axis= 1
+    )
+    df_freq_encode = df_freq_encode.groupby(ID).max().reset_index()
+    return df_freq_encode
