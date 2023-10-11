@@ -7,7 +7,7 @@ import yaml
 from src.data.ingestion2 import collect_data
 from src.data.cleaning2 import clean_data
 from src.data.select_features import select_features
-from src.data.build_features2 import build_features
+from src.data.build_features2 import build_features_onehot
 from src.data.archived.splitting import split_data_by_group
 from src.data.archived.balancing import naive_random_oversampling
 from src.data.archived.aligning import align_input_to_target
@@ -54,7 +54,7 @@ def main():
     
     #### INPUT: BUILDING FEATURES 
     ## note: for now all features are one-hot encoded
-    technique_features, group_features = build_features (
+    technique_features, group_features = build_features_onehot (
         technique_features_df = technique_features,
         technique_feature_names = selected_technique_features,
         group_features_df = group_features,

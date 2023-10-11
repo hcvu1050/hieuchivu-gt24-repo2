@@ -25,7 +25,7 @@ TECHNIQUE_TABLE_PREFIX = 'X_technique'
 GROUP_TABLE_PREFIX = 'X_group'
 from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME
 
-def build_features(technique_features_df: pd.DataFrame|None, 
+def build_features_onehot(technique_features_df: pd.DataFrame|None, 
                    technique_feature_names: list|None,
                    group_features_df: pd.DataFrame|None,
                    group_features_names: list |None,

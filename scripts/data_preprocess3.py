@@ -21,7 +21,7 @@ from src.data.utils import batch_save_df_to_csv
 from src.data.ingestion2 import collect_data
 from src.data.cleaning2 import clean_data
 from src.data.select_features import select_features
-from src.data.build_features2 import build_features
+from src.data.build_features2 import build_features_onehot
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
@@ -32,7 +32,7 @@ def main():
     parser.add_argument ('-config', required= True,
                          type=str,
                          help = 'name of config file to preprocess the data')
-    parser.add_argument ('--last-only','-lo', choices= ['True', 'False'], default= 'True',help='Option: Do not save the tables for intermediary steps, only save the LAST processed tables')
+    parser.add_argument ('--last-only','-lo', choices= ['True', 'False'], required= True,help='Option: Do not save the tables for intermediary steps, only save the LAST processed tables')
     args = parser.parse_args()
     last_only = args.last_only
     if last_only == "True": last_only = True
@@ -68,7 +68,7 @@ def main():
     
     # BUILD FEATURES FOR INPUT
     ## note: for now all features are one-hot encoded
-    technique_features, group_features = build_features (
+    technique_features, group_features = build_features_onehot (
         technique_features_df = technique_features,
         technique_feature_names = selected_technique_features,
         group_features_df = group_features,
