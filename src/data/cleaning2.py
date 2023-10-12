@@ -1,6 +1,6 @@
 """
-last update: 2023-10-09: updated _get_data to include techniques' data sources
-V2.3
+last update: 2023-10-12: updated _combine_features() to handle string values.
+V2.4
 used to clean the data by reducing outliers/noise, handling missing values, etc.
 1. Reads collected files from data/interim
 2. Filters the columns needed for training, then rename the columns 
@@ -126,7 +126,7 @@ def _make_interaction_matrix (user_IDs_df,
     group_technique_interaction_matrix[LABEL_NAME].fillna (0, inplace= True)
     return group_technique_interaction_matrix
 
-def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
+def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.DataFrame():
     """Combines the features of the object (Group or Technique) based of the tables of features stored in dfs. 
     In dfs, the key indicates if its value belongs to Group or Technique based on the key's prefix.
     The features are always merged based on the list of ALL object IDs (group_ID or technique_ID).
@@ -150,10 +150,25 @@ def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
         id_name = TECHNIQUE_ID_NAME
     
     # The features are merged with the list of object IDs (group_ID or technique_ID)
-    for key in [key for key in dfs.keys() if key.startswith (object)]:
+    for key in [key for key in dfs.keys() if (key.startswith (object)) and key not in (['groups_df', 'techniques_df'])]:
+        feature_df = dfs[key]
+        id_df = feature_df[[id_name]]
+        feature_name = [col_name for col_name in feature_df.columns if col_name != id_name][0]
+        # string values preprocessing 
+        feature_processed = feature_df[feature_name].str.lower()
+        feature_processed = feature_processed.str.replace (r'[-/]', ' ', regex = True)
+        feature_processed = feature_processed.str.replace(r',\s*',',', regex = True)
+        feature_df = pd.concat ([id_df, feature_processed], axis= 1)
+        multivalued = feature_processed.str.contains(feature_sep_char, case=False).any()
+        if multivalued:
+            feature_df[feature_name] = feature_df[feature_name].str.split(feature_sep_char)
+            feature_df = feature_df.explode(column= feature_name,ignore_index = False)
+            
+        feature_df = feature_df.groupby(id_name).agg(list)
+        
         object_features = pd.merge (
             left = object_features,
-            right= dfs[key],
+            right= feature_df,
             on = id_name,
             how = 'left'
         )
