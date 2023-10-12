@@ -1,12 +1,10 @@
 """
-last update: 2023-09-21
+last update: 2023-10-12
+build_features version 3
 Build features for training the model.
 Current functions inlude:
-1. One-hot encoding for single-valued string. (for example, "MacOS", Windows)
-2. One-hot encoding for multiple-valued strings (for example, "MacOS, Windows") and 
-    handling variations of the same value: 
-        uppercase/lowercase ("MacOS" is similar to "macos"), 
-        hyphens/non-hyphen ("anti-virus" is similar to "anti virus")
+1. One-hot encoding feature
+2. Frequency encoding feature
 """
 import os
 import pandas as pd
@@ -67,10 +65,10 @@ def _get_data():
     return technique_features_df, group_features_df
 
 
-def _onehot_encode_features(df: pd.DataFrame, id: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+def _onehot_encode_features(df: pd.DataFrame, id: str, feature_names: list ) -> pd.DataFrame():
     """Build one-hot encoded features in table `df` for the columns indicated by `feature_names`.\n
     Returns the entire DataFrame with the specified feature one-hot encoded.\n
-    The values stored in the specified columns should be lists of single-valued strings.
+    The values stored in the specified columns MUST be lists of single-valued strings.
     """
     # get the columns that will not change
     constant_col_names = [col for col in df.columns if col not in (feature_names+[id])]
@@ -89,13 +87,11 @@ def _onehot_encode_features(df: pd.DataFrame, id: str, feature_names: list, feat
         axis = 1)
     onehot_features_df = onehot_features_df.groupby(id).max().reset_index()
     
-    # ❗ Concatenate the rest of columns, then group values to list (by id)
     constant_cols = [id_col] + [constant_cols]
     constant_cols_df = pd.concat (
         constant_cols,
         axis = 1
     )
-    # constant_cols_df = constant_cols_df.groupby(id).agg(list).reset_index()
 
     res_df = pd.merge (left = constant_cols_df, right= onehot_features_df, on = id, how = 'left')
     return res_df
