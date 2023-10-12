@@ -21,7 +21,7 @@ from src.data.utils import batch_save_df_to_csv
 from src.data.ingestion2 import collect_data
 from src.data.cleaning2 import clean_data
 from src.data.select_features import select_features
-from src.data.build_features2 import build_features_onehot
+from src.data.build_features3 import build_features_onehot, build_features_freq_encode
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')
@@ -64,13 +64,21 @@ def main():
                                                          group_feature_names=selected_group_features,
                                                          save_as_csv= save_intermediary_table)
     
-    technique_features.to_pickle ('tmp_technique_features.pkl')
     # #### LAST STEPS (save the output tables as csv)
-    
+
+
     # print (type(technique_features.loc[0,'tactics']))
     
-    # # BUILD FEATURES FOR INPUT
-    # ## note: for now all features are one-hot encoded
+    # BUILD FEATURES FOR INPUT
+    
+    technique_features, group_features = build_features_freq_encode (
+        technique_features_df = technique_features,
+        technique_feature_names = selected_technique_features,
+        group_features_df = group_features,
+        group_features_names = selected_group_features,
+        save_as_csv= save_intermediary_table
+    )
+    
     # technique_features, group_features = build_features_onehot (
     #     technique_features_df = technique_features,
     #     technique_feature_names = selected_technique_features,
@@ -79,15 +87,15 @@ def main():
     #     save_as_csv= save_intermediary_table
     # )
     
-    # dfs ={
-    #     'y_cleaned': interaction_matrix,
-    #     'X_group_onehot': group_features,
-    #     'X_technique_onehot': technique_features,
-    # }
-    # batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
-    # print ('---Shapes:')
-    # for df in dfs.keys():
-    #     print ('{df}: {shape}'.format(df = df, shape = dfs[df].shape))
+    dfs ={
+        'y_cleaned': interaction_matrix,
+        'X_group_onehot': group_features,
+        'X_technique_onehot': technique_features,
+    }
+    batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
+    print ('---Shapes:')
+    for df in dfs.keys():
+        print ('{df}: {shape}'.format(df = df, shape = dfs[df].shape))
     
 if __name__ == '__main__':
     main()
