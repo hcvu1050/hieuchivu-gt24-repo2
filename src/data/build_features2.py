@@ -41,10 +41,10 @@ def build_features_onehot(technique_features_df: pd.DataFrame|None,
         technique_features_df, group_features_df = _get_data()
     
     onehot_technique_features_df = _onehot_encode_features (technique_features_df, 
-                                                         ID = TECHNIQUE_ID_NAME, 
+                                                         id = TECHNIQUE_ID_NAME, 
                                                          feature_names= technique_feature_names)
     onehot_group_features_df = _onehot_encode_features (group_features_df,
-                                                     ID = GROUP_ID_NAME, 
+                                                     id = GROUP_ID_NAME, 
                                                      feature_names= group_features_names)
     if save_as_csv:
         dfs = {
@@ -67,7 +67,7 @@ def _get_data():
     return technique_features_df, group_features_df
 
 
-def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+def _onehot_encode_features(df: pd.DataFrame, id: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
     """Build one-hot encoded features in table `df` for the columns indicated by `feature_names`.\n
     Returns the entire DataFrame with the specified feature one-hot encoded.\n
     Work for 2 cases\n
@@ -75,9 +75,10 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
     (2): Multiple-valued strings (e.g.: "MacOS, Windows"). The default char that separates the values is `,`
     """
     # get the columns that will not change
-    constant_names = [col for col in df.columns if col not in feature_names]
-    constant_cols = df[constant_names]
-
+    constant_col_names = [col for col in df.columns if col not in (feature_names+[id])]
+    print (constant_col_names)
+    constant_cols = df[constant_col_names]
+    id_col = df[[id]]
     onehot_feature_dfs = []
     for feature_name in feature_names:
         # check if the features are single valued strings
@@ -97,18 +98,25 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
             feature_onehot = feature_onehot.str.get_dummies (sep = ',')
         
         onehot_feature_dfs.append (feature_onehot)
-        # combine the one-hot encoded features with the constant columns
-    onehot_feature_dfs = [constant_cols] + onehot_feature_dfs
-    df_onehot_encode = pd.concat (
-        onehot_feature_dfs,
+    # ❗AVOID DATA LOSS, only group as max value for one-hot encoded features
+    onehot_feature_dfs = [id_col] + onehot_feature_dfs
+    onehot_features_df = pd.concat (
+        onehot_feature_dfs, 
+        axis = 1)
+    onehot_features_df = onehot_features_df.groupby(id).max().reset_index()
+    
+    # ❗ Concatenate the rest of columns, then group values to list (by id)
+    constant_cols = [id_col] + [constant_cols]
+    constant_cols_df = pd.concat (
+        constant_cols,
         axis = 1
     )
-    # ❗
-    df_onehot_encode = df_onehot_encode.groupby(ID).max().reset_index()
-            
-    return df_onehot_encode
+    constant_cols_df = constant_cols_df.groupby(id).agg(list).reset_index()
 
-def _frequency_encode_features (df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+    res_df = pd.merge (left = constant_cols_df, right= onehot_features_df, on = id, how = 'left')
+    return res_df
+
+def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
     """Build frequency encoded features in table `df` for the columns indicated by `feature_names`.\n
     Returns the entire DataFrame with the specified feature frequency encoded.\n
     Work for 2 cases\n
@@ -148,5 +156,5 @@ def _frequency_encode_features (df: pd.DataFrame, ID: str, feature_names: list, 
         freq_encoded_feature_dfs, axis= 1
     )
     # ❗
-    df_freq_encode = df_freq_encode.groupby(ID).max().reset_index()
+    df_freq_encode = df_freq_encode.groupby(id).max().reset_index()
     return df_freq_encode
