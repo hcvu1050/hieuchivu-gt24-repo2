@@ -90,12 +90,10 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
             feature_onehot = df[feature_name].str.replace (r',\s*', 
                                                            ',', 
                                                            regex = True)
-            ## replace occurrences of a comma followed by zero or more whitespace characters (r',\s*') with
-            ## a comma (',')
-            
+            # replace occurrences of a comma followed by zero or more 
+            # whitespace characters (r',\s*') with a comma (',')
             feature_onehot = feature_onehot.str.lower()            
             feature_onehot = feature_onehot.str.replace (r'[-/]', ' ', regex = True)
-            
             feature_onehot = feature_onehot.str.get_dummies (sep = ',')
         
         onehot_feature_dfs.append (feature_onehot)
@@ -105,14 +103,14 @@ def _onehot_encode_features(df: pd.DataFrame, ID: str, feature_names: list, feat
         onehot_feature_dfs,
         axis = 1
     )
-    
+    # ❗
     df_onehot_encode = df_onehot_encode.groupby(ID).max().reset_index()
             
     return df_onehot_encode
 
 def _frequency_encode_features (df: pd.DataFrame, ID: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
     """Build frequency encoded features in table `df` for the columns indicated by `feature_names`.\n
-    Returns the entire DataFrame with the specified feature one-hot encoded.\n
+    Returns the entire DataFrame with the specified feature frequency encoded.\n
     Work for 2 cases\n
     (1): Single-valued strings (e.g.: "MacOS" , "Windows")\n
     (2): Multiple-valued strings (e.g.: "MacOS, Windows"). The default char that separates the values is `,`
@@ -129,13 +127,26 @@ def _frequency_encode_features (df: pd.DataFrame, ID: str, feature_names: list, 
         if not multi_valued:
             freq_encoded = count_enc.fit_transform (df[feature_name], return_df = True)
             freq_encoded_one_hot = pd.get_dummies (freq_encoded[feature_name], dtype = float)
-            freq_encoded_one_hot = freq_encoded_one_hot.multiply (freq_encoded_one_hot.columns, axis = 1)
-        freq_encoded_feature_dfs.append (freq_encoded_one_hot)
+            freq_encoded_one_hot_true_val = freq_encoded_one_hot.multiply (freq_encoded_one_hot.columns, axis = 1)
         
         # else:
+        else:   
+            feature = df[feature_name].str.replace(r',\s*',',', regex = True)
+            feature = feature.str.lower()
+            feature = feature.str.replace (r'[-/]', ' ', regex = True)
+            feature = feature.str.split(',')
+            feature = feature.explode(ignore_index=False)
+            feature_freq_encoded = count_enc.fit_transform(feature, return_df = True)
+            feature_freq_encoded_oh = pd.get_dummies (feature_freq_encoded[feature_name], dtype = float)
+            # combine one-hot values into one vector by the index (The index is kept when calling feature.explode)
+            feature_freq_encoded_oh = feature_freq_encoded_oh.groupby(level=0).max()
+            freq_encoded_one_hot_true_val = feature_freq_encoded_oh.multiply(feature_freq_encoded_oh.columns, axis= 1)
+        
+        freq_encoded_feature_dfs.append (freq_encoded_one_hot_true_val)
     freq_encoded_feature_dfs = [constant_cols] + freq_encoded_feature_dfs
     df_freq_encode = pd.concat(
         freq_encoded_feature_dfs, axis= 1
     )
+    # ❗
     df_freq_encode = df_freq_encode.groupby(ID).max().reset_index()
     return df_freq_encode

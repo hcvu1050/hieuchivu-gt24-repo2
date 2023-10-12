@@ -55,14 +55,14 @@ def clean_data(include_unused_technique: bool, target_path = TARGET_PATH , save_
 
 
 def _get_data():
-    """Get the collected tables and make settings for filtering and renaming columns
-    
-    Returns a dictionary: `data_and_setting` used to filter the columns needed for training from the collected tables
+    """Get the collected tables and make settings for filtering and renaming columns.\n
+    Returns a dictionary named `data_and_setting` used to filter the columns needed for training from the collected tables
     key = filename for a table, value = tuple
     each table is assigned with a tuple including:
-        (1) the dataframe 
-        (2) a list of columns in the table that are used for training
-        (3) a list of names for re-naming columns in (1) for clarity
+        (1) the dataframe\n
+        (2) a list of columns in the table that are used for training\n
+        (3) a list of names for re-naming columns in (1) for clarity.\n
+    The tables that have every group IDs and technique IDs are stored in `groups_df` and `techniques_df` respectively
     """
     groups_df = pd.read_csv(os.path.join (SOURCE_PATH, 'collected_groups_df.csv'))
     groups_software_df = pd.read_csv(os.path.join (SOURCE_PATH, 'collected_groups_software_df.csv'))
@@ -113,6 +113,7 @@ def _make_interaction_matrix (user_IDs_df,
     """
     if include_unused == False:
         item_IDs_df = item_IDs_df [item_IDs_df[TECHNIQUE_ID_NAME].isin (positive_cases[TECHNIQUE_ID_NAME])]
+    #else:
     group_technique_interactions = pd.merge (user_IDs_df, item_IDs_df, how = 'cross')
     # positive_cases ['label'] = 1
     positive_cases = positive_cases.assign (label = 1)
@@ -128,7 +129,7 @@ def _make_interaction_matrix (user_IDs_df,
 def _combine_features (object: str, dfs: dict) -> pd.DataFrame():
     """Combines the features of the object (Group or Technique) based of the tables of features stored in dfs. 
     In dfs, the key indicates if its value belongs to Group or Technique based on the key's prefix.
-    The features are merged based on the list of object IDs (group_ID or technique_ID).
+    The features are always merged based on the list of ALL object IDs (group_ID or technique_ID).
 
     Args:
         object (str): "group" or "technique"
