@@ -14,7 +14,7 @@ data preprocess pipeline V3.2. Steps:
 6. The list of exported files are stored in PREPROCESSED.txt
 """
 
-import sys, os, argparse, yaml
+import sys, os, argparse, yaml, pickle
 sys.path.append("..")
 ### MODULES
 from src.data.utils import batch_save_df_to_csv
@@ -64,7 +64,10 @@ def main():
                                                          group_feature_names=selected_group_features,
                                                          save_as_csv= save_intermediary_table)
     
+    technique_features.to_pickle ('tmp_technique_features.pkl')
     # #### LAST STEPS (save the output tables as csv)
+    
+    # print (type(technique_features.loc[0,'tactics']))
     
     # # BUILD FEATURES FOR INPUT
     # ## note: for now all features are one-hot encoded
