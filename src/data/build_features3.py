@@ -58,26 +58,26 @@ def build_features_freq_encode (technique_features_df: pd.DataFrame|None,
                    group_features_names: list |None,
                    target_path = TARGET_PATH, 
                    save_as_csv = True):
-    """Frequency encoding features for Techniques and Group. 
+    """Frequency encoding features for Techniques and Group. Returns as (`Technique_features`,` Group_features`)
     The features to be frequency encoded are defined in `technique_feature_names` and `group_feature_names`"""
     print (PROCESS_RUNNING_MSG)
     if (technique_features_df is None) or (group_features_df is None):
     ###  If don't receive the tables as args, get the table from files instead
         technique_features_df, group_features_df = _get_data()
     
-    onehot_technique_features_df = _frequency_encode_features (technique_features_df, 
-                                                         id = TECHNIQUE_ID_NAME, 
+    freq_encode_technique_features_df = _frequency_encode_features (technique_features_df, 
+                                                         id_name = TECHNIQUE_ID_NAME, 
                                                          feature_names= technique_feature_names)
-    onehot_group_features_df = _frequency_encode_features (group_features_df,
-                                                     id = GROUP_ID_NAME, 
+    freq_encode_group_features_df = _frequency_encode_features (group_features_df,
+                                                     id_name = GROUP_ID_NAME, 
                                                      feature_names= group_features_names)
     if save_as_csv:
         dfs = {
-            TECHNIQUE_TABLE_PREFIX : onehot_technique_features_df,
-            GROUP_TABLE_PREFIX: onehot_group_features_df
+            TECHNIQUE_TABLE_PREFIX : freq_encode_technique_features_df,
+            GROUP_TABLE_PREFIX: freq_encode_group_features_df
         }
-        utils.batch_save_df_to_csv (dfs, target_path, postfix = 'freq_encode', output_list_file= 'built_features')
-    return onehot_technique_features_df, onehot_group_features_df
+        utils.batch_save_df_to_csv (dfs, target_path, postfix = 'freq_enc', output_list_file= 'built_features')
+    return freq_encode_technique_features_df, freq_encode_group_features_df
 
 def _get_data():
     with open (SOURCE_LIST_FILE, 'r') as file:
@@ -121,7 +121,7 @@ def _onehot_encode_features(df: pd.DataFrame, id: str, feature_names: list ) -> 
     res_df = pd.merge (left = constant_cols_df, right= onehot_features_df, on = id, how = 'left')
     return res_df
 
-def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list) -> pd.DataFrame():
+def _frequency_encode_features (df: pd.DataFrame, id_name: str, feature_names: list) -> pd.DataFrame():
     """Build frequency encoded features in table `df` for the columns indicated by `feature_names`.\n
     Returns the entire DataFrame with the specified feature frequency encoded.\n
     Work for 2 cases\n
@@ -129,15 +129,15 @@ def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list) 
     (2): Multiple-valued strings (e.g.: "MacOS, Windows"). The default char that separates the values is `,`
     """
     # get the columns that will not change
-    constant_col_names = [col for col in df.columns if col not in (feature_names+[id])]
+    constant_col_names = [col for col in df.columns if col not in (feature_names+[id_name])]
     constant_cols = df[constant_col_names]
-    id_col = df[[id]]
+    id_col = df[[id_name]]
 
-    freq_enc = ce.CountEncoder(normalize=False)
     freq_encoded_feature_dfs = []
     
     for feature_name in feature_names:
         feature_single_valued = df[[feature_name]].explode(feature_name)
+        freq_enc = ce.CountEncoder(normalize=False, handle_missing= 'return_nan') #❗return nan
         feature_freq_encoded = freq_enc.fit_transform (feature_single_valued[feature_name], return_df = True)
         feature_freq_encoded_oh = pd.get_dummies(feature_freq_encoded[feature_name], dtype= float)
         feature_freq_encoded_oh = feature_freq_encoded_oh.groupby(level=0).max()
@@ -155,7 +155,7 @@ def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list) 
         constant_cols,
         axis = 1
     )
-    res_df = pd.merge (left = constant_cols_df, right= freq_encoded_features_df, on = id, how = 'left')
+    res_df = pd.merge (left = constant_cols_df, right= freq_encoded_features_df, on = id_name, how = 'left')
     return res_df
 
 def _hashing_encode_features (df: pd.DataFrame, id: str, feature_names: list) -> pd.DataFrame():
