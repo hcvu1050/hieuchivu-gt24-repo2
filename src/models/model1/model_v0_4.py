@@ -1,7 +1,10 @@
+"""
+Last update: 2023-10-13
+V0.5: Adding optional masking layer to custom NN
+"""
 import tensorflow as tf
 from keras.losses import BinaryCrossentropy
 from tensorflow import keras
-
 class customNN(keras.Sequential):
     def __init__(self, 
                  regularizer: str|None, regularizer_weight: int|None,
@@ -14,6 +17,7 @@ class customNN(keras.Sequential):
                  hidden_layer_depth: int| None,
                  hidden_layer_activation = 'relu',
                  output_layer_activation = 'linear',
+                 masking: bool = False,
                  ):
         super().__init__(name = name)
         """
@@ -22,8 +26,12 @@ class customNN(keras.Sequential):
         The last layer's widths is indicated by `output_size`
         """
         if isinstance (hidden_layer_widths, int) and isinstance (hidden_layer_depth, int):
-            # First dense layer defined with input shape
-            self.add(keras.layers.Dense(hidden_layer_widths, input_shape=(input_size,)))
+            # First dense layer or masking layer defined by input shape, 
+            if masking: 
+                self.add(keras.layers.Masking(mask_value=0, input_shape = (input_size,)))
+                self.add(keras.layers.Dense(hidden_layer_widths, activation= hidden_layer_activation))
+            else: 
+                self.add(keras.layers.Dense(hidden_layer_widths, input_shape=(input_size,), activation= hidden_layer_activation))
             if dropout_rate != None: 
                 self.add (keras.layers.Dropout (dropout_rate, seed = 13))
             # Custom layer of hidden Dense layer
@@ -35,7 +43,11 @@ class customNN(keras.Sequential):
             self.add (keras.layers.Dense (output_size, activation = output_layer_activation, name = 'output_NN'))  
         
         elif isinstance (hidden_layer_widths, list) and hidden_layer_depth == None:
-            self.add(keras.layers.Dense(hidden_layer_widths[0], input_shape=(input_size,)))
+            if masking: 
+                self.add(keras.layers.Masking(mask_value=0, input_shape = (input_size,)))
+                self.add(keras.layers.Dense(hidden_layer_widths[0], activation=hidden_layer_activation))
+            else:
+                self.add(keras.layers.Dense(hidden_layer_widths[0], input_shape=(input_size,), activation=hidden_layer_activation))
             if dropout_rate is not None: 
                 self.add (keras.layers.Dropout (dropout_rate, seed = 13))
             for width in hidden_layer_widths[1:]:
@@ -61,7 +73,7 @@ class Model1(keras.Model):
                  group_nn_hidden_layer_widths = None, group_nn_hidden_layer_depth = None, 
                  technique_nn_hidden_layer_widths = None, technique_nn_hidden_layer_depth = None,
                  nn_output_size = None, config = None,
-                 initializer = None, dropout_rate = None, 
+                 initializer = None, dropout_rate = None, masking = None,
                  *args, **kwargs):
         super().__init__(name = name, *args, **kwargs)
         
@@ -78,27 +90,31 @@ class Model1(keras.Model):
             initializer = config['initializer']
             dropout_rate = config['dropout_rate']
             if dropout_rate != None: dropout_rate = float (dropout_rate)
+            masking = config['masking']
             
         group_input_size = input_sizes['group_feature_size']
         technique_input_size = input_sizes['technique_feature_size']
         
         self.input_Group = keras.layers.Input (shape= (group_input_size,), name = 'input_Group')
         self.input_Technique = keras.layers.Input (shape= (technique_input_size,), name = 'input_Technique')
+        self.masked_in
         self.Group_NN = customNN(input_size =  group_input_size,
                                  output_size = nn_output_size,
                                  hidden_layer_widths = group_nn_hidden_layer_widths,
                                  hidden_layer_depth =group_nn_hidden_layer_depth,
                                  initializer= initializer,
                                  name = 'Group_NN', 
-                                 regularizer= regularizer, regularizer_weight= regularizer_weight, dropout_rate= dropout_rate)
+                                 regularizer= regularizer, regularizer_weight= regularizer_weight, dropout_rate= dropout_rate,
+                                 masking= masking)
         self.Technique_NN = customNN(input_size = technique_input_size,
                                  output_size = nn_output_size,
                                  hidden_layer_widths = technique_nn_hidden_layer_widths,
                                  hidden_layer_depth = technique_nn_hidden_layer_depth,
                                  initializer= initializer,
                                  name = 'Technique_NN', 
-                                 regularizer=regularizer, regularizer_weight= regularizer_weight, dropout_rate= dropout_rate)
-        
+                                 regularizer=regularizer, regularizer_weight= regularizer_weight, dropout_rate= dropout_rate,
+                                 masking = masking)
+         
         self.dot_product = keras.layers.Dot(axes= 1)
     
     def call(self, inputs):
