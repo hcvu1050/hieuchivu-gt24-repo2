@@ -65,9 +65,9 @@ def main():
                                                          save_as_csv= save_intermediary_table)
     
     # #### LAST STEPS (save the output tables as csv)
+    technique_features = technique_features.to_pickle('tmp_technique_features.pkl')
+    group_features = group_features.to_pickle('tmp_group_features.pkl')
 
-
-    # print (type(technique_features.loc[0,'tactics']))
     
     # BUILD FEATURES FOR INPUT
     
@@ -89,8 +89,8 @@ def main():
     
     dfs ={
         'y_cleaned': interaction_matrix,
-        'X_group_onehot': group_features,
-        'X_technique_onehot': technique_features,
+        'X_group': group_features,
+        'X_technique': technique_features,
     }
     batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
     print ('---Shapes:')

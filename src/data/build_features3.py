@@ -121,7 +121,7 @@ def _onehot_encode_features(df: pd.DataFrame, id: str, feature_names: list ) -> 
     res_df = pd.merge (left = constant_cols_df, right= onehot_features_df, on = id, how = 'left')
     return res_df
 
-def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list, feature_sep_char = ',') -> pd.DataFrame():
+def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list) -> pd.DataFrame():
     """Build frequency encoded features in table `df` for the columns indicated by `feature_names`.\n
     Returns the entire DataFrame with the specified feature frequency encoded.\n
     Work for 2 cases\n
@@ -157,3 +157,16 @@ def _frequency_encode_features (df: pd.DataFrame, id: str, feature_names: list, 
     )
     res_df = pd.merge (left = constant_cols_df, right= freq_encoded_features_df, on = id, how = 'left')
     return res_df
+
+def _hashing_encode_features (df: pd.DataFrame, id: str, feature_names: list) -> pd.DataFrame():
+    # get the columns that will not change
+    constant_col_names = [col for col in df.columns if col not in (feature_names+[id])]
+    constant_cols = df[constant_col_names]
+    id_col = df[[id]]
+
+    hash_enc = ce.CountEncoder(normalize=False)
+    hash_encoded_feature_dfs = []
+    # for feature_name in feature_names:
+        
+    
+    return 
