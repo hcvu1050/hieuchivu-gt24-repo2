@@ -137,7 +137,7 @@ def _frequency_encode_features (df: pd.DataFrame, id_name: str, feature_names: l
     
     for feature_name in feature_names:
         feature_single_valued = df[[feature_name]].explode(feature_name)
-        freq_enc = ce.CountEncoder(normalize=False, handle_missing= 'return_nan') #❗return nan
+        freq_enc = ce.CountEncoder(normalize=True, handle_missing= 'return_nan') #❗return nan
         feature_freq_encoded = freq_enc.fit_transform (feature_single_valued[feature_name], return_df = True)
         feature_freq_encoded_oh = pd.get_dummies(feature_freq_encoded[feature_name], dtype= float)
         feature_freq_encoded_oh = feature_freq_encoded_oh.groupby(level=0).max()

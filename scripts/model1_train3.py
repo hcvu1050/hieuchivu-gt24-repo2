@@ -59,7 +59,12 @@ def main():
                 config=model_architecture_config)    
     
     optimizer = keras.optimizers.Adam (learning_rate= learning_rate)    
-    loss = keras.losses.BinaryCrossentropy (from_logits= True)
+    # ❗
+    # loss = keras.losses.BinaryCrossentropy (from_logits= True)
+    loss = keras.losses.BinaryFocalCrossentropy (from_logits= True, 
+                                                 apply_class_balancing= False,
+                                                 alpha = 0.25, 
+                                                 gamma = 3.0 )
     model.compile (optimizer, 
                    loss = loss, 
                    metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True, name = 'auc-pr')],

@@ -97,7 +97,7 @@ class Model1(keras.Model):
         
         self.input_Group = keras.layers.Input (shape= (group_input_size,), name = 'input_Group')
         self.input_Technique = keras.layers.Input (shape= (technique_input_size,), name = 'input_Technique')
-        self.masked_in
+        # self.masked_in
         self.Group_NN = customNN(input_size =  group_input_size,
                                  output_size = nn_output_size,
                                  hidden_layer_widths = group_nn_hidden_layer_widths,
