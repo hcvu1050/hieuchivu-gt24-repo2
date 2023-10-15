@@ -62,8 +62,8 @@ def main():
     # ❗
     # loss = keras.losses.BinaryCrossentropy (from_logits= True)
     loss = keras.losses.BinaryFocalCrossentropy (from_logits= True, 
-                                                 apply_class_balancing= False,
-                                                 alpha = 0.25, 
+                                                 apply_class_balancing= True,
+                                                 alpha = 0.9, 
                                                  gamma = 3.0 )
     model.compile (optimizer, 
                    loss = loss, 

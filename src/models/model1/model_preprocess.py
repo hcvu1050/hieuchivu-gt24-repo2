@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
 
 from ...constants import INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
 from ...constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
@@ -58,17 +59,21 @@ def split_by_group(df: pd.DataFrame, ratio: float):
     
     return df_1, df_2
     
-def label_oversample (df: pd.DataFrame):
+def label_resample (df: pd.DataFrame, sampling_strategy: dict):
     """
-    Balances the table df by over sampling.
+    Resampling the labels by either oversampling or undersampling or both
     Balance the labels stored in `LABEL_NAME` column of a DataFrame 'df'
     Currently this only works if 'df' has EXACTLY 3 columns: `GROUP_ID_NAME`, `TECHNIQUE_ID_NAME`, and `LABEL_NAME`
     """
     X = df[[GROUP_ID_NAME, TECHNIQUE_ID_NAME]]
     y = df[[LABEL_NAME]]
-    
-    ros = RandomOverSampler(random_state= RANDOM_STATE)
-    x_resampled,y_resampled = ros.fit_resample(X , y)
+    x_resampled,y_resampled = X, y
+    if sampling_strategy['oversample'] is not None:
+        over_sampler = RandomOverSampler(random_state= RANDOM_STATE, sampling_strategy= sampling_strategy['oversample'] )
+        x_resampled,y_resampled = over_sampler.fit_resample(x_resampled,y_resampled)
+    if sampling_strategy['undersample'] is not None:
+        under_sampler = RandomUnderSampler(random_state= RANDOM_STATE, sampling_strategy= sampling_strategy['undersample'])
+        x_resampled,y_resampled = under_sampler.fit_resample(x_resampled,y_resampled)
     res_df = pd.concat ([x_resampled,y_resampled], axis =1)
     return res_df
 
