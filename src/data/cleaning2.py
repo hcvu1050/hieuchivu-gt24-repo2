@@ -11,7 +11,7 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
     (c). Group features: Containing all available features for Groups
 5. Export to data/interim
 """
-import os
+import os, re
 import pandas as pd
 from . import utils
 from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
@@ -156,8 +156,9 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
         feature_name = [col_name for col_name in feature_df.columns if col_name != id_name][0]
         # string values preprocessing 
         feature_processed = feature_df[feature_name].str.lower()
-        feature_processed = feature_processed.str.replace (r'[-/]', ' ', regex = True)
+        feature_processed = feature_processed.str.replace (r'[-/:]\s*', r' ', regex = True)
         feature_processed = feature_processed.str.replace(r',\s*',',', regex = True)
+        feature_processed = feature_processed.str.replace(r'(?<=[a-zA-Z0-9])\s(?=[a-zA-Z0-9])','_', regex = True)
         feature_df = pd.concat ([id_df, feature_processed], axis= 1)
         multivalued = feature_processed.str.contains(feature_sep_char, case=False).any()
         if multivalued:

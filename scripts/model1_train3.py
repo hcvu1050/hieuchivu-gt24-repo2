@@ -62,9 +62,9 @@ def main():
     # ❗
     # loss = keras.losses.BinaryCrossentropy (from_logits= True)
     loss = keras.losses.BinaryFocalCrossentropy (from_logits= True, 
-                                                 apply_class_balancing= True,
-                                                 alpha = 0.9, 
-                                                 gamma = 3.0 )
+                                                 apply_class_balancing= False,
+                                                 alpha = 0.95, 
+                                                 gamma = 2.5 )
     model.compile (optimizer, 
                    loss = loss, 
                    metrics = [tf.keras.metrics.AUC(curve = 'PR', from_logits= True, name = 'auc-pr')],
