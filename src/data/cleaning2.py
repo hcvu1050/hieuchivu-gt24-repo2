@@ -11,7 +11,7 @@ used to clean the data by reducing outliers/noise, handling missing values, etc.
     (c). Group features: Containing all available features for Groups
 5. Export to data/interim
 """
-import os, re
+import os, re, numpy
 import pandas as pd
 from . import utils
 from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
@@ -164,7 +164,13 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
         if multivalued:
             feature_df[feature_name] = feature_df[feature_name].str.split(feature_sep_char)
             feature_df = feature_df.explode(column= feature_name,ignore_index = False)
-            
+        
+        # exporting vocab data for each feature
+        unique_vals = feature_df[feature_name].dropna().unique()
+        numpy.savetxt (fname =os.path.join(TARGET_PATH, '{object}_{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)), 
+                       X=unique_vals, delimiter= ",",fmt='%s')
+        print (unique_vals)
+        # feature_df[feature_name].unique().(os.path.join(TARGET_PATH, '{object}_{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)))
         feature_df = feature_df.groupby(id_name).agg(list)
         
         object_features = pd.merge (
