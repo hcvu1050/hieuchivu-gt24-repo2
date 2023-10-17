@@ -71,16 +71,16 @@ def main():
     
     # BUILD FEATURES FOR INPUT
     
-    technique_features, group_features = build_features_freq_encode (
-        technique_features_df = technique_features,
-        technique_feature_names = selected_technique_features,
-        group_features_df = group_features,
-        group_features_names = selected_group_features,
-        save_as_csv= save_intermediary_table
-    )
+    # technique_features, group_features = build_features_freq_encode (
+    #     technique_features_df = technique_features,
+    #     technique_feature_names = selected_technique_features,
+    #     group_features_df = group_features,
+    #     group_features_names = selected_group_features,
+    #     save_as_csv= save_intermediary_table
+    # )
         
-    technique_features.to_pickle('tmp_freq_enc_technique_features.pkl')
-    group_features.to_pickle('tmp_freq_enc_group_features.pkl')
+    technique_features.to_pickle('tmp_technique_features.pkl')
+    group_features.to_pickle('tmp_group_features.pkl')
     # technique_features, group_features = build_features_onehot (
     #     technique_features_df = technique_features,
     #     technique_feature_names = selected_technique_features,

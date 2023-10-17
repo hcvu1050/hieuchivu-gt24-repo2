@@ -141,12 +141,12 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
     object_features = pd.DataFrame()
     id_name = ''
     if object == 'group':
-        group_IDs = dfs['groups_df']
-        object_features = group_IDs #initialize the result dataframe. starts with the list of IDs
+        all_id_df = dfs['groups_df']
+        object_features = all_id_df #initialize the result dataframe. starts with the list of IDs
         id_name = GROUP_ID_NAME
     elif object == 'technique':
-        technique_IDs = dfs['techniques_df'] #initialize the result dataframe. starts with the list of IDs
-        object_features = technique_IDs
+        all_id_df = dfs['techniques_df'] #initialize the result dataframe. starts with the list of IDs
+        object_features = all_id_df
         id_name = TECHNIQUE_ID_NAME
     
     # The features are merged with the list of object IDs (group_ID or technique_ID)
@@ -171,8 +171,10 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
                        X=unique_vals, delimiter= ",",fmt='%s')
         print (unique_vals)
         # feature_df[feature_name].unique().(os.path.join(TARGET_PATH, '{object}_{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)))
-        feature_df = feature_df.groupby(id_name).agg(list)
-        
+        feature_df = pd.merge (
+            left = all_id_df, right=feature_df, on = id_name, how = 'left'
+        )
+        feature_df = feature_df.groupby(id_name, as_index= False).agg(list)
         object_features = pd.merge (
             left = object_features,
             right= feature_df,
