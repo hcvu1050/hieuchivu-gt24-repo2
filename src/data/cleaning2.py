@@ -150,7 +150,7 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
         id_name = TECHNIQUE_ID_NAME
     
     # The features are merged with the list of object IDs (group_ID or technique_ID)
-    unique_vals = numpy.empty(shape = (0,))
+    # unique_vals = numpy.empty(shape = (0,))
     for key in [key for key in dfs.keys() if (key.startswith (object)) and key not in (['groups_df', 'techniques_df'])]:
         feature_df = dfs[key]
         id_df = feature_df[[id_name]]
@@ -167,10 +167,10 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
             feature_df = feature_df.explode(column= feature_name,ignore_index = False)
         
         # exporting vocab data for each feature
-        unique_vals = numpy.append (unique_vals, feature_df[feature_name].dropna().unique(), axis = 0)
-        
-        # numpy.savetxt (fname =os.path.join(TARGET_PATH, '{object}_{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)), 
-        #                X=unique_vals, delimiter= ",",fmt='%s')
+        # unique_vals = numpy.append (unique_vals, feature_df[feature_name].dropna().unique(), axis = 0)
+        unique_vals = feature_df[feature_name].dropna().unique()
+        numpy.savetxt (fname =os.path.join(TARGET_PATH, '{object}_{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)), 
+                       X=unique_vals, delimiter= ",",fmt='%s')
         
         feature_df = pd.merge (
             left = all_id_df, right=feature_df, on = id_name, how = 'left'
