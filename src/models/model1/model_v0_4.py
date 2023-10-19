@@ -1,6 +1,6 @@
 """
 Last update: 2023-10-13
-V0.5: Adding optional masking layer to custom NN
+V0.4.2: Adding optional masking layer to custom NN
 """
 import tensorflow as tf
 from keras.losses import BinaryCrossentropy
