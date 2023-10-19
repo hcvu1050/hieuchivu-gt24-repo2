@@ -106,17 +106,23 @@ def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.Da
     return df_aligned
 
 
-def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame):
+def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
     """
-    From the (aligned) feature tables and label table, build and return a tensorflow dataset
+    From the (aligned) feature tables and label table, build and return a tensorflow dataset.
+    args `ragged`: if the tensor in each example is ragged (varies in length)
     """
     # removing the ID columns because they are not used for training
     X_group_df = X_group_df.drop (columns= GROUP_ID_NAME)
     X_technique_df = X_technique_df.drop (columns= TECHNIQUE_ID_NAME)
     y_df = y_df[LABEL_NAME]
     
-    X_group_tf = tf.convert_to_tensor(X_group_df.values, dtype = tf.float32)
-    X_technique_tf = tf.convert_to_tensor(X_technique_df.values, dtype = tf.float32)
+    if ragged_input:
+        X_group_tf = tf.ragged.constant(X_group_df.values, dtype = tf.string)
+        X_technique_tf = tf.ragged.constant(X_technique_df.values, dtype = tf.string)
+    else:
+        X_group_tf = tf.convert_to_tensor(X_group_df.values, dtype = tf.float32)
+        X_technique_tf = tf.convert_to_tensor(X_technique_df.values, dtype = tf.float32)
+    
     y_tf = tf.convert_to_tensor(y_df.values, dtype = tf.float32)
     
     res_dataset = tf.data.Dataset.from_tensor_slices ((
