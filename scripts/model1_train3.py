@@ -1,6 +1,8 @@
 """
 last update: 2023-10-08
-- Usage: Train a single instance of model1 (script version 3). Difference from version 2: Validation data while training is from CV dataset
+- Usage: Train a single instance of model1 (script version 3). Difference from version 2: 
+    - Validation data while training is from CV dataset
+    - Loss function is Focal loss
 - Args: 
     - `-config`:  name of the `yaml` file in `configs/model1/single_train` that will be used to define the hyperparameters for model1
 """
