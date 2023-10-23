@@ -184,7 +184,5 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
             on = id_name,
             how = 'left'
         )
-    numpy.savetxt (fname = os.path.join(TARGET_PATH, '{object}_vocab.csv'.format(object = object)), 
-                    X=unique_vals, delimiter= ",",fmt='%s')
     
     return object_features
