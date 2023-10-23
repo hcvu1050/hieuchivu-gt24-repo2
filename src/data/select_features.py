@@ -35,6 +35,9 @@ def select_features(group_features_df: pd.DataFrame | None,
                     technique_features_df: pd.DataFrame | None,
                     group_feature_names: list = None,
                     technique_feature_names: list = None, save_as_csv = True):
+    """
+    returns a tuple (technique_df, group_df) of 2 dataframes with selected features
+    """
     print (PROCESS_RUNNING_MSG)
     if (group_features_df is None) or (technique_features_df is None):
         technique_features_df, group_features_df = _get_data()
