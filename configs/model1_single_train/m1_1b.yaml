@@ -19,6 +19,11 @@
 # resampling: 
 #   oversample: 1
 #   undersample: ~
+
+#### differences from m1_1
+# Loss function: Binary focal loss
+# validation data from training is from cv dataset (not train_cv dataset)
+
 #### The config above is NOT used for training, only for context.
 model_architecture:
   group_nn_hidden_layer_widths: 64

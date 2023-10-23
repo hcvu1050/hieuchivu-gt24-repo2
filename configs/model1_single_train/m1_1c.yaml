@@ -19,6 +19,14 @@
 # resampling: 
 #   oversample: 1
 #   undersample: ~
+
+#### differences from m1_1 / previous config
+# loss = keras.losses.BinaryFocalCrossentropy (from_logits= True, 
+                                                #  apply_class_balancing= True,
+                                                #  alpha = 0.25, 
+                                                #  gamma = 2.5 )
+# validation data from training is from cv dataset (not train_cv dataset)
+# 
 #### The config above is NOT used for training, only for context.
 model_architecture:
   group_nn_hidden_layer_widths: 64
@@ -30,7 +38,7 @@ model_architecture:
   regularizer_weight: ~
   initializer: ~
   dropout_rate: 0.2
-  masking: False
+  masking: True
 
 train:
   epochs: 100
