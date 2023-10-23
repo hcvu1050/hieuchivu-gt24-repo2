@@ -1,9 +1,9 @@
 # Data splitting ratio for model1
 data_split: 
   - 0.7
-  - 0.0
-  - 0.15
-  - 0.15
+  - 0.1
+  - 0.1
+  - 0.1
 resampling: 
-  oversample: ~
+  oversample: 1
   undersample: ~

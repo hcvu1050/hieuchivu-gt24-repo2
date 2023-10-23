@@ -1,0 +1,41 @@
+selected_group_features:
+  - 'software_ID'
+selected_technique_features:
+  - 'platforms'
+  - 'tactics'
+  - 'data_sources'
+  - 'defenses_bypassed'
+  - 'permissions_required'
+  - 'mitigation_ID'
+  - 'detection_name'
+  - 'software_ID'
+include_unused_techniques: False
+# Data splitting ratio for model1
+data_split: 
+  - 0.7
+  - 0.1
+  - 0.1
+  - 0.1
+resampling: 
+  oversample: 1
+  undersample: ~
+#### The config above is NOT used for training, only for context.
+model_architecture:
+  group_nn_hidden_layer_widths: 64
+  group_nn_hidden_layer_depth: 4
+  technique_nn_hidden_layer_widths: 128
+  technique_nn_hidden_layer_depth: 4
+  nn_output_size: 32
+  regularizer: ~
+  regularizer_weight: ~
+  initializer: ~
+  dropout_rate: 0.2
+  masking: False
+
+train:
+  epochs: 100
+  learning_rate:  1e-6
+  batch_size: 32
+  class_weights: 
+    0: 1.0
+    1: 1.0

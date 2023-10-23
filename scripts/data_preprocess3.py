@@ -21,7 +21,7 @@ from src.data.utils import batch_save_df_to_csv
 from src.data.ingestion2 import collect_data
 from src.data.cleaning2 import clean_data
 from src.data.select_features import select_features
-from src.data.build_features2 import build_features_onehot
+from src.data.build_features3 import build_features_onehot
 
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 CONFIG_FOLDER = os.path.join (ROOT_FOLDER, 'configs')

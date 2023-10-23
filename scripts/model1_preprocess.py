@@ -75,24 +75,13 @@ def main():
         batch_save_df_to_csv (dfs, TARGET_PATH, postfix= 'split')
     
     #### 3- (OPTIONAL) OVERSAMPLING train and train_cv, if train_cv size is set to 0, return an empty dataframe
-    if resampling == 'oversample':
-        print ('--oversampling data')
-        train_y_df = label_resample (train_y_df)
-        train_cv_y_df = pd.DataFrame()
-        if train_cv_size != 0:
-            train_cv_y_df = label_resample (train_cv_y_df)
-        if save_intermediary_table:
-            dfs = {
-                'train_y': train_y_df,
-                'train_cv_y': train_cv_y_df,
-            }
-            batch_save_df_to_csv (dfs, TARGET_PATH, postfix='resampled')
+
     if resampling is not None: 
         print ('--resampling data')
         
         train_y_df = label_resample (train_y_df, sampling_strategy= resampling)
         if train_cv_size != 0:
-            train_cv_y_df = label_resample (train_cv_y_df)
+            train_cv_y_df = label_resample (train_cv_y_df, sampling_strategy= resampling)
         if save_intermediary_table:
             dfs = {
                 'train_y': train_y_df,
@@ -152,20 +141,20 @@ def main():
     
     train_dataset = build_dataset(X_group_df =      train_X_group_df, 
                                   X_technique_df =  train_X_technique_df,
-                                  y_df =            train_y_df)
+                                  y_df =            train_y_df, ragged_input= False)
     
     if train_cv_size != 0:
         train_cv_dataset = build_dataset(X_group_df=    train_cv_X_group_df, 
                                         X_technique_df= train_cv_X_technique_df,
-                                        y_df=           train_cv_y_df)
+                                        y_df=           train_cv_y_df, ragged_input= False)
         
     cv_dataset = build_dataset(X_group_df =         cv_X_group_df, 
                                   X_technique_df =  cv_X_technique_df,
-                                  y_df =            cv_y_df)
+                                  y_df =            cv_y_df, ragged_input= False)
     
     test_dataset = build_dataset(X_group_df =       test_X_group_df, 
                                   X_technique_df =  test_X_technique_df,
-                                  y_df =            test_y_df)
+                                  y_df =            test_y_df, ragged_input= False)
     
     
     save_dataset (train_dataset, TARGET_PATH, TRAIN_DATASET_FILENAME)

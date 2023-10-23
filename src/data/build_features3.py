@@ -1,6 +1,6 @@
 """
 last update: 2023-10-12
-build_features version 3
+build_features version 3: Difference from version 2: work with lists in dataframe.
 Build features for training the model.
 Current functions inlude:
 1. One-hot encoding feature

@@ -104,7 +104,7 @@ def _plot_config (filename: str, title: str):
         
     formatted_text = yaml.dump(config, default_flow_style=False, indent=4, sort_keys=False)
     # Display the formatted text
-    plt.text(0.1, 0.5, formatted_text, fontsize=11, va='center', ha='left')
+    plt.text(0.1, 0.5, formatted_text, fontsize=9, va='center', ha='left')
     # Turn off axis for this subplot
     plt.axis('off')
     # Add a title
