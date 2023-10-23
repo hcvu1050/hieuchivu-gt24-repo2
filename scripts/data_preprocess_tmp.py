@@ -32,7 +32,8 @@ def main():
     parser.add_argument ('-config', required= True,
                          type=str,
                          help = 'name of config file to preprocess the data')
-    parser.add_argument ('--last-only','-lo', choices= ['True', 'False'], required= True,help='Option: Do not save the tables for intermediary steps, only save the LAST processed tables')
+    parser.add_argument ('--last-only','-lo', choices= ['True', 'False'], required= True,
+                         help='Option: Do not save the tables for intermediary steps, only save the LAST processed tables')
     args = parser.parse_args()
     last_only = args.last_only
     if last_only == "True": last_only = True
