@@ -1,0 +1,13 @@
+selected_group_features:
+  - 'input_group_software_ID'
+selected_technique_features:
+  - 'input_technique_data_sources'
+  - 'input_technique_defenses_bypassed'
+  - 'input_technique_detection_name'
+  - 'input_technique_mitigation_id'
+  - 'input_technique_permissions_required'
+  - 'input_technique_platforms'
+  - 'input_technique_software_id'
+  - 'input_technique_tactics'
+include_unused_techniques: False
+ 

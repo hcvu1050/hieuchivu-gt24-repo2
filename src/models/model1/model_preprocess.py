@@ -14,6 +14,7 @@ from imblearn.under_sampling import RandomUnderSampler
 from ...constants import INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
 from ...constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 from ...constants import RANDOM_STATE
+from ...constants import *
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 SOURCE_FILENAME = 'PREPROCESSED.txt'
@@ -77,7 +78,6 @@ def label_resample (df: pd.DataFrame, sampling_strategy: dict):
     res_df = pd.concat ([x_resampled,y_resampled], axis =1)
     return res_df
 
-
 def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.DataFrame):
     """ Aligns the instances in feature_df so that they match with their corresponding labels in target_df.
     The main purpose of the function is for the input features (group features and technique features)\n
@@ -104,7 +104,6 @@ def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.Da
         df_aligned.drop (columns= [GROUP_ID_NAME, LABEL_NAME], inplace= True)
         
     return df_aligned
-
 
 def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
     """
@@ -133,11 +132,46 @@ def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:p
         y_tf))
     return res_dataset
 
+TECHNIQUE_FEATURE_NAME_LIST = [
+    # INPUT_GROUP_SOFTWARE_ID ,
+    INPUT_TECHNIQUE_DATA_SOURCES ,
+    INPUT_TECHNIQUE_DEFENSES_BYPASSED ,
+    INPUT_TECHNIQUE_DETECTION_NAME ,
+    INPUT_TECHNIQUE_MITIGATION_ID ,
+    INPUT_TECHNIQUE_PERMISSIONS_REQUIRED ,
+    INPUT_TECHNIQUE_PLATFORMS ,
+    INPUT_TECHNIQUE_SOFTWARE_ID ,
+    INPUT_TECHNIQUE_TACTICS
+]
+GROUP_FEATURE_NAME_LIST = [
+    INPUT_GROUP_SOFTWARE_ID
+]
+
 def build_dataset_2 (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
     """
+    Build dataset for training Version 2
     From the (aligned) feature tables and label table, build and return a tensorflow dataset.
-    Difference from the previous version
+    Difference from the previous version: each feature has its own key-value pair in the input dictionary\
+    (Note 2023-10-29: Assuming ALL input Dataframes are ragged vector)
     """
+    X_group_df = X_group_df.drop (columns= GROUP_ID_NAME)
+    X_technique_df = X_technique_df.drop (columns= TECHNIQUE_ID_NAME)
+    y_df = y_df[LABEL_NAME]
+    
+    input_dict = {}
+    if ragged_input:
+        for feature_name in GROUP_FEATURE_NAME_LIST:
+            feature_tf = tf.ragged.constant(X_group_df[feature_name].values, dtype = tf.string)
+            input_dict [feature_name] = feature_tf
+        for feature_name in TECHNIQUE_FEATURE_NAME_LIST:
+            feature_tf = tf.ragged.constant(X_technique_df[feature_name].values, dtype = tf.string)
+            input_dict [feature_name] = feature_tf
+            
+    y_tf = tf.convert_to_tensor(y_df.values, dtype = tf.float32)
+
+    res_dataset = tf.data.Dataset.from_tensor_slices ((input_dict,y_tf))
+    return res_dataset
+    
 
 def save_dataset (dataset, target_folder, file_name):
     file_path = os.path.join (target_folder, file_name)

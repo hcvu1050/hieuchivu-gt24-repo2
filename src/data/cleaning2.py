@@ -15,6 +15,7 @@ import os, re, numpy
 import pandas as pd
 from . import utils
 from ..constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
+from ..constants import *
 # Get the root directory of the project
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 # path to get collected data
@@ -75,16 +76,16 @@ def _get_data():
     
     data_and_setting = {
         'groups_df' :                   (groups_df,         ['ID'],                     [GROUP_ID_NAME]),
-        'groups_software_df' :          (groups_software_df,['source ID', 'target ID'], [GROUP_ID_NAME, 'software_ID']),
+        'groups_software_df' :          (groups_software_df,['source ID', 'target ID'], [GROUP_ID_NAME, INPUT_GROUP_SOFTWARE_ID]),
         'techniques_df' :               (techniques_df,     ['ID'],                     [TECHNIQUE_ID_NAME]), 
-        'techniques_platforms_df':      (techniques_df,     ['ID', 'platforms'],        [TECHNIQUE_ID_NAME, 'platforms']),
-        'techniques_tactics_df':        (techniques_df,     ['ID', 'tactics'],          [TECHNIQUE_ID_NAME, 'tactics']),
-        'techniques_data_sources':      (techniques_df,     ['ID', 'data sources'],     [TECHNIQUE_ID_NAME, 'data_sources']),
-        'techniques_defenses_bypassed_df':      (techniques_df, ['ID', 'defenses bypassed'],    [TECHNIQUE_ID_NAME, 'defenses_bypassed']),
-        'techniques_permissions_required_df':   (techniques_df, ['ID','permissions required'],  [TECHNIQUE_ID_NAME, 'permissions_required']),
-        'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     ['mitigation_ID', TECHNIQUE_ID_NAME]), 
-        'techniques_detections_df' :    (techniques_detections_df,  ['source name','target ID'],    ['detection_name', TECHNIQUE_ID_NAME]),
-        'techniques_software_df':       (techniques_software_df,    ['source ID', 'target ID'],     ['software_ID', TECHNIQUE_ID_NAME]),
+        'techniques_platforms_df':      (techniques_df,     ['ID', 'platforms'],        [TECHNIQUE_ID_NAME, INPUT_TECHNIQUE_PLATFORMS]),
+        'techniques_tactics_df':        (techniques_df,     ['ID', 'tactics'],          [TECHNIQUE_ID_NAME, INPUT_TECHNIQUE_TACTICS]),
+        'techniques_data_sources':      (techniques_df,     ['ID', 'data sources'],     [TECHNIQUE_ID_NAME, INPUT_TECHNIQUE_DATA_SOURCES]),
+        'techniques_defenses_bypassed_df':      (techniques_df, ['ID', 'defenses bypassed'],    [TECHNIQUE_ID_NAME, INPUT_TECHNIQUE_DEFENSES_BYPASSED]),
+        'techniques_permissions_required_df':   (techniques_df, ['ID','permissions required'],  [TECHNIQUE_ID_NAME, INPUT_TECHNIQUE_PERMISSIONS_REQUIRED]),
+        'techniques_mitigations_df':    (techniques_mitigations_df, ['source ID', 'target ID'],     [ INPUT_TECHNIQUE_MITIGATION_ID, TECHNIQUE_ID_NAME]), 
+        'techniques_detections_df' :    (techniques_detections_df,  ['source name','target ID'],    [INPUT_TECHNIQUE_DETECTION_NAME, TECHNIQUE_ID_NAME]),
+        'techniques_software_df':       (techniques_software_df,    ['source ID', 'target ID'],     [INPUT_TECHNIQUE_SOFTWARE_ID, TECHNIQUE_ID_NAME]),
         'labels_df' :                   (labels_df,                 ['source ID', 'target ID'],     [GROUP_ID_NAME, TECHNIQUE_ID_NAME])
     }
     return data_and_setting
@@ -169,7 +170,7 @@ def _combine_features (object: str, dfs: dict, feature_sep_char = ',') -> pd.Dat
         # exporting vocab data for each feature
         # unique_vals = numpy.append (unique_vals, feature_df[feature_name].dropna().unique(), axis = 0)
         unique_vals = feature_df[feature_name].dropna().unique()
-        numpy.savetxt (fname =os.path.join(TARGET_PATH, '{object}_{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)), 
+        numpy.savetxt (fname =os.path.join(TARGET_PATH, '{feature_name}_vocab.csv'.format(object = object, feature_name = feature_name)), 
                        X=unique_vals, delimiter= ",",fmt='%s')
         
         feature_df = pd.merge (
