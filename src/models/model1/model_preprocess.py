@@ -14,6 +14,7 @@ from imblearn.under_sampling import RandomUnderSampler
 from ...constants import INPUT_GROUP_LAYER_NAME, INPUT_TECHNIQUE_LAYER_NAME
 from ...constants import GROUP_ID_NAME, TECHNIQUE_ID_NAME, LABEL_NAME
 from ...constants import RANDOM_STATE
+from ...constants import *
 ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 SOURCE_PATH = os.path.join (ROOT_FOLDER, 'data/interim')
 SOURCE_FILENAME = 'PREPROCESSED.txt'
@@ -133,11 +134,42 @@ def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:p
         y_tf))
     return res_dataset
 
+GROUP_FEATURE_NAME_LIST = [INPUT_GROUP_SOFTWARE_ID]
+TECHNIQUE_FEATURE_NAME_LIST = [
+    INPUT_TECHNIQUE_DATA_SOURCES,
+    INPUT_TECHNIQUE_DEFENSES_BYPASSED,
+    INPUT_TECHNIQUE_DETECTION_NAME,
+    INPUT_TECHNIQUE_MITIGATION_ID,
+    INPUT_TECHNIQUE_PERMISSIONS_REQUIRED,
+    INPUT_TECHNIQUE_PLATFORMS,
+    INPUT_TECHNIQUE_SOFTWARE_ID,
+    INPUT_TECHNIQUE_TACTICS
+]
+
 def build_dataset_2 (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
     """
     From the (aligned) feature tables and label table, build and return a tensorflow dataset.
-    Difference from the previous version
+    Difference from the previous version: each feature has its own key-value pair in the input dictionary
+    NOTE 2023-10-29: the function is assuming ALL inputs are ragged vector (from the dataframe)
     """
+    X_group_df = X_group_df.drop (columns= GROUP_ID_NAME)
+    X_technique_df = X_technique_df.drop (columns= TECHNIQUE_ID_NAME)
+    y_df = y_df[LABEL_NAME]
+    
+    input_dict = dict()
+    if ragged_input: 
+        for feature_name in GROUP_FEATURE_NAME_LIST:
+            feature_tf = tf.ragged.constant (X_group_df[feature_name].values, dtype= tf.string)
+            input_dict [feature_name] = feature_tf
+        for feature_name in TECHNIQUE_FEATURE_NAME_LIST:
+            feature_tf = tf.ragged.constant (X_technique_df[feature_name].values, dtype= tf.string)
+            input_dict [feature_name] = feature_tf
+    
+    y_tf = tf.convert_to_tensor(y_df.values, dtype = tf.float32)
+    
+    res_dataset = tf.data.Dataset.from_tensor_slices ((input_dict,y_tf))    
+    return res_dataset
+    
 
 def save_dataset (dataset, target_folder, file_name):
     file_path = os.path.join (target_folder, file_name)
