@@ -1,8 +1,8 @@
 """
-last update: 2023-10-09 Option to oversample train set
-- Model1 preprocessing steps (srcript version 1.2)
-- Usage: data preprocess pipeline specific to model 1. ❗Only works after running `data_preprocess3`. Steps: 
-    1. Load the data exported by running `data_preprocess3`
+last update: 2023-10-29 script to work with ragged tensors (for embedding layers downstream)
+- Model1 preprocessing steps (srcript version 2)
+- Usage: data preprocess pipeline specific to model 1. ❗Only works after running `data_preprocess_tmp`. Steps: 
+    1. Load the data exported by running `data_preprocess_tmp`
     2. Split the data into train, train-cv, cv, and test set with ratios defined by a yaml file in `configs/folder`
     3. (Optional step) Oversampling train and train-cv data
     4. Aligning features to labels
@@ -137,24 +137,25 @@ def main():
         batch_save_df_to_csv (dfs, TARGET_PATH, postfix= 'aligned')
         
     #### 5- Make tensor flow datasets
+    ### ❗different from model1_preprocess: build_dataset_2
     print ('--building datasets')
     
     train_dataset = build_dataset_2(X_group_df =      train_X_group_df, 
                                   X_technique_df =  train_X_technique_df,
-                                  y_df =            train_y_df, ragged_input= False)
+                                  y_df =            train_y_df, ragged_input= True)
     
     if train_cv_size != 0:
         train_cv_dataset = build_dataset_2(X_group_df=    train_cv_X_group_df, 
                                         X_technique_df= train_cv_X_technique_df,
-                                        y_df=           train_cv_y_df, ragged_input= False)
+                                        y_df=           train_cv_y_df, ragged_input= True)
         
     cv_dataset = build_dataset_2(X_group_df =         cv_X_group_df, 
                                   X_technique_df =  cv_X_technique_df,
-                                  y_df =            cv_y_df, ragged_input= False)
+                                  y_df =            cv_y_df, ragged_input= True)
     
     test_dataset = build_dataset_2(X_group_df =       test_X_group_df, 
                                   X_technique_df =  test_X_technique_df,
-                                  y_df =            test_y_df, ragged_input= False)
+                                  y_df =            test_y_df, ragged_input= True)
     
     
     save_dataset (train_dataset, TARGET_PATH, TRAIN_DATASET_FILENAME)

@@ -107,7 +107,7 @@ def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.Da
     return df_aligned
 
 
-def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
+def build_dataset_2 (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
     """
     From the (aligned) feature tables and label table, build and return a tensorflow dataset.
     args `ragged`: if the tensor in each example is ragged (varies in length)
