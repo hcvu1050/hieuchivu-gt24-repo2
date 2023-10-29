@@ -213,7 +213,7 @@ class Model1(keras.Model):
         self.flatten = tf.keras.layers.Flatten ()
         
         ## 👉 concatenate layer
-        self.concatenate = tf.keras.layers.Concatenate ()
+        self.concatenate = tf.keras.layers.Concatenate (axis=1)
         
         # 👉 FNNS
         self.Group_NN = customNN_2(

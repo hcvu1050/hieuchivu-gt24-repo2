@@ -13,9 +13,10 @@ last update: 2023-10-29 script to work with ragged tensors (for embedding layers
     - `-lo`  (means 'last only', defaul = `True`): optional argument to save the intermediary data while going through the preprocessing steps.
 """
 import sys, os, yaml, argparse
+import pandas as pd
 sys.path.append("..")
 
-from src.models.model1.model_preprocess import *
+from src.models.model1.model_preprocess import get_data, split_by_group, label_resample, align_input_to_labels, build_dataset_2, save_dataset
 from src.constants import TRAIN_DATASET_FILENAME, TRAIN_CV_DATASET_FILENAME, CV_DATASET_FILENAME, TEST_DATASET_FILENAME
 from src.data.utils import batch_save_df_to_csv
 

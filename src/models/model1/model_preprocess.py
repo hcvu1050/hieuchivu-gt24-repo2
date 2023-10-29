@@ -21,22 +21,27 @@ SOURCE_FILENAME = 'PREPROCESSED.txt'
 SOURCE_LIST_FILE = os.path.join (SOURCE_PATH, SOURCE_FILENAME)
 PROCESS_RUNNING_MSG = "--runing {}".format(__name__)
 
-def get_data ():
+def get_data (data_type = 'csv'):
     """
     Read the csv files (filenames stored in PREPROCESSED.txt) and return as DataFrames
     """
     print ('Collecting data')
     with open (SOURCE_LIST_FILE, 'r') as file:
         csv_file_names = file.read().splitlines()
-        
+    
     group_features_df = [name for name in csv_file_names if 'X_group' in name]
     technique_features_df = [name for name in csv_file_names if 'X_technique' in name]
     labels_df = [name for name in csv_file_names if 'y' in name]
-    
-    group_features_df = pd.read_csv (os.path.join (SOURCE_PATH, group_features_df[0]))
-    technique_features_df = pd.read_csv (os.path.join (SOURCE_PATH, technique_features_df[0]))
-    labels_df = pd.read_csv (os.path.join (SOURCE_PATH, labels_df[0]))
-    
+        
+    if data_type == 'csv':
+        group_features_df = pd.read_csv (os.path.join (SOURCE_PATH, group_features_df[0]))
+        technique_features_df = pd.read_csv (os.path.join (SOURCE_PATH, technique_features_df[0]))
+        labels_df = pd.read_csv (os.path.join (SOURCE_PATH, labels_df[0]))
+    elif data_type == 'pkl':
+        group_features_df = pd.read_pickle (os.path.join (SOURCE_PATH, group_features_df[0]))
+        technique_features_df = pd.read_pickle (os.path.join (SOURCE_PATH, technique_features_df[0]))
+        labels_df = pd.read_pickle (os.path.join (SOURCE_PATH, labels_df[0]))
+        
     return group_features_df, technique_features_df, labels_df
 
 def split_by_group(df: pd.DataFrame, ratio: float):
@@ -107,7 +112,7 @@ def align_input_to_labels(feature_df: pd.DataFrame, object: str, label_df: pd.Da
     return df_aligned
 
 
-def build_dataset_2 (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
+def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
     """
     From the (aligned) feature tables and label table, build and return a tensorflow dataset.
     args `ragged`: if the tensor in each example is ragged (varies in length)

@@ -17,7 +17,7 @@ data preprocess pipeline V3.2. Steps:
 import sys, os, argparse, yaml, pickle
 sys.path.append("..")
 ### MODULES
-from src.data.utils import batch_save_df_to_csv
+from src.data.utils import batch_save_df_to_csv, batch_save_df_to_pkl
 from src.data.ingestion2 import collect_data
 from src.data.cleaning3 import clean_data
 from src.data.select_features import select_features
@@ -95,7 +95,7 @@ def main():
         'X_group': group_features,
         'X_technique': technique_features,
     }
-    batch_save_df_to_csv (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
+    batch_save_df_to_pkl (file_name_dfs= dfs, target_path=TARGET_PATH, output_list_file = 'PREPROCESSED')
     print ('---Shapes:')
     for df in dfs.keys():
         print ('{df}: {shape}'.format(df = df, shape = dfs[df].shape))

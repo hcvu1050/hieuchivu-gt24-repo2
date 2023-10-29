@@ -70,3 +70,32 @@ def batch_save_df_to_csv (file_name_dfs: dict, target_path, prefix ='', postfix 
     if output_list_file is not None:
         # make a txt file containing the names of exported file
         _make_file_list (filename = output_list_file, target_path=target_path, content=content)
+def batch_save_df_to_pkl (file_name_dfs: dict, target_path, prefix ='', postfix ='',output_list_file = None):
+    """
+    Saves the DataFrames stored in a dict as csv file. \n
+    Arg `file_name_dfs` stores the filenames as keys and the corresponding DataFrame as values\n
+        key: filename\n
+        value = DataFrame\n
+    """
+    if not (prefix == '') and (not prefix.endswith ('_')): prefix += '_'
+    if not (postfix == '') and (not prefix.startswith ('_')): postfix = '_' + postfix
+    content = []
+    
+    for key in file_name_dfs.keys():
+        os.makedirs (target_path, exist_ok = True)
+        
+        filename = prefix + key + postfix
+        if not filename.endswith (".pkl"): filename+= ".pkl"
+        output_file = os.path.join(target_path, filename)
+        
+        print ('Saving:\t', filename, end = '-----')
+        df = file_name_dfs[key]
+        df.to_pickle (output_file)
+        content.append (filename)
+        print ('Saved')
+    
+    print ("Finished: {} files saved to {}".format (len(file_name_dfs.keys()),target_path))
+    
+    if output_list_file is not None:
+        # make a txt file containing the names of exported file
+        _make_file_list (filename = output_list_file, target_path=target_path, content=content)

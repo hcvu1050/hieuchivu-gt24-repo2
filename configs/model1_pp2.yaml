@@ -5,5 +5,5 @@ data_split:
   - 0.1
   - 0.1
 resampling: 
-  oversample: 1
-  undersample: ~
+  oversample: ~
+  undersample: 0.3
