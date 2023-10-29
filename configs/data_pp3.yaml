@@ -1,5 +1,5 @@
 selected_group_features:
-  - 'input_group_software_ID'
+  - 'input_group_software_id'
 selected_technique_features:
   - 'input_technique_data_sources'
   - 'input_technique_defenses_bypassed'
