@@ -16,7 +16,7 @@ RANDOM_STATE = 13
 updated constants for feature names, used in model1.modelpreprocess.build_dataset_2
 """
 
-INPUT_GROUP_SOFTWARE_ID = 'input_group_software_ID'
+INPUT_GROUP_SOFTWARE_ID = 'input_group_software_id'
 
 INPUT_TECHNIQUE_DATA_SOURCES = 'input_technique_data_sources'
 INPUT_TECHNIQUE_DEFENSES_BYPASSED = 'input_technique_defenses_bypassed'
