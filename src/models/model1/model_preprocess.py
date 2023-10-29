@@ -131,8 +131,13 @@ def build_dataset (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:p
             INPUT_TECHNIQUE_LAYER_NAME: X_technique_tf
             },
         y_tf))
-    
     return res_dataset
+
+def build_dataset_2 (X_group_df: pd.DataFrame, X_technique_df:pd.DataFrame, y_df:pd.DataFrame, ragged_input: bool):
+    """
+    From the (aligned) feature tables and label table, build and return a tensorflow dataset.
+    Difference from the previous version
+    """
 
 def save_dataset (dataset, target_folder, file_name):
     file_path = os.path.join (target_folder, file_name)
